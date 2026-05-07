@@ -1,1 +1,92 @@
- 
+import 'package:flutter/material.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_fonts.dart';
+
+class {{textStylesClass}} {
+  {{textStylesClass}}._();
+
+  static TextStyle get displayLarge => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get heading1 => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get heading2 => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get heading3 => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get bodyLarge => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get bodyMedium => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get bodySmall => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: {{colorsClass}}.textSecondary,
+  );
+
+  static TextStyle get label => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get button => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: {{colorsClass}}.textOnPrimary,
+  );
+
+  static TextStyle get input => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: {{colorsClass}}.textPrimary,
+  );
+
+  static TextStyle get caption => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: {{colorsClass}}.textHint,
+  );
+
+  static TextStyle get link => TextStyle(
+    fontFamily: {{fontsClass}}.primary,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: {{colorsClass}}.primary,
+    decoration: TextDecoration.underline,
+  );
+}

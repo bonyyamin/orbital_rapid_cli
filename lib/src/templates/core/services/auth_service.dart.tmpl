@@ -1,0 +1,36 @@
+import 'dart:async';
+import 'package:{{packageName}}/core/constants/app_enums.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+import 'package:{{packageName}}/core/services/storage_service.dart';
+
+class AuthService {
+  final AuthRepository _repository;
+  final StorageService _storage;
+  
+  final _statusController = StreamController<AuthStatus>();
+  Stream<AuthStatus> get status => _statusController.stream;
+
+  AuthService(this._repository, this._storage) {
+    _init();
+  }
+
+  void _init() {
+    _repository.authStateChanges.listen((user) {
+      if (user != null) {
+        _statusController.add(AuthStatus.authenticated);
+      } else {
+        _statusController.add(AuthStatus.unauthenticated);
+      }
+    });
+  }
+
+  Future<void> logout() async {
+    await _repository.logout();
+    await _storage.remove('token');
+    _statusController.add(AuthStatus.unauthenticated);
+  }
+
+  void dispose() {
+    _statusController.close();
+  }
+}

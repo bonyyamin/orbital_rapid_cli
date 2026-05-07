@@ -1,1 +1,94 @@
- 
+import 'package:flutter/material.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_fonts.dart';
+
+class AppTheme {
+  static ThemeData get light {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      primaryColor: {{colorsClass}}.primary,
+      scaffoldBackgroundColor: {{colorsClass}}.background,
+      fontFamily: {{fontsClass}}.primary,
+      
+      colorScheme: ColorScheme.light(
+        primary: {{colorsClass}}.primary,
+        onPrimary: {{colorsClass}}.textOnPrimary,
+        secondary: {{colorsClass}}.secondary,
+        surface: {{colorsClass}}.surface,
+        error: {{colorsClass}}.error,
+      ),
+
+      textTheme: TextTheme(
+        displayLarge: {{textStylesClass}}.displayLarge,
+        headlineLarge: {{textStylesClass}}.heading1,
+        headlineMedium: {{textStylesClass}}.heading2,
+        headlineSmall: {{textStylesClass}}.heading3,
+        bodyLarge: {{textStylesClass}}.bodyLarge,
+        bodyMedium: {{textStylesClass}}.bodyMedium,
+        bodySmall: {{textStylesClass}}.bodySmall,
+        labelLarge: {{textStylesClass}}.button,
+      ),
+
+      appBarTheme: AppBarTheme(
+        backgroundColor: {{colorsClass}}.background,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: {{textStylesClass}}.heading2,
+        iconTheme: IconThemeData(color: {{colorsClass}}.textPrimary),
+      ),
+
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: {{colorsClass}}.primary,
+          foregroundColor: {{colorsClass}}.textOnPrimary,
+          minimumSize: const Size(double.infinity, {{dimensionsClass}}.buttonHeight),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          ),
+          textStyle: {{textStylesClass}}.button,
+          elevation: 0,
+        ),
+      ),
+
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: {{colorsClass}}.inputFill,
+        contentPadding: EdgeInsets.all({{dimensionsClass}}.md),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.inputBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.inputBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.error),
+        ),
+        hintStyle: {{textStylesClass}}.caption,
+      ),
+
+      dividerTheme: DividerThemeData(
+        color: {{colorsClass}}.divider,
+        thickness: 1,
+        space: {{dimensionsClass}}.md,
+      ),
+      
+      cardTheme: CardTheme(
+        color: {{colorsClass}}.card,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusLg),
+        ),
+      ),
+    );
+  }
+}

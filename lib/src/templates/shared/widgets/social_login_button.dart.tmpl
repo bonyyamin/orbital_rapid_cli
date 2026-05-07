@@ -1,1 +1,67 @@
- 
+import 'package:flutter/material.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+
+enum SocialType { google, apple, facebook }
+
+class SocialLoginButton extends StatelessWidget {
+  final SocialType type;
+  final VoidCallback onPressed;
+
+  const SocialLoginButton({
+    super.key,
+    required this.type,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size(double.infinity, {{dimensionsClass}}.buttonHeight),
+        side: BorderSide(color: {{colorsClass}}.divider),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildIcon(),
+          const SizedBox(width: {{dimensionsClass}}.md),
+          Text(
+            _buildLabel(),
+            style: {{textStylesClass}}.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: {{colorsClass}}.textPrimary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIcon() {
+    switch (type) {
+      case SocialType.google:
+        return const Icon(Icons.g_mobiledata, size: 24);
+      case SocialType.apple:
+        return const Icon(Icons.apple, size: 24);
+      case SocialType.facebook:
+        return const Icon(Icons.facebook, size: 24);
+    }
+  }
+
+  String _buildLabel() {
+    switch (type) {
+      case SocialType.google:
+        return 'Continue with Google';
+      case SocialType.apple:
+        return 'Continue with Apple';
+      case SocialType.facebook:
+        return 'Continue with Facebook';
+    }
+  }
+}

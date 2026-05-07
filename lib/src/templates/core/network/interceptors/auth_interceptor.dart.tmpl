@@ -1,0 +1,25 @@
+import 'package:dio/dio.dart';
+import 'package:{{packageName}}/core/services/storage_service.dart';
+import 'package:get_it/get_it.dart';
+
+class AuthInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    final storage = GetIt.I<StorageService>();
+    final token = storage.getString('token');
+
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+
+    return handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.response?.statusCode == 401) {
+      // Handle token refresh logic here if needed
+    }
+    return handler.next(err);
+  }
+}

@@ -1,1 +1,94 @@
- 
+import 'package:flutter/material.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_fonts.dart';
+
+class AppDarkTheme {
+  static ThemeData get dark {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      primaryColor: {{colorsClass}}.primary,
+      scaffoldBackgroundColor: {{colorsClass}}.backgroundDark,
+      fontFamily: {{fontsClass}}.primary,
+      
+      colorScheme: ColorScheme.dark(
+        primary: {{colorsClass}}.primary,
+        onPrimary: {{colorsClass}}.textOnPrimary,
+        secondary: {{colorsClass}}.secondary,
+        surface: {{colorsClass}}.surfaceDark,
+        error: {{colorsClass}}.error,
+      ),
+
+      textTheme: TextTheme(
+        displayLarge: {{textStylesClass}}.displayLarge.copyWith(color: Colors.white),
+        headlineLarge: {{textStylesClass}}.heading1.copyWith(color: Colors.white),
+        headlineMedium: {{textStylesClass}}.heading2.copyWith(color: Colors.white),
+        headlineSmall: {{textStylesClass}}.heading3.copyWith(color: Colors.white),
+        bodyLarge: {{textStylesClass}}.bodyLarge.copyWith(color: Colors.white),
+        bodyMedium: {{textStylesClass}}.bodyMedium.copyWith(color: Colors.white),
+        bodySmall: {{textStylesClass}}.bodySmall.copyWith(color: Colors.white70),
+        labelLarge: {{textStylesClass}}.button.copyWith(color: Colors.white),
+      ),
+
+      appBarTheme: AppBarTheme(
+        backgroundColor: {{colorsClass}}.backgroundDark,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: {{textStylesClass}}.heading2.copyWith(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: {{colorsClass}}.primary,
+          foregroundColor: {{colorsClass}}.textOnPrimary,
+          minimumSize: const Size(double.infinity, {{dimensionsClass}}.buttonHeight),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          ),
+          textStyle: {{textStylesClass}}.button,
+          elevation: 0,
+        ),
+      ),
+
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: {{colorsClass}}.surfaceDark,
+        contentPadding: EdgeInsets.all({{dimensionsClass}}.md),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.cardDark),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.cardDark),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: BorderSide(color: {{colorsClass}}.error),
+        ),
+        hintStyle: {{textStylesClass}}.caption.copyWith(color: Colors.white54),
+      ),
+
+      dividerTheme: DividerThemeData(
+        color: {{colorsClass}}.cardDark,
+        thickness: 1,
+        space: {{dimensionsClass}}.md,
+      ),
+
+      cardTheme: CardTheme(
+        color: {{colorsClass}}.cardDark,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusLg),
+        ),
+      ),
+    );
+  }
+}
