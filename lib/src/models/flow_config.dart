@@ -1,5 +1,7 @@
 // The single config object that drives all generation.
 // Every generator reads from this.
+import 'package:orbital_rapid_cli/src/models/enums.dart';
+
 class FlowConfig {
   final String projectName;
   final String projectNamePascal;
@@ -14,7 +16,20 @@ class FlowConfig {
   final bool generateTests;
   final bool dryRun;
 
-  const FlowConfig({ ...all fields required });
+  const FlowConfig({
+    required this.projectName,
+    required this.projectNamePascal,
+    required this.packageName,
+    required this.outputPath,
+    required this.stateManagement,
+    required this.backend,
+    required this.screens,
+    required this.onboardingPageCount,
+    required this.hasDarkMode,
+    required this.hasL10n,
+    required this.generateTests,
+    required this.dryRun,
+  });
 
   bool get isRiverpod => stateManagement == StateManagement.riverpod;
   bool get isBloc     => stateManagement == StateManagement.bloc;

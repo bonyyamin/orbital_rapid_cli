@@ -1,3 +1,5 @@
+import 'package:mason_logger/mason_logger.dart';
+
 class AppLogger {
   final Logger _logger = Logger();
 

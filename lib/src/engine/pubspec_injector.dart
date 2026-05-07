@@ -1,4 +1,10 @@
 // Safely adds dependencies to pubspec.yaml using yaml_edit
+import 'dart:io';
+
+import 'package:orbital_rapid_cli/src/models/dependency.dart';
+import 'package:path/path.dart' as path;
+import 'package:yaml_edit/yaml_edit.dart';
+
 class PubspecInjector {
   static void inject({
     required String projectPath,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:{{packageName}}/core/theme/app_theme.dart';
+import 'package:{{packageName}}/core/theme/app_dark_theme.dart';
 import 'package:{{packageName}}/core/constants/app_routes.dart';
 
 void main() {
@@ -14,9 +15,9 @@ class {{projectNamePascal}}App extends StatelessWidget {
     return MaterialApp(
       title: '{{projectNamePascal}}',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+      theme: AppTheme.light,
 {{#hasDarkMode}}
-      darkTheme: AppTheme.darkTheme,
+      darkTheme: AppDarkTheme.dark,
       themeMode: ThemeMode.system,
 {{/hasDarkMode}}
       initialRoute: AppRoutes.splash,

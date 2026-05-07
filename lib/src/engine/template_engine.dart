@@ -1,4 +1,8 @@
 // Loads .tmpl files from the package and renders them with mustache
+import 'dart:io';
+import 'package:mustache_template/mustache.dart';
+import 'package:path/path.dart' as path;
+
 class TemplateEngine {
   // Renders a template file with the given variables
   Future<String> render(String templatePath, Map<String, dynamic> vars) async {

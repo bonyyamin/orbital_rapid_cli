@@ -1,3 +1,9 @@
+import 'package:orbital_rapid_cli/src/engine/template_engine.dart';
+import 'package:orbital_rapid_cli/src/models/dependency.dart';
+import 'package:orbital_rapid_cli/src/models/flow_config.dart';
+import 'package:orbital_rapid_cli/src/models/generated_file.dart';
+import 'package:orbital_rapid_cli/src/utils/logger.dart';
+
 abstract class BaseGenerator {
   final FlowConfig config;
   final TemplateEngine engine;

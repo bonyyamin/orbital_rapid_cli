@@ -2,15 +2,15 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
-class ConstantsGenerator extends BaseGenerator {
-  ConstantsGenerator({
+class PubspecGenerator extends BaseGenerator {
+  PubspecGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
 
   @override
-  String get name => 'Constants';
+  String get name => 'Pubspec';
 
   @override
   List<Dependency> get requiredDependencies => [];
@@ -19,18 +19,20 @@ class ConstantsGenerator extends BaseGenerator {
   Future<List<GeneratedFile>> generate() async {
     return [
       await renderToFile(
-        templatePath: 'templates/core/app_assets.dart.tmpl',
-        outputPath: 'lib/core/constants/app_assets.dart',
+        templatePath: 'templates/pubspec/pubspec.yaml.tmpl',
+        outputPath: 'pubspec.yaml',
+        type: FileType.yaml,
       ),
       await renderToFile(
-        templatePath: 'templates/core/app_routes.dart.tmpl',
-        outputPath: 'lib/core/constants/app_routes.dart',
+        templatePath: 'templates/pubspec/analysis_options.yaml.tmpl',
+        outputPath: 'analysis_options.yaml',
+        type: FileType.yaml,
       ),
       await renderToFile(
-        templatePath: 'templates/core/app_enums.dart.tmpl',
-        outputPath: 'lib/core/constants/app_enums.dart',
+        templatePath: 'templates/pubspec/gitignore.tmpl',
+        outputPath: '.gitignore',
+        type: FileType.markdown,
       ),
     ];
   }
 }
- 

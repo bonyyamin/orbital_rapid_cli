@@ -1,7 +1,15 @@
 // Writes all GeneratedFile objects atomically (all or nothing)
+import 'dart:io';
+
+import 'package:orbital_rapid_cli/src/models/generated_file.dart';
+import 'package:orbital_rapid_cli/src/utils/logger.dart';
+import 'package:path/path.dart' as path;
+
 class FileWriter {
   final bool dryRun;
   final AppLogger logger;
+
+  FileWriter({required this.dryRun, required this.logger});
 
   Future<void> writeAll(List<GeneratedFile> files, String outputPath) async {
     if (dryRun) { _printDryRun(files, outputPath); return; }

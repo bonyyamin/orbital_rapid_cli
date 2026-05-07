@@ -2,7 +2,6 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
-
 class UtilsGenerator extends BaseGenerator {
   UtilsGenerator({
     required super.config,
