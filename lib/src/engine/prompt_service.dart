@@ -22,6 +22,7 @@ class PromptService {
 
     final packageName = Input(
       prompt: 'Package identifier (e.g. com.company.app)',
+      defaultValue: 'com.example.$projectName',
       validator: (v) => Validators.packageName(v) == null,
     ).interact();
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'package:mustache_template/mustache.dart';
 import 'package:path/path.dart' as path;
 
@@ -10,18 +11,42 @@ class TemplateEngine {
   }
 
   Future<String> _loadTemplate(String relativePath) async {
-    final packageRoot = _resolvePackageRoot();
-    final file = File(path.join(packageRoot, 'lib/src', relativePath));
+    final packageRoot = await _resolvePackageRoot();
+    
+    // Use the 'path' package to join paths correctly for the current OS (Windows)
+    final fullPath = path.normalize(path.join(packageRoot, 'lib', 'src', relativePath));
+    final file = File(fullPath);
+    
     if (!file.existsSync()) {
-      throw TemplateNotFoundException(relativePath);
+      // If it fails, show the EXACT path so we can debug
+      throw TemplateNotFoundException('Tried searching at: $fullPath');
     }
     return file.readAsStringSync();
   }
 
-  String _resolvePackageRoot() {
-    // For local development and 'dart run', the current directory or a known path is used.
-    // In a real published package, you'd use Isolate.resolvePackageUri or similar.
-    // For this CLI, we assume templates are in the same directory as the lib folder.
+  /// Resolves the CLI package root by asking the Dart runtime where
+  /// [package:orbital_rapid_cli] lives. This is correct regardless of the
+  /// current working directory, which lets users run `orbitalRapid init` from
+  /// any directory.
+  Future<String> _resolvePackageRoot() async {
+    // 1. Try to resolve via package URI
+    final packageUri = Uri.parse('package:orbital_rapid_cli/orbital_rapid_cli.dart');
+    final resolvedUri = await Isolate.resolvePackageUri(packageUri);
+    if (resolvedUri != null && resolvedUri.scheme == 'file') {
+      return File(resolvedUri.toFilePath()).parent.parent.path;
+    }
+
+    // 2. Fallback: Try to resolve via Platform.script (useful for global activate)
+    final scriptPath = Platform.script.toFilePath();
+    if (scriptPath.endsWith('.dart') || scriptPath.endsWith('.snapshot')) {
+      // If running from bin/orbital_rapid.dart, root is two levels up
+      final binDir = File(scriptPath).parent;
+      if (binDir.path.endsWith('bin')) {
+        return binDir.parent.path;
+      }
+    }
+
+    // 3. Last resort: current directory (for development)
     return Directory.current.path;
   }
 }

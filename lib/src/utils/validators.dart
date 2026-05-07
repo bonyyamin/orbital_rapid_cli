@@ -13,8 +13,8 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Required';
     }
-    if (!RegExp(r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*){2,}$').hasMatch(value)) {
-      return 'Must be com.company.app format';
+    if (!RegExp(r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*){1,}$').hasMatch(value)) {
+      return 'Must be com.company.app or com.app format';
     }
     return null;
   }

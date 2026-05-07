@@ -19,7 +19,7 @@ class AuthSharedGenerator {
 
     return [
       await generator.renderToFile(
-        templatePath: 'templates/auth/auth_repository_interface.dart.tmpl',
+        templatePath: 'templates/shared/auth_repository_interface.dart.tmpl',
         outputPath: 'lib/features/auth/data/auth_repository_interface.dart',
       ),
       await generator.renderToFile(
@@ -27,7 +27,7 @@ class AuthSharedGenerator {
         outputPath: 'lib/features/auth/data/auth_repository.dart',
       ),
       await generator.renderToFile(
-        templatePath: 'templates/auth/user_model.dart.tmpl',
+        templatePath: 'templates/shared/user_model.dart.tmpl',
         outputPath: 'lib/features/auth/data/models/user_model.dart',
       ),
       await generator.renderToFile(

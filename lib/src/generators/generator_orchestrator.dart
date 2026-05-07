@@ -11,6 +11,7 @@ import 'package:orbital_rapid_cli/src/generators/core/network_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/pubspec_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/core/service_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/theme_generator.dart';
+import 'package:orbital_rapid_cli/src/generators/shared_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/utils_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/onboarding_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/splash_generator.dart';
@@ -79,6 +80,7 @@ class GeneratorOrchestrator {
     return [
       UtilsGenerator(config: args.config, engine: args.engine, logger: args.logger),
       ThemeGenerator(config: args.config, engine: args.engine, logger: args.logger),
+      SharedGenerator(config: args.config, engine: args.engine, logger: args.logger),
       ConstantsGenerator(config: args.config, engine: args.engine, logger: args.logger),
       ServiceGenerator(config: args.config, engine: args.engine, logger: args.logger),
       if (config.isRest)

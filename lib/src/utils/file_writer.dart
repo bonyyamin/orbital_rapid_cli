@@ -21,15 +21,41 @@ class FileWriter {
         dest.createSync(recursive: true);
         dest.writeAsStringSync(f.content);
       }
-      // Move entire temp dir to output path atomically
+      
       if (Directory(outputPath).existsSync()) {
         throw OutputExistsException(outputPath);
       }
-      tempDir.renameSync(outputPath);
+
+      try {
+        // Attempt atomic move
+        tempDir.renameSync(outputPath);
+      } catch (e) {
+        // Fallback for cross-drive moves (OS Error: errno = 17 on Windows)
+        if (e is FileSystemException) {
+          _copyDirectory(tempDir, Directory(outputPath));
+          tempDir.deleteSync(recursive: true);
+        } else {
+          rethrow;
+        }
+      }
     } catch (e) {
-      tempDir.deleteSync(recursive: true);
+      if (tempDir.existsSync()) {
+        tempDir.deleteSync(recursive: true);
+      }
       rethrow;
     }
+  }
+
+  void _copyDirectory(Directory source, Directory destination) {
+    destination.createSync(recursive: true);
+    source.listSync(recursive: false).forEach((entity) {
+      if (entity is Directory) {
+        final newDirectory = Directory(path.join(destination.absolute.path, path.basename(entity.path)));
+        _copyDirectory(entity, newDirectory);
+      } else if (entity is File) {
+        entity.copySync(path.join(destination.absolute.path, path.basename(entity.path)));
+      }
+    });
   }
 
   void _printDryRun(List<GeneratedFile> files, String outputPath) {
