@@ -1,0 +1,70 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+
+class AuthRepository implements AuthRepositoryInterface {
+  final SupabaseClient _client;
+
+  AuthRepository({SupabaseClient? client})
+      : _client = client ?? Supabase.instance.client;
+
+  @override
+  Stream<UserModel?> get authStateChanges {
+    return _client.auth.onAuthStateChange.map((event) {
+      final user = event.session?.user;
+      if (user == null) return null;
+      return UserModel(
+        id: user.id,
+        name: user.userMetadata?['name'] as String? ?? '',
+        email: user.email ?? '',
+        photoUrl: user.userMetadata?['avatar_url'] as String?,
+      );
+    });
+  }
+
+  @override
+  Future<UserModel> login(String email, String password) async {
+    final response = await _client.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+    final user = response.user!;
+    return UserModel(
+      id: user.id,
+      name: user.userMetadata?['name'] as String? ?? '',
+      email: user.email ?? '',
+      photoUrl: user.userMetadata?['avatar_url'] as String?,
+    );
+  }
+
+  @override
+  Future<UserModel> register(String name, String email, String password) async {
+    final response = await _client.auth.signUp(
+      email: email,
+      password: password,
+      data: {'name': name},
+    );
+    final user = response.user!;
+    return UserModel(
+      id: user.id,
+      name: name,
+      email: user.email ?? '',
+      photoUrl: null,
+    );
+  }
+
+  @override
+  Future<void> logout() => _client.auth.signOut();
+
+  @override
+  Future<void> forgotPassword(String email) {
+    return _client.auth.resetPasswordForEmail(email);
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    // Supabase requires a server-side function or Admin API for account deletion
+    // Call your edge function or backend endpoint here
+    await _client.functions.invoke('delete-account');
+  }
+}

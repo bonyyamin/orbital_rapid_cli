@@ -1,0 +1,12 @@
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+
+class LoginUseCase {
+  final AuthRepositoryInterface _repository;
+
+  LoginUseCase(this._repository);
+
+  Future<UserModel> call(String email, String password) {
+    return _repository.login(email, password);
+  }
+}

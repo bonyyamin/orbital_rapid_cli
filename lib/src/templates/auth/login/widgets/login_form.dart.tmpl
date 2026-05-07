@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+
+class LoginForm extends StatelessWidget {
+  final ValueChanged<String> onEmailChanged;
+  final ValueChanged<String> onPasswordChanged;
+
+  const LoginForm({
+    super.key,
+    required this.onEmailChanged,
+    required this.onPasswordChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextFormField(
+          onChanged: onEmailChanged,
+          keyboardType: TextInputType.emailAddress,
+          style: {{textStylesClass}}.input,
+          decoration: InputDecoration(
+            labelText: {{stringsClass}}.loginEmail,
+            labelStyle: {{textStylesClass}}.label,
+            prefixIcon: const Icon(Icons.email_outlined, color: {{colorsClass}}.textHint),
+            filled: true,
+            fillColor: {{colorsClass}}.inputFill,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+              borderSide: const BorderSide(color: {{colorsClass}}.inputBorder),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+              borderSide: const BorderSide(color: {{colorsClass}}.inputBorder),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+              borderSide: const BorderSide(color: {{colorsClass}}.primary, width: 2),
+            ),
+          ),
+        ),
+        const SizedBox(height: {{dimensionsClass}}.md),
+        _PasswordField(onChanged: onPasswordChanged),
+      ],
+    );
+  }
+}
+
+class _PasswordField extends StatefulWidget {
+  final ValueChanged<String> onChanged;
+  const _PasswordField({required this.onChanged});
+
+  @override
+  State<_PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<_PasswordField> {
+  bool _obscure = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      onChanged: widget.onChanged,
+      obscureText: _obscure,
+      style: {{textStylesClass}}.input,
+      decoration: InputDecoration(
+        labelText: {{stringsClass}}.loginPassword,
+        labelStyle: {{textStylesClass}}.label,
+        prefixIcon: const Icon(Icons.lock_outline, color: {{colorsClass}}.textHint),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            color: {{colorsClass}}.textHint,
+          ),
+          onPressed: () => setState(() => _obscure = !_obscure),
+        ),
+        filled: true,
+        fillColor: {{colorsClass}}.inputFill,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: const BorderSide(color: {{colorsClass}}.inputBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: const BorderSide(color: {{colorsClass}}.inputBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular({{dimensionsClass}}.radiusMd),
+          borderSide: const BorderSide(color: {{colorsClass}}.primary, width: 2),
+        ),
+      ),
+    );
+  }
+}

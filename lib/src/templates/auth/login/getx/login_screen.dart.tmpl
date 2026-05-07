@@ -1,1 +1,84 @@
- 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/features/auth/presentation/login/getx/login_controller.dart';
+import 'package:{{packageName}}/features/auth/presentation/login/widgets/login_form.dart';
+
+class LoginScreen extends GetView<LoginController> {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: {{colorsClass}}.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: {{dimensionsClass}}.xxl),
+              Text({{stringsClass}}.loginTitle, style: {{textStylesClass}}.heading1),
+              const SizedBox(height: {{dimensionsClass}}.xs),
+              Text(
+                {{stringsClass}}.loginSubtitle,
+                style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary),
+              ),
+              const SizedBox(height: {{dimensionsClass}}.xxl),
+              LoginForm(
+                onEmailChanged: (v) => controller.email.value = v,
+                onPasswordChanged: (v) => controller.password.value = v,
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: controller.goToForgotPassword,
+                  child: Text(
+                    {{stringsClass}}.loginForgot,
+                    style: {{textStylesClass}}.label.copyWith(color: {{colorsClass}}.primary),
+                  ),
+                ),
+              ),
+              const SizedBox(height: {{dimensionsClass}}.md),
+              Obx(() => PrimaryButton(
+                text: {{stringsClass}}.loginButton,
+                isLoading: controller.isLoading.value,
+                onPressed: controller.submit,
+              )),
+              Obx(() {
+                final err = controller.errorMessage.value;
+                if (err == null) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: {{dimensionsClass}}.sm),
+                  child: Text(err,
+                      style: {{textStylesClass}}.caption.copyWith(color: {{colorsClass}}.error)),
+                );
+              }),
+              const SizedBox(height: {{dimensionsClass}}.xl),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text({{stringsClass}}.loginNoAccount, style: {{textStylesClass}}.bodyMedium),
+                  GestureDetector(
+                    onTap: controller.goToRegister,
+                    child: Text(
+                      {{stringsClass}}.loginSignUp,
+                      style: {{textStylesClass}}.bodyMedium.copyWith(
+                        color: {{colorsClass}}.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

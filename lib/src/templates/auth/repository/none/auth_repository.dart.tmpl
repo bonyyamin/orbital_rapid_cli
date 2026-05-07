@@ -1,0 +1,39 @@
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+
+/// Stub implementation when no backend is selected.
+/// Replace each method body with your custom backend logic.
+class AuthRepository implements AuthRepositoryInterface {
+  @override
+  Stream<UserModel?> get authStateChanges => const Stream.empty();
+
+  @override
+  Future<UserModel> login(String email, String password) {
+    // TODO: Implement with your backend
+    throw UnimplementedError('login() not yet implemented');
+  }
+
+  @override
+  Future<UserModel> register(String name, String email, String password) {
+    // TODO: Implement with your backend
+    throw UnimplementedError('register() not yet implemented');
+  }
+
+  @override
+  Future<void> logout() {
+    // TODO: Implement with your backend
+    throw UnimplementedError('logout() not yet implemented');
+  }
+
+  @override
+  Future<void> forgotPassword(String email) {
+    // TODO: Implement with your backend
+    throw UnimplementedError('forgotPassword() not yet implemented');
+  }
+
+  @override
+  Future<void> deleteAccount() {
+    // TODO: Implement with your backend
+    throw UnimplementedError('deleteAccount() not yet implemented');
+  }
+}

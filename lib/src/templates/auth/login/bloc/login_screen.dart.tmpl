@@ -1,1 +1,90 @@
- 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_bloc.dart';
+import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_event.dart';
+import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_state.dart';
+import 'package:{{packageName}}/features/auth/presentation/login/widgets/login_form.dart';
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        if (state is LoginSuccess) {
+          Navigator.pushReplacementNamed(context, {{routesClass}}.home);
+        } else if (state is LoginFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: {{colorsClass}}.error,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: {{colorsClass}}.background,
+        body: SafeArea(
+          child: BlocBuilder<LoginBloc, LoginState>(
+            builder: (context, state) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: {{dimensionsClass}}.xxl),
+                    Text({{stringsClass}}.loginTitle, style: {{textStylesClass}}.heading1),
+                    const SizedBox(height: {{dimensionsClass}}.xs),
+                    Text({{stringsClass}}.loginSubtitle,
+                        style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary)),
+                    const SizedBox(height: {{dimensionsClass}}.xxl),
+                    LoginForm(
+                      onEmailChanged: (v) => context.read<LoginBloc>().add(LoginEmailChanged(v)),
+                      onPasswordChanged: (v) => context.read<LoginBloc>().add(LoginPasswordChanged(v)),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () => Navigator.pushNamed(context, {{routesClass}}.forgotPassword),
+                        child: Text({{stringsClass}}.loginForgot,
+                            style: {{textStylesClass}}.label.copyWith(color: {{colorsClass}}.primary)),
+                      ),
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.md),
+                    PrimaryButton(
+                      text: {{stringsClass}}.loginButton,
+                      isLoading: state is LoginLoading,
+                      onPressed: () => context.read<LoginBloc>().add(const LoginSubmitted()),
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.xl),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text({{stringsClass}}.loginNoAccount, style: {{textStylesClass}}.bodyMedium),
+                        GestureDetector(
+                          onTap: () => Navigator.pushNamed(context, {{routesClass}}.register),
+                          child: Text({{stringsClass}}.loginSignUp,
+                              style: {{textStylesClass}}.bodyMedium.copyWith(
+                                color: {{colorsClass}}.primary,
+                                fontWeight: FontWeight.w600,
+                              )),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}

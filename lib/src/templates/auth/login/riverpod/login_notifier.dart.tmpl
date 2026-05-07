@@ -1,0 +1,31 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'login_state.dart';
+
+class LoginNotifier extends StateNotifier<LoginState> {
+  final LoginUseCase _loginUseCase;
+
+  LoginNotifier(this._loginUseCase) : super(const LoginState());
+
+  void emailChanged(String email) {
+    state = state.copyWith(email: email, clearError: true);
+  }
+
+  void passwordChanged(String password) {
+    state = state.copyWith(password: password, clearError: true);
+  }
+
+  Future<void> submit() async {
+    if (state.email.isEmpty || state.password.isEmpty) return;
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _loginUseCase(state.email, state.password);
+      state = state.copyWith(isLoading: false, isSuccess: true);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+}

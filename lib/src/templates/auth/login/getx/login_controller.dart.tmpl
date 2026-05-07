@@ -1,1 +1,33 @@
- 
+import 'package:get/get.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+
+class LoginController extends GetxController {
+  final LoginUseCase _loginUseCase;
+
+  LoginController(this._loginUseCase);
+
+  final RxString email = ''.obs;
+  final RxString password = ''.obs;
+  final RxBool isLoading = false.obs;
+  final RxnString errorMessage = RxnString();
+
+  bool get canSubmit => email.value.isNotEmpty && password.value.isNotEmpty;
+
+  Future<void> submit() async {
+    if (!canSubmit) return;
+    isLoading.value = true;
+    errorMessage.value = null;
+    try {
+      await _loginUseCase(email.value, password.value);
+      Get.offAllNamed(AppRoutes.home);
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void goToRegister() => Get.toNamed(AppRoutes.register);
+  void goToForgotPassword() => Get.toNamed(AppRoutes.forgotPassword);
+}
