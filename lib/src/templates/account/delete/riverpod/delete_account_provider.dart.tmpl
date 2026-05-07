@@ -1,0 +1,12 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'delete_account_notifier.dart';
+import 'delete_account_state.dart';
+
+final deleteAccountActionProvider = Provider<DeleteAccountAction>((ref) {
+  throw UnimplementedError('Provide a delete account implementation');
+});
+
+final deleteAccountProvider =
+    StateNotifierProvider.autoDispose<DeleteAccountNotifier, DeleteAccountState>((ref) {
+  return DeleteAccountNotifier(ref.watch(deleteAccountActionProvider));
+});

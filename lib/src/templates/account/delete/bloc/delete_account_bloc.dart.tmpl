@@ -1,0 +1,35 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'delete_account_event.dart';
+import 'delete_account_state.dart';
+
+typedef DeleteAccountAction = Future<void> Function();
+
+class DeleteAccountBloc extends Bloc<DeleteAccountEvent, DeleteAccountState> {
+  final DeleteAccountAction _deleteAccount;
+  String _confirmationText = '';
+
+  DeleteAccountBloc(this._deleteAccount) : super(const DeleteAccountInitial()) {
+    on<DeleteAccountConfirmationChanged>((event, emit) {
+      _confirmationText = event.value;
+    });
+    on<DeleteAccountSubmitted>(_onSubmitted);
+  }
+
+  Future<void> _onSubmitted(
+    DeleteAccountSubmitted event,
+    Emitter<DeleteAccountState> emit,
+  ) async {
+    if (_confirmationText.trim().toUpperCase() != 'DELETE') {
+      emit(const DeleteAccountFailure('Type DELETE to confirm account removal.'));
+      return;
+    }
+
+    emit(const DeleteAccountLoading());
+    try {
+      await _deleteAccount();
+      emit(const DeleteAccountSuccess());
+    } catch (e) {
+      emit(DeleteAccountFailure(e.toString()));
+    }
+  }
+}

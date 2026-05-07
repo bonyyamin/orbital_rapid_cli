@@ -1,0 +1,30 @@
+class DeleteAccountState {
+  final String confirmationText;
+  final bool isLoading;
+  final String? errorMessage;
+  final bool isSuccess;
+
+  const DeleteAccountState({
+    this.confirmationText = '',
+    this.isLoading = false,
+    this.errorMessage,
+    this.isSuccess = false,
+  });
+
+  bool get canSubmit => confirmationText.trim().toUpperCase() == 'DELETE';
+
+  DeleteAccountState copyWith({
+    String? confirmationText,
+    bool? isLoading,
+    String? errorMessage,
+    bool clearError = false,
+    bool? isSuccess,
+  }) {
+    return DeleteAccountState(
+      confirmationText: confirmationText ?? this.confirmationText,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
+      isSuccess: isSuccess ?? this.isSuccess,
+    );
+  }
+}

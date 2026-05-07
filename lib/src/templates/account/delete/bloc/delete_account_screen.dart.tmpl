@@ -1,0 +1,108 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/shared/widgets/text_input.dart';
+import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete_account_bloc.dart';
+import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete_account_event.dart';
+import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete_account_state.dart';
+
+class DeleteAccountScreen extends StatelessWidget {
+  const DeleteAccountScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeleteAccountBloc, DeleteAccountState>(
+      builder: (context, state) {
+        if (state is DeleteAccountSuccess) {
+          return Scaffold(
+            backgroundColor: {{colorsClass}}.background,
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.check_circle_outline,
+                      size: 72,
+                      color: {{colorsClass}}.success,
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.lg),
+                    Text(
+                      'Account deleted',
+                      style: {{textStylesClass}}.heading2,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.sm),
+                    Text(
+                      'Your account has been permanently removed.',
+                      style: {{textStylesClass}}.bodyMedium.copyWith(
+                        color: {{colorsClass}}.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        return Scaffold(
+          backgroundColor: {{colorsClass}}.background,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: const BackButton(color: {{colorsClass}}.textPrimary),
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: {{dimensionsClass}}.md),
+                  Text({{stringsClass}}.accountDelete, style: {{textStylesClass}}.heading1),
+                  const SizedBox(height: {{dimensionsClass}}.sm),
+                  Text(
+                    'This action is permanent. Type DELETE to confirm.',
+                    style: {{textStylesClass}}.bodyMedium.copyWith(
+                      color: {{colorsClass}}.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: {{dimensionsClass}}.xl),
+                  AppTextInput(
+                    label: 'Type DELETE',
+                    onChanged: (value) => context
+                        .read<DeleteAccountBloc>()
+                        .add(DeleteAccountConfirmationChanged(value)),
+                  ),
+                  if (state is DeleteAccountFailure) ...[
+                    const SizedBox(height: {{dimensionsClass}}.sm),
+                    Text(
+                      state.message,
+                      style: {{textStylesClass}}.caption.copyWith(
+                        color: {{colorsClass}}.error,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: {{dimensionsClass}}.xl),
+                  PrimaryButton(
+                    text: {{stringsClass}}.accountDelete,
+                    isLoading: state is DeleteAccountLoading,
+                    onPressed: () =>
+                        context.read<DeleteAccountBloc>().add(const DeleteAccountSubmitted()),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

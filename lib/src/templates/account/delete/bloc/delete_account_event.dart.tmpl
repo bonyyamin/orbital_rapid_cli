@@ -1,0 +1,12 @@
+sealed class DeleteAccountEvent {
+  const DeleteAccountEvent();
+}
+
+class DeleteAccountConfirmationChanged extends DeleteAccountEvent {
+  final String value;
+  const DeleteAccountConfirmationChanged(this.value);
+}
+
+class DeleteAccountSubmitted extends DeleteAccountEvent {
+  const DeleteAccountSubmitted();
+}

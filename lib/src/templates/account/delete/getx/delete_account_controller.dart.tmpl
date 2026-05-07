@@ -1,0 +1,33 @@
+import 'package:get/get.dart';
+
+typedef DeleteAccountAction = Future<void> Function();
+
+class DeleteAccountController extends GetxController {
+  final DeleteAccountAction _deleteAccount;
+  DeleteAccountController(this._deleteAccount);
+
+  final RxString confirmationText = ''.obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isSuccess = false.obs;
+  final RxnString errorMessage = RxnString();
+
+  Future<void> submit() async {
+    if (confirmationText.value.trim().toUpperCase() != 'DELETE') {
+      errorMessage.value = 'Type DELETE to confirm account removal.';
+      return;
+    }
+
+    isLoading.value = true;
+    errorMessage.value = null;
+    try {
+      await _deleteAccount();
+      isSuccess.value = true;
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void goBack() => Get.back();
+}

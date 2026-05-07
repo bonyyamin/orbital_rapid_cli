@@ -1,0 +1,32 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'delete_account_state.dart';
+
+typedef DeleteAccountAction = Future<void> Function();
+
+class DeleteAccountNotifier extends StateNotifier<DeleteAccountState> {
+  final DeleteAccountAction _deleteAccount;
+
+  DeleteAccountNotifier(this._deleteAccount) : super(const DeleteAccountState());
+
+  void confirmationChanged(String v) {
+    state = state.copyWith(confirmationText: v, clearError: true);
+  }
+
+  Future<void> submit() async {
+    if (!state.canSubmit) {
+      state = state.copyWith(
+        errorMessage: 'Type DELETE to confirm account removal.',
+      );
+      return;
+    }
+
+    state = state.copyWith(isLoading: true, clearError: true);
+
+    try {
+      await _deleteAccount();
+      state = state.copyWith(isLoading: false, isSuccess: true);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
+  }
+}
