@@ -1,0 +1,16 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'onboarding_event.dart';
+import 'onboarding_state.dart';
+
+class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
+  OnboardingBloc() : super(const OnboardingInitial()) {
+    on<OnboardingPageUpdated>(_onPageUpdated);
+  }
+
+  void _onPageUpdated(OnboardingPageUpdated event, Emitter<OnboardingState> emit) {
+    emit(OnboardingPageChanged(
+      currentPage: event.page,
+      isLastPage: event.page == event.totalPages - 1,
+    ));
+  }
+}

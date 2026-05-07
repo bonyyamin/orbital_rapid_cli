@@ -1,0 +1,26 @@
+import 'package:get/get.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+
+class OnboardingController extends GetxController {
+  final RxInt currentPage = 0.obs;
+  final RxBool isLastPage = false.obs;
+
+  int totalPages = 3; // set before use
+
+  void onPageChanged(int page) {
+    currentPage.value = page;
+    isLastPage.value = page == totalPages - 1;
+  }
+
+  void goToNext(void Function() nextPageCallback) {
+    if (isLastPage.value) {
+      Get.offNamed(AppRoutes.login);
+    } else {
+      nextPageCallback();
+    }
+  }
+
+  void skip() {
+    Get.offNamed(AppRoutes.login);
+  }
+}

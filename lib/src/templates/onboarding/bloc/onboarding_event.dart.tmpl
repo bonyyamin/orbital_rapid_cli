@@ -1,0 +1,13 @@
+sealed class OnboardingEvent {
+  const OnboardingEvent();
+}
+
+class OnboardingPageUpdated extends OnboardingEvent {
+  final int page;
+  final int totalPages;
+
+  const OnboardingPageUpdated({
+    required this.page,
+    required this.totalPages,
+  });
+}

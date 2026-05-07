@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/core/constants/app_assets.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/features/onboarding/presentation/riverpod/onboarding_provider.dart';
+import 'package:{{packageName}}/features/onboarding/presentation/widgets/onboarding_page.dart';
+import 'package:{{packageName}}/features/onboarding/presentation/widgets/page_indicator.dart';
+
+class OnboardingScreen extends ConsumerStatefulWidget {
+  const OnboardingScreen({super.key});
+
+  @override
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(onboardingProvider);
+    final notifier = ref.read(onboardingProvider.notifier);
+
+    // Placeholder data - in a real app this might come from a localized source or data layer
+    final List<Map<String, String>> pages = [
+      {
+        'title': 'Welcome to {{projectNamePascal}}',
+        'subtitle': 'The fastest way to build your next Flutter app.',
+        'image': {{assetsClass}}.onboarding1,
+      },
+      {
+        'title': 'Clean Architecture',
+        'subtitle': 'Maintainable, scalable, and testable code out of the box.',
+        'image': {{assetsClass}}.onboarding2,
+      },
+      {
+        'title': 'Design System',
+        'subtitle': 'Token-based system for easy branding and customization.',
+        'image': {{assetsClass}}.onboarding3,
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: {{colorsClass}}.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: TextButton(
+                onPressed: () => Navigator.pushReplacementNamed(context, {{routesClass}}.login),
+                child: Text(
+                  {{stringsClass}}.onboardingSkip,
+                  style: {{textStylesClass}}.button.copyWith(color: {{colorsClass}}.primary),
+                ),
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: pages.length,
+                onPageChanged: (index) => notifier.setPage(index, pages.length),
+                itemBuilder: (context, index) {
+                  final page = pages[index];
+                  return OnboardingPage(
+                    title: page['title']!,
+                    subtitle: page['subtitle']!,
+                    image: page['image']!,
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+              child: Column(
+                children: [
+                  PageIndicator(
+                    count: pages.length,
+                    current: state.currentPage,
+                  ),
+                  const SizedBox(height: {{dimensionsClass}}.xl),
+                  PrimaryButton(
+                    text: state.isLastPage 
+                        ? {{stringsClass}}.onboardingDone 
+                        : {{stringsClass}}.onboardingNext,
+                    onPressed: () {
+                      if (state.isLastPage) {
+                        Navigator.pushReplacementNamed(context, {{routesClass}}.login);
+                      } else {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

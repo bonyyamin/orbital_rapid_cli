@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+import 'package:{{packageName}}/core/constants/app_assets.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/features/onboarding/presentation/getx/onboarding_controller.dart';
+import 'package:{{packageName}}/features/onboarding/presentation/widgets/onboarding_page.dart';
+import 'package:{{packageName}}/features/onboarding/presentation/widgets/page_indicator.dart';
+
+class OnboardingScreen extends GetView<OnboardingController> {
+  const OnboardingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final PageController pageController = PageController();
+
+    // Placeholder data
+    final List<Map<String, String>> pages = [
+      {
+        'title': 'Welcome to {{projectNamePascal}}',
+        'subtitle': 'The fastest way to build your next Flutter app.',
+        'image': {{assetsClass}}.onboarding1,
+      },
+      {
+        'title': 'Clean Architecture',
+        'subtitle': 'Maintainable, scalable, and testable code out of the box.',
+        'image': {{assetsClass}}.onboarding2,
+      },
+      {
+        'title': 'Design System',
+        'subtitle': 'Token-based system for easy branding and customization.',
+        'image': {{assetsClass}}.onboarding3,
+      },
+    ];
+
+    controller.totalPages = pages.length;
+
+    return Scaffold(
+      backgroundColor: {{colorsClass}}.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: TextButton(
+                onPressed: controller.skip,
+                child: Text(
+                  {{stringsClass}}.onboardingSkip,
+                  style: {{textStylesClass}}.button.copyWith(color: {{colorsClass}}.primary),
+                ),
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: pageController,
+                itemCount: pages.length,
+                onPageChanged: controller.onPageChanged,
+                itemBuilder: (context, index) {
+                  final page = pages[index];
+                  return OnboardingPage(
+                    title: page['title']!,
+                    subtitle: page['subtitle']!,
+                    image: page['image']!,
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+              child: Obx(() => Column(
+                children: [
+                  PageIndicator(
+                    count: pages.length,
+                    current: controller.currentPage.value,
+                  ),
+                  const SizedBox(height: {{dimensionsClass}}.xl),
+                  PrimaryButton(
+                    text: controller.isLastPage.value
+                        ? {{stringsClass}}.onboardingDone
+                        : {{stringsClass}}.onboardingNext,
+                    onPressed: () => controller.goToNext(() {
+                      pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }),
+                  ),
+                ],
+              )),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
