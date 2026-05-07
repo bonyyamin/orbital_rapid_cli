@@ -1,4 +1,6 @@
 // All interactive prompts live here
+import 'package:orbital_rapid_cli/src/utils/logger.dart';
+
 class PromptService {
   final AppLogger logger;
 

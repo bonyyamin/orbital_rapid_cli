@@ -1,1 +1,11 @@
- 
+sealed class SplashState {
+  const SplashState();
+}
+
+class SplashInitial extends SplashState {}
+
+class SplashLoading extends SplashState {}
+
+class SplashNavigateToOnboarding extends SplashState {}
+
+class SplashNavigateToLogin extends SplashState {}

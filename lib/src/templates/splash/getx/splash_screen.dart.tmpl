@@ -1,1 +1,38 @@
- 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_gradients.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/constants/app_assets.dart';
+import 'package:{{packageName}}/features/splash/presentation/getx/splash_controller.dart';
+
+class SplashScreen extends GetView<SplashController> {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: {{gradientsClass}}.splash,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                {{assetsClass}}.splashLogo,
+                width: {{dimensionsClass}}.splashLogoSize,
+                height: {{dimensionsClass}}.splashLogoSize,
+              ),
+              const SizedBox(height: {{dimensionsClass}}.md),
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>({{colorsClass}}.textOnPrimary),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

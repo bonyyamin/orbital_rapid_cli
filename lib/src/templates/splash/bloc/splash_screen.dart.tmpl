@@ -1,1 +1,61 @@
- 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_gradients.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/constants/app_assets.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/features/splash/presentation/bloc/splash_bloc.dart';
+import 'package:{{packageName}}/features/splash/presentation/bloc/splash_event.dart';
+import 'package:{{packageName}}/features/splash/presentation/bloc/splash_state.dart';
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<SplashBloc>().add(SplashAppStarted());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<SplashBloc, SplashState>(
+      listener: (context, state) {
+        if (state is SplashNavigateToOnboarding) {
+          Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+        } else if (state is SplashNavigateToLogin) {
+          Navigator.pushReplacementNamed(context, AppRoutes.login);
+        }
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: {{gradientsClass}}.splash,
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  {{assetsClass}}.splashLogo,
+                  width: {{dimensionsClass}}.splashLogoSize,
+                  height: {{dimensionsClass}}.splashLogoSize,
+                ),
+                const SizedBox(height: {{dimensionsClass}}.md),
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>({{colorsClass}}.textOnPrimary),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
