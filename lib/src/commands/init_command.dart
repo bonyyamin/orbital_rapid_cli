@@ -1,1 +1,68 @@
- 
+import 'package:args/command_runner.dart';
+import 'package:orbital_rapid_cli/src/engine/config_builder.dart';
+import 'package:orbital_rapid_cli/src/engine/config_validator.dart';
+import 'package:orbital_rapid_cli/src/generators/generator_orchestrator.dart';
+import 'package:orbital_rapid_cli/src/engine/prompt_service.dart';
+import 'package:orbital_rapid_cli/src/engine/yaml_config_loader.dart';
+import 'package:orbital_rapid_cli/src/models/flow_config.dart';
+import 'package:orbital_rapid_cli/src/utils/logger.dart';
+
+class InitCommand extends Command<void> {
+  final AppLogger logger;
+
+  InitCommand(this.logger) {
+    argParser
+      ..addOption('name', abbr: 'n', help: 'Project name (snake_case)')
+      ..addOption('package', abbr: 'p', help: 'Package identifier (e.g. com.company.app)')
+      ..addOption('state', allowed: ['riverpod', 'bloc', 'getx'], help: 'State management library')
+      ..addOption('backend', allowed: ['firebase', 'rest', 'supabase', 'none'], help: 'Backend service')
+      ..addOption('screens', help: 'Comma-separated screens or "all"')
+      ..addOption('config', abbr: 'c', help: 'Path to orbitalRapid.yaml config file')
+      ..addOption('output', abbr: 'o', help: 'Output directory')
+      ..addOption('onboarding-pages', help: 'Number of onboarding pages', defaultsTo: '3')
+      ..addFlag('dark-mode', help: 'Enable dark mode support', defaultsTo: true)
+      ..addFlag('l10n', help: 'Enable localization support', defaultsTo: false)
+      ..addFlag('tests', help: 'Generate unit and widget tests', defaultsTo: true)
+      ..addFlag('dry-run', help: 'Show what files would be generated without writing them', defaultsTo: false);
+  }
+
+  @override
+  String get name => 'init';
+
+  @override
+  String get description => 'Scaffold a new Flutter project with auth flows';
+
+  @override
+  Future<void> run() async {
+    FlowConfig config;
+
+    if (argResults!['config'] != null) {
+      config = YamlConfigLoader.load(argResults!['config'] as String);
+    } else if (_hasAllRequiredFlags()) {
+      config = ConfigBuilder.fromArgs(argResults!);
+    } else {
+      config = await PromptService(logger: logger).collectConfig(
+        dryRun: argResults!['dry-run'] as bool? ?? false,
+      );
+    }
+
+    await ConfigValidator.validate(config);
+    await GeneratorOrchestrator(config: config, logger: logger).generate();
+
+    _printSuccess(config);
+  }
+
+  bool _hasAllRequiredFlags() {
+    return argResults!['name'] != null && argResults!['package'] != null;
+  }
+
+  void _printSuccess(FlowConfig config) {
+    logger.success('\n✅ Project generated at ./${config.projectName}/');
+    logger.info('\nNext steps:');
+    logger.info('  cd ${config.projectName}');
+    logger.info('  flutter pub get');
+    logger.info('  flutter run');
+    logger.info('\nCustomize your design system:');
+    logger.info('  lib/core/utils/ ← change colors, fonts, strings here');
+  }
+}

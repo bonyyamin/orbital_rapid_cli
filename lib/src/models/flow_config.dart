@@ -59,4 +59,33 @@ class FlowConfig {
     'assetsClass':       'AppAssets',
     'routesClass':       'AppRoutes',
   };
-}
+  FlowConfig copyWith({
+    String? projectName,
+    String? projectNamePascal,
+    String? packageName,
+    String? outputPath,
+    StateManagement? stateManagement,
+    Backend? backend,
+    List<Screen>? screens,
+    int? onboardingPageCount,
+    bool? hasDarkMode,
+    bool? hasL10n,
+    bool? generateTests,
+    bool? dryRun,
+  }) {
+    return FlowConfig(
+      projectName: projectName ?? this.projectName,
+      projectNamePascal: projectNamePascal ?? this.projectNamePascal,
+      packageName: packageName ?? this.packageName,
+      outputPath: outputPath ?? this.outputPath,
+      stateManagement: stateManagement ?? this.stateManagement,
+      backend: backend ?? this.backend,
+      screens: screens ?? this.screens,
+      onboardingPageCount: onboardingPageCount ?? this.onboardingPageCount,
+      hasDarkMode: hasDarkMode ?? this.hasDarkMode,
+      hasL10n: hasL10n ?? this.hasL10n,
+      generateTests: generateTests ?? this.generateTests,
+      dryRun: dryRun ?? this.dryRun,
+    );
+  }
+}

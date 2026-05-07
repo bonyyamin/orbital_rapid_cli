@@ -40,3 +40,10 @@ class FileWriter {
     logger.info('\nTotal: ${files.length} files → $outputPath/');
   }
 }
+
+class OutputExistsException implements Exception {
+  final String path;
+  OutputExistsException(this.path);
+  @override
+  String toString() => 'Output directory already exists: $path';
+}

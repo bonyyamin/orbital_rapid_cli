@@ -1,4 +1,4 @@
-// Assembles FlowConfig from user prompt answers
+import 'package:args/args.dart';
 import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'package:orbital_rapid_cli/src/models/flow_config.dart';
 import 'package:orbital_rapid_cli/src/utils/string_utils.dart';
@@ -33,4 +33,44 @@ class ConfigBuilder {
       dryRun: dryRun,
     );
   }
-}
+
+  static FlowConfig fromArgs(ArgResults args) {
+    final stateStr = args['state'] as String?;
+    final backendStr = args['backend'] as String?;
+    final screensStr = args['screens'] as String?;
+
+    final stateManagement = StateManagement.values.firstWhere(
+      (e) => e.key == stateStr,
+      orElse: () => StateManagement.riverpod,
+    );
+
+    final backend = Backend.values.firstWhere(
+      (e) => e.key == backendStr,
+      orElse: () => Backend.none,
+    );
+
+    List<Screen> screens;
+    if (screensStr == 'all') {
+      screens = Screen.values;
+    } else if (screensStr != null && screensStr.isNotEmpty) {
+      final keys = screensStr.split(',').map((s) => s.trim());
+      screens = Screen.values.where((s) => keys.contains(s.key)).toList();
+    } else {
+      screens = const [];
+    }
+
+    return fromAnswers(
+      projectName: args['name'] as String? ?? 'my_app',
+      packageName: args['package'] as String? ?? 'com.example.app',
+      stateManagement: stateManagement,
+      backend: backend,
+      screens: screens,
+      onboardingPageCount: int.tryParse(args['onboarding-pages'] as String? ?? '3') ?? 3,
+      hasDarkMode: args['dark-mode'] as bool? ?? true,
+      hasL10n: args['l10n'] as bool? ?? false,
+      generateTests: args['tests'] as bool? ?? true,
+      dryRun: args['dry-run'] as bool? ?? false,
+      outputPath: args['output'] as String?,
+    );
+  }
+}

@@ -9,17 +9,20 @@ import 'package:orbital_rapid_cli/src/utils/validators.dart';
 class PromptService {
   final AppLogger logger;
 
-  Future<FlowConfig> collectConfig() async {
+  PromptService({required this.logger});
+
+  Future<FlowConfig> collectConfig({bool dryRun = false}) async {
     logger.printBanner();
 
+    // interact's Input validator must return bool (true = valid)
     final projectName = Input(
       prompt: 'Project name',
-      validator: Validators.projectName,
+      validator: (v) => Validators.projectName(v) == null,
     ).interact();
 
     final packageName = Input(
       prompt: 'Package identifier (e.g. com.company.app)',
-      validator: Validators.packageName,
+      validator: (v) => Validators.packageName(v) == null,
     ).interact();
 
     final stateIndex = Select(
@@ -38,7 +41,28 @@ class PromptService {
       defaults: List.filled(Screen.values.length, true),
     ).interact();
 
-    // ... more prompts for onboarding pages, dark mode, l10n
+    final onboardingPageCount = int.parse(
+      Input(
+        prompt: 'Number of onboarding pages',
+        defaultValue: '3',
+        validator: (v) => int.tryParse(v) != null,
+      ).interact(),
+    );
+
+    final hasDarkMode = Confirm(
+      prompt: 'Enable dark mode?',
+      defaultValue: true,
+    ).interact();
+
+    final hasL10n = Confirm(
+      prompt: 'Enable localization (l10n)?',
+      defaultValue: false,
+    ).interact();
+
+    final generateTests = Confirm(
+      prompt: 'Generate tests?',
+      defaultValue: true,
+    ).interact();
 
     return ConfigBuilder.fromAnswers(
       projectName: projectName,
@@ -46,7 +70,11 @@ class PromptService {
       stateManagement: StateManagement.values[stateIndex],
       backend: Backend.values[backendIndex],
       screens: screenIndices.map((i) => Screen.values[i]).toList(),
-      // ...
+      onboardingPageCount: onboardingPageCount,
+      hasDarkMode: hasDarkMode,
+      hasL10n: hasL10n,
+      generateTests: generateTests,
+      dryRun: dryRun,
     );
   }
 }
