@@ -1,0 +1,12 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/register_usecase.dart';
+import 'register_notifier.dart';
+import 'register_state.dart';
+
+final registerProvider = StateNotifierProvider.autoDispose<RegisterNotifier, RegisterState>((ref) {
+  return RegisterNotifier(ref.watch(registerUseCaseProvider));
+});
+
+final registerUseCaseProvider = Provider<RegisterUseCase>((ref) {
+  throw UnimplementedError('Provide AuthRepository');
+});

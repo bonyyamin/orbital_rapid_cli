@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/shared/widgets/text_input.dart';
+import 'package:{{packageName}}/features/auth/presentation/register/bloc/register_bloc.dart';
+import 'package:{{packageName}}/features/auth/presentation/register/bloc/register_event.dart';
+import 'package:{{packageName}}/features/auth/presentation/register/bloc/register_state.dart';
+
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<RegisterBloc, RegisterState>(
+      listener: (context, state) {
+        if (state is RegisterSuccess) Navigator.pushReplacementNamed(context, {{routesClass}}.home);
+        if (state is RegisterFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: {{colorsClass}}.error),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: {{colorsClass}}.background,
+        appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0,
+            leading: const BackButton(color: {{colorsClass}}.textPrimary)),
+        body: SafeArea(
+          child: BlocBuilder<RegisterBloc, RegisterState>(
+            builder: (context, state) => SingleChildScrollView(
+              padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text({{stringsClass}}.registerTitle, style: {{textStylesClass}}.heading1),
+                const SizedBox(height: {{dimensionsClass}}.xs),
+                Text({{stringsClass}}.registerSubtitle,
+                    style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary)),
+                const SizedBox(height: {{dimensionsClass}}.xxl),
+                AppTextInput(label: {{stringsClass}}.registerName,
+                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterNameChanged(v))),
+                const SizedBox(height: {{dimensionsClass}}.md),
+                AppTextInput(label: {{stringsClass}}.registerEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterEmailChanged(v))),
+                const SizedBox(height: {{dimensionsClass}}.md),
+                AppTextInput(label: {{stringsClass}}.registerPassword, obscureText: true,
+                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterPasswordChanged(v))),
+                const SizedBox(height: {{dimensionsClass}}.md),
+                AppTextInput(label: {{stringsClass}}.registerConfirm, obscureText: true,
+                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterConfirmPasswordChanged(v))),
+                const SizedBox(height: {{dimensionsClass}}.xl),
+                PrimaryButton(text: {{stringsClass}}.registerButton,
+                    isLoading: state is RegisterLoading,
+                    onPressed: () => context.read<RegisterBloc>().add(const RegisterSubmitted())),
+                const SizedBox(height: {{dimensionsClass}}.xl),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text({{stringsClass}}.registerHaveAccount, style: {{textStylesClass}}.bodyMedium),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Text({{stringsClass}}.registerSignIn,
+                        style: {{textStylesClass}}.bodyMedium.copyWith(
+                            color: {{colorsClass}}.primary, fontWeight: FontWeight.w600)),
+                  ),
+                ]),
+              ]),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

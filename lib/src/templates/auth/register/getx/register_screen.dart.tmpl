@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/utils/app_strings.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/shared/widgets/text_input.dart';
+import 'package:{{packageName}}/features/auth/presentation/register/getx/register_controller.dart';
+
+class RegisterScreen extends GetView<RegisterController> {
+  const RegisterScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: {{colorsClass}}.background,
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0,
+          leading: const BackButton(color: {{colorsClass}}.textPrimary)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text({{stringsClass}}.registerTitle, style: {{textStylesClass}}.heading1),
+            const SizedBox(height: {{dimensionsClass}}.xs),
+            Text({{stringsClass}}.registerSubtitle,
+                style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary)),
+            const SizedBox(height: {{dimensionsClass}}.xxl),
+            AppTextInput(label: {{stringsClass}}.registerName,
+                onChanged: (v) => controller.name.value = v),
+            const SizedBox(height: {{dimensionsClass}}.md),
+            AppTextInput(label: {{stringsClass}}.registerEmail,
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (v) => controller.email.value = v),
+            const SizedBox(height: {{dimensionsClass}}.md),
+            AppTextInput(label: {{stringsClass}}.registerPassword, obscureText: true,
+                onChanged: (v) => controller.password.value = v),
+            const SizedBox(height: {{dimensionsClass}}.md),
+            AppTextInput(label: {{stringsClass}}.registerConfirm, obscureText: true,
+                onChanged: (v) => controller.confirmPassword.value = v),
+            const SizedBox(height: {{dimensionsClass}}.xl),
+            Obx(() => PrimaryButton(text: {{stringsClass}}.registerButton,
+                isLoading: controller.isLoading.value, onPressed: controller.submit)),
+            Obx(() {
+              final err = controller.errorMessage.value;
+              if (err == null) return const SizedBox.shrink();
+              return Padding(padding: const EdgeInsets.only(top: {{dimensionsClass}}.sm),
+                  child: Text(err, style: {{textStylesClass}}.caption.copyWith(color: {{colorsClass}}.error)));
+            }),
+            const SizedBox(height: {{dimensionsClass}}.xl),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text({{stringsClass}}.registerHaveAccount, style: {{textStylesClass}}.bodyMedium),
+              GestureDetector(onTap: controller.goToLogin,
+                  child: Text({{stringsClass}}.registerSignIn,
+                      style: {{textStylesClass}}.bodyMedium.copyWith(
+                          color: {{colorsClass}}.primary, fontWeight: FontWeight.w600))),
+            ]),
+          ]),
+        ),
+      ),
+    );
+  }
+}

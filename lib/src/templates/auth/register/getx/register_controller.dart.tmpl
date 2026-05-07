@@ -1,0 +1,36 @@
+import 'package:get/get.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/register_usecase.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+
+class RegisterController extends GetxController {
+  final RegisterUseCase _registerUseCase;
+  RegisterController(this._registerUseCase);
+
+  final RxString name = ''.obs;
+  final RxString email = ''.obs;
+  final RxString password = ''.obs;
+  final RxString confirmPassword = ''.obs;
+  final RxBool isLoading = false.obs;
+  final RxnString errorMessage = RxnString();
+
+  bool get passwordsMatch => password.value == confirmPassword.value;
+  bool get canSubmit =>
+      name.value.isNotEmpty && email.value.isNotEmpty &&
+      password.value.isNotEmpty && passwordsMatch;
+
+  Future<void> submit() async {
+    if (!canSubmit) return;
+    isLoading.value = true;
+    errorMessage.value = null;
+    try {
+      await _registerUseCase(name.value, email.value, password.value);
+      Get.offAllNamed(AppRoutes.home);
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void goToLogin() => Get.back();
+}
