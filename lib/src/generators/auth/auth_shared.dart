@@ -1,0 +1,51 @@
+import 'package:orbital_rapid_cli/src/models/enums.dart';
+import 'package:orbital_rapid_cli/src/models/generated_file.dart';
+
+import '../base_generator.dart';
+
+class AuthSharedGenerator {
+  static bool _generated = false;
+
+  static Future<List<GeneratedFile>> generateOnce(BaseGenerator generator) async {
+    if (_generated) return [];
+    _generated = true;
+
+    final backendTemplate = switch (generator.config.backend) {
+      Backend.firebase => 'templates/auth/repository/firebase/auth_repository.dart.tmpl',
+      Backend.rest => 'templates/auth/repository/rest/auth_repository.dart.tmpl',
+      Backend.supabase => 'templates/auth/repository/supabase/auth_repository.dart.tmpl',
+      Backend.none => 'templates/auth/repository/none/auth_repository.dart.tmpl',
+    };
+
+    return [
+      await generator.renderToFile(
+        templatePath: 'templates/auth/auth_repository_interface.dart.tmpl',
+        outputPath: 'lib/features/auth/data/auth_repository_interface.dart',
+      ),
+      await generator.renderToFile(
+        templatePath: backendTemplate,
+        outputPath: 'lib/features/auth/data/auth_repository.dart',
+      ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/user_model.dart.tmpl',
+        outputPath: 'lib/features/auth/data/models/user_model.dart',
+      ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/usecases/login_usecase.dart.tmpl',
+        outputPath: 'lib/features/auth/domain/usecases/login_usecase.dart',
+      ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/usecases/register_usecase.dart.tmpl',
+        outputPath: 'lib/features/auth/domain/usecases/register_usecase.dart',
+      ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/usecases/logout_usecase.dart.tmpl',
+        outputPath: 'lib/features/auth/domain/usecases/logout_usecase.dart',
+      ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/usecases/forgot_password_usecase.dart.tmpl',
+        outputPath: 'lib/features/auth/domain/usecases/forgot_password_usecase.dart',
+      ),
+    ];
+  }
+}
