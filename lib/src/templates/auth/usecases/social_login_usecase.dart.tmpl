@@ -1,0 +1,13 @@
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+
+class SocialLoginUseCase {
+  final AuthRepositoryInterface _repository;
+
+  SocialLoginUseCase(this._repository);
+
+  Future<UserModel> google() => _repository.loginWithGoogle();
+  Future<UserModel> facebook() => _repository.loginWithFacebook();
+  Future<UserModel> apple() => _repository.loginWithApple();
+  Future<UserModel> github() => _repository.loginWithGithub();
+}

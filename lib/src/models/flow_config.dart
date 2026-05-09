@@ -10,6 +10,7 @@ class FlowConfig {
   final StateManagement stateManagement;
   final Backend backend;
   final List<Screen> screens;
+  final List<SocialProvider> socialProviders;
   final int onboardingPageCount;
   final bool hasDarkMode;
   final bool hasL10n;
@@ -25,6 +26,7 @@ class FlowConfig {
     required this.stateManagement,
     required this.backend,
     required this.screens,
+    required this.socialProviders,
     required this.onboardingPageCount,
     required this.hasDarkMode,
     required this.hasL10n,
@@ -43,6 +45,12 @@ class FlowConfig {
   bool get isSeparate => projectStructure == ProjectStructure.separate;
   bool get isInplace => projectStructure == ProjectStructure.inplace;
 
+  bool get hasGoogleAuth => socialProviders.contains(SocialProvider.google);
+  bool get hasFacebookAuth => socialProviders.contains(SocialProvider.facebook);
+  bool get hasAppleAuth => socialProviders.contains(SocialProvider.apple);
+  bool get hasGithubAuth => socialProviders.contains(SocialProvider.github);
+  bool get hasSocialAuth => socialProviders.isNotEmpty;
+
   Map<String, dynamic> toTemplateVars() => {
         'projectName': projectName,
         'projectNamePascal': projectNamePascal,
@@ -57,6 +65,11 @@ class FlowConfig {
         'isNone': isNoneBackend,
         'hasDarkMode': hasDarkMode,
         'hasL10n': hasL10n,
+        'hasGoogleAuth': hasGoogleAuth,
+        'hasFacebookAuth': hasFacebookAuth,
+        'hasAppleAuth': hasAppleAuth,
+        'hasGithubAuth': hasGithubAuth,
+        'hasSocialAuth': hasSocialAuth,
         'colorsClass': 'AppColors',
         'textStylesClass': 'AppTextStyles',
         'dimensionsClass': 'AppDimensions',
@@ -74,6 +87,7 @@ class FlowConfig {
     StateManagement? stateManagement,
     Backend? backend,
     List<Screen>? screens,
+    List<SocialProvider>? socialProviders,
     int? onboardingPageCount,
     bool? hasDarkMode,
     bool? hasL10n,
@@ -89,6 +103,7 @@ class FlowConfig {
       stateManagement: stateManagement ?? this.stateManagement,
       backend: backend ?? this.backend,
       screens: screens ?? this.screens,
+      socialProviders: socialProviders ?? this.socialProviders,
       onboardingPageCount: onboardingPageCount ?? this.onboardingPageCount,
       hasDarkMode: hasDarkMode ?? this.hasDarkMode,
       hasL10n: hasL10n ?? this.hasL10n,

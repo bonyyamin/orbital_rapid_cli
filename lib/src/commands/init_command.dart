@@ -22,6 +22,7 @@ class InitCommand extends Command<void> {
           allowed: ['firebase', 'rest', 'supabase', 'none'],
           help: 'Backend service')
       ..addOption('screens', help: 'Comma-separated screens or "all"')
+      ..addOption('social-providers', help: 'Comma-separated social providers (google,facebook,apple,github) or "all"')
       ..addOption('config',
           abbr: 'c', help: 'Path to orbitalRapid.yaml config file')
       ..addOption('output', abbr: 'o', help: 'Output directory')

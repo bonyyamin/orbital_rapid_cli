@@ -56,6 +56,34 @@ class NoAuthRepository implements AuthRepositoryInterface {
     _currentUser = null;
     _authStateController.add(null);
   }
+
+  @override
+  Future<UserModel> loginWithGoogle() async {
+    _currentUser = await MockAuthService.login('google@example.com', 'social');
+    _authStateController.add(_currentUser);
+    return _currentUser!;
+  }
+
+  @override
+  Future<UserModel> loginWithFacebook() async {
+    _currentUser = await MockAuthService.login('facebook@example.com', 'social');
+    _authStateController.add(_currentUser);
+    return _currentUser!;
+  }
+
+  @override
+  Future<UserModel> loginWithApple() async {
+    _currentUser = await MockAuthService.login('apple@example.com', 'social');
+    _authStateController.add(_currentUser);
+    return _currentUser!;
+  }
+
+  @override
+  Future<UserModel> loginWithGithub() async {
+    _currentUser = await MockAuthService.login('github@example.com', 'social');
+    _authStateController.add(_currentUser);
+    return _currentUser!;
+  }
 }
 
 {{#isRiverpod}}

@@ -42,6 +42,12 @@ class PromptService {
       defaults: List.filled(Screen.values.length, true),
     ).interact();
 
+    final socialProviderIndices = MultiSelect(
+      prompt: 'Social authentication providers (Press <space> to select)',
+      options: SocialProvider.values.map((e) => e.label).toList(),
+      defaults: List.filled(SocialProvider.values.length, false),
+    ).interact();
+
     final onboardingPageCount = int.parse(
       Input(
         prompt: 'Number of onboarding pages',
@@ -76,6 +82,8 @@ class PromptService {
       stateManagement: StateManagement.values[stateIndex],
       backend: Backend.values[backendIndex],
       screens: screenIndices.map((i) => Screen.values[i]).toList(),
+      socialProviders:
+          socialProviderIndices.map((i) => SocialProvider.values[i]).toList(),
       onboardingPageCount: onboardingPageCount,
       hasDarkMode: hasDarkMode,
       hasL10n: hasL10n,

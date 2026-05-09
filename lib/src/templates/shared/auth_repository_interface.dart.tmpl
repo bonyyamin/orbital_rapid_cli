@@ -7,4 +7,10 @@ abstract class AuthRepositoryInterface {
   Future<void> forgotPassword(String email);
   Future<void> deleteAccount();
   Stream<UserModel?> get authStateChanges;
+
+  // Social Auth
+  Future<UserModel> loginWithGoogle();
+  Future<UserModel> loginWithFacebook();
+  Future<UserModel> loginWithApple();
+  Future<UserModel> loginWithGithub();
 }

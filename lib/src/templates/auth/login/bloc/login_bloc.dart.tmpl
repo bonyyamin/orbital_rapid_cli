@@ -1,14 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/social_login_usecase.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUseCase _loginUseCase;
+  final SocialLoginUseCase _socialLoginUseCase;
   String _email = '';
   String _password = '';
 
-  LoginBloc(this._loginUseCase) : super(const LoginInitial()) {
+  LoginBloc(this._loginUseCase, this._socialLoginUseCase) : super(const LoginInitial()) {
     on<LoginEmailChanged>((event, emit) {
       _email = event.email;
     });
@@ -16,6 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       _password = event.password;
     });
     on<LoginSubmitted>(_onSubmitted);
+    on<LoginSocialSubmitted>(_onSocialSubmitted);
   }
 
   Future<void> _onSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
@@ -23,6 +26,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(const LoginLoading());
     try {
       await _loginUseCase(_email, _password);
+      emit(const LoginSuccess());
+    } catch (e) {
+      emit(LoginFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onSocialSubmitted(LoginSocialSubmitted event, Emitter<LoginState> emit) async {
+    emit(const LoginLoading());
+    try {
+      switch (event.provider) {
+        case 'google': await _socialLoginUseCase.google(); break;
+        case 'facebook': await _socialLoginUseCase.facebook(); break;
+        case 'apple': await _socialLoginUseCase.apple(); break;
+        case 'github': await _socialLoginUseCase.github(); break;
+        default: throw Exception('Unknown provider');
+      }
       emit(const LoginSuccess());
     } catch (e) {
       emit(LoginFailure(e.toString()));

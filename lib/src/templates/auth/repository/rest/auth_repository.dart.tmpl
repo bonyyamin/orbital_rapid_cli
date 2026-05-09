@@ -152,6 +152,47 @@ class RestAuthRepository implements AuthRepositoryInterface {
       } catch (_) {}
     }
   }
+
+  @override
+  Future<UserModel> loginWithGoogle() => _socialLogin('google');
+
+  @override
+  Future<UserModel> loginWithFacebook() => _socialLogin('facebook');
+
+  @override
+  Future<UserModel> loginWithApple() => _socialLogin('apple');
+
+  @override
+  Future<UserModel> loginWithGithub() => _socialLogin('github');
+
+  Future<UserModel> _socialLogin(String provider) async {
+    if (_useMock) {
+      _currentUser = await MockAuthService.login('$provider@example.com', 'social');
+      await _storage.setString('token', 'mock-token-${_currentUser!.id}');
+      _authStateController.add(_currentUser);
+      return _currentUser!;
+    }
+
+    try {
+      // In a real REST API, you would first get the token from the social SDK
+      // then send it to your backend. Here we assume the backend handles it.
+      final response = await _client.post(
+        '${ApiEndpoints.login}/$provider',
+        data: {'access_token': 'PASTE_TOKEN_HERE'},
+      );
+      final data = response.data as Map<String, dynamic>;
+      await _storage.setString('token', data['token'] as String);
+      _currentUser = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      _authStateController.add(_currentUser);
+      return _currentUser!;
+    } catch (e) {
+      print('🔧 API social login failed, falling back to mock');
+      _currentUser = await MockAuthService.login('$provider@example.com', 'social');
+      await _storage.setString('token', 'mock-token-${_currentUser!.id}');
+      _authStateController.add(_currentUser);
+      return _currentUser!;
+    }
+  }
 }
 
 {{#isRiverpod}}

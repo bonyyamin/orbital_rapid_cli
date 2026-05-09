@@ -136,6 +136,35 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
       print('🔧 Supabase account deletion failed, but continuing');
     }
   }
+
+  @override
+  Future<UserModel> loginWithGoogle() => _socialLogin(OAuthProvider.google);
+
+  @override
+  Future<UserModel> loginWithFacebook() => _socialLogin(OAuthProvider.facebook);
+
+  @override
+  Future<UserModel> loginWithApple() => _socialLogin(OAuthProvider.apple);
+
+  @override
+  Future<UserModel> loginWithGithub() => _socialLogin(OAuthProvider.github);
+
+  Future<UserModel> _socialLogin(OAuthProvider provider) async {
+    if (_useMock) {
+      return await MockAuthService.login('${provider.name}@example.com', 'social');
+    }
+
+    final success = await _client.auth.signInWithOAuth(
+      provider,
+      redirectTo: '{{packageName}}://login-callback/',
+    );
+
+    if (!success) throw Exception('${provider.name} sign in failed');
+
+    // OAuth flow usually redirects, so we return a dummy user that will be 
+    // updated once the auth state listener triggers after redirect.
+    return const UserModel(id: '', name: 'Redirecting...', email: '');
+  }
 }
 
 {{#isRiverpod}}

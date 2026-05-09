@@ -7,6 +7,7 @@ import 'package:{{packageName}}/core/utils/app_strings.dart';
 import 'package:{{packageName}}/shared/widgets/primary_button.dart';
 import 'package:{{packageName}}/features/auth/presentation/login/getx/login_controller.dart';
 import 'package:{{packageName}}/features/auth/presentation/login/widgets/login_form.dart';
+import 'package:{{packageName}}/shared/widgets/social_login_button.dart';
 
 class LoginScreen extends GetView<LoginController> {
   const LoginScreen({super.key});
@@ -75,6 +76,48 @@ class LoginScreen extends GetView<LoginController> {
                   ),
                 ],
               ),
+              {{#hasSocialAuth}}
+              const SizedBox(height: {{dimensionsClass}}.xl),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: {{dimensionsClass}}.md),
+                    child: Text('OR', style: {{textStylesClass}}.label.copyWith(color: {{colorsClass}}.textSecondary)),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: {{dimensionsClass}}.xl),
+              {{#hasGoogleAuth}}
+              SocialLoginButton(
+                type: SocialType.google,
+                onPressed: controller.loginWithGoogle,
+              ),
+              const SizedBox(height: {{dimensionsClass}}.md),
+              {{/hasGoogleAuth}}
+              {{#hasFacebookAuth}}
+              SocialLoginButton(
+                type: SocialType.facebook,
+                onPressed: controller.loginWithFacebook,
+              ),
+              const SizedBox(height: {{dimensionsClass}}.md),
+              {{/hasFacebookAuth}}
+              {{#hasAppleAuth}}
+              SocialLoginButton(
+                type: SocialType.apple,
+                onPressed: controller.loginWithApple,
+              ),
+              const SizedBox(height: {{dimensionsClass}}.md),
+              {{/hasAppleAuth}}
+              {{#hasGithubAuth}}
+              SocialLoginButton(
+                type: SocialType.github,
+                onPressed: controller.loginWithGithub,
+              ),
+              const SizedBox(height: {{dimensionsClass}}.md),
+              {{/hasGithubAuth}}
+              {{/hasSocialAuth}}
             ],
           ),
         ),

@@ -10,6 +10,7 @@ class ConfigBuilder {
     required StateManagement stateManagement,
     required Backend backend,
     required List<Screen> screens,
+    required List<SocialProvider> socialProviders,
     required int onboardingPageCount,
     required bool hasDarkMode,
     required bool hasL10n,
@@ -29,6 +30,7 @@ class ConfigBuilder {
       stateManagement: stateManagement,
       backend: backend,
       screens: screens,
+      socialProviders: socialProviders,
       onboardingPageCount: onboardingPageCount,
       hasDarkMode: hasDarkMode,
       hasL10n: hasL10n,
@@ -42,6 +44,7 @@ class ConfigBuilder {
     final stateStr = args['state'] as String?;
     final backendStr = args['backend'] as String?;
     final screensStr = args['screens'] as String?;
+    final socialStr = args['social-providers'] as String?;
     final structureStr = args['structure'] as String? ?? 'separate';
 
     final stateManagement = StateManagement.values.firstWhere(
@@ -69,6 +72,17 @@ class ConfigBuilder {
       screens = const [];
     }
 
+    List<SocialProvider> socialProviders;
+    if (socialStr == 'all') {
+      socialProviders = SocialProvider.values;
+    } else if (socialStr != null && socialStr.isNotEmpty) {
+      final keys = socialStr.split(',').map((s) => s.trim());
+      socialProviders =
+          SocialProvider.values.where((s) => keys.contains(s.key)).toList();
+    } else {
+      socialProviders = const [];
+    }
+
     final name = args['name'] as String? ?? 'my_app';
     return fromAnswers(
       projectName: name,
@@ -76,6 +90,7 @@ class ConfigBuilder {
       stateManagement: stateManagement,
       backend: backend,
       screens: screens,
+      socialProviders: socialProviders,
       onboardingPageCount:
           int.tryParse(args['onboarding-pages'] as String? ?? '3') ?? 3,
       hasDarkMode: args['dark-mode'] as bool? ?? true,

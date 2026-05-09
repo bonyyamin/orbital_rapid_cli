@@ -16,6 +16,7 @@ import 'package:{{packageName}}/core/constants/app_routes.dart';
 import 'package:{{packageName}}/core/services/storage_service.dart';
 import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
 import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/social_login_usecase.dart';
 import 'package:{{packageName}}/features/auth/domain/usecases/register_usecase.dart';
 import 'package:{{packageName}}/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:{{packageName}}/features/auth/domain/usecases/logout_usecase.dart';
@@ -80,10 +81,11 @@ void main() async {
   Get.lazyPut(() => AuthController(authRepo));
   Get.lazyPut(() => OnboardingController());
   Get.lazyPut(() => LoginUseCase(authRepo));
+  Get.lazyPut(() => SocialLoginUseCase(authRepo));
   Get.lazyPut(() => RegisterUseCase(authRepo));
   Get.lazyPut(() => ForgotPasswordUseCase(authRepo));
   Get.lazyPut(() => LogoutUseCase(authRepo));
-  Get.lazyPut(() => LoginController(Get.find<LoginUseCase>()));
+  Get.lazyPut(() => LoginController(Get.find<LoginUseCase>(), Get.find<SocialLoginUseCase>()));
   Get.lazyPut(() => RegisterController(Get.find<RegisterUseCase>()));
   Get.lazyPut(() => ForgotPasswordController(Get.find<ForgotPasswordUseCase>()));
 

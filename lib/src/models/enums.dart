@@ -42,3 +42,14 @@ enum ProjectStructure {
   final String label;
   const ProjectStructure(this.key, this.label);
 }
+
+enum SocialProvider {
+  google('google', 'Google'),
+  facebook('facebook', 'Facebook'),
+  apple('apple', 'Apple'),
+  github('github', 'GitHub');
+
+  final String key;
+  final String label;
+  const SocialProvider(this.key, this.label);
+}

@@ -1,11 +1,13 @@
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/social_login_usecase.dart';
 import 'login_state.dart';
 
 class LoginNotifier extends StateNotifier<LoginState> {
   final LoginUseCase _loginUseCase;
+  final SocialLoginUseCase _socialLoginUseCase;
 
-  LoginNotifier(this._loginUseCase) : super(const LoginState());
+  LoginNotifier(this._loginUseCase, this._socialLoginUseCase) : super(const LoginState());
 
   void emailChanged(String email) {
     state = state.copyWith(email: email, clearError: true);
@@ -20,6 +22,24 @@ class LoginNotifier extends StateNotifier<LoginState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       await _loginUseCase(state.email, state.password);
+      state = state.copyWith(isLoading: false, isSuccess: true);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> loginWithGoogle() => _socialLogin(() => _socialLoginUseCase.google());
+  Future<void> loginWithFacebook() => _socialLogin(() => _socialLoginUseCase.facebook());
+  Future<void> loginWithApple() => _socialLogin(() => _socialLoginUseCase.apple());
+  Future<void> loginWithGithub() => _socialLogin(() => _socialLoginUseCase.github());
+
+  Future<void> _socialLogin(Future<void> Function() loginCall) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await loginCall();
       state = state.copyWith(isLoading: false, isSuccess: true);
     } catch (e) {
       state = state.copyWith(

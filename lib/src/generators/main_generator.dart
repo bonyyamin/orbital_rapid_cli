@@ -44,6 +44,19 @@ class MainGenerator extends BaseGenerator {
         break;
     }
 
+    // Add social auth dependencies
+    if (config.hasGoogleAuth) {
+      deps.add(Dependency('google_sign_in', '^6.2.1'));
+    }
+    if (config.hasFacebookAuth) {
+      deps.add(Dependency('flutter_facebook_auth', '^7.1.1'));
+    }
+    if (config.hasAppleAuth) {
+      deps.add(Dependency('sign_in_with_apple', '^6.1.1'));
+    }
+    // GitHub usually uses OAuth which can be handled by Supabase/Firebase natively
+    // or requires a custom flow for REST.
+
     return deps;
   }
 

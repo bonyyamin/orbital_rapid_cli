@@ -3,7 +3,7 @@ import 'package:{{packageName}}/core/utils/app_colors.dart';
 import 'package:{{packageName}}/core/utils/app_text_styles.dart';
 import 'package:{{packageName}}/core/utils/app_dimensions.dart';
 
-enum SocialType { google, apple, facebook }
+enum SocialType { google, apple, facebook, github }
 
 class SocialLoginButton extends StatelessWidget {
   final SocialType type;
@@ -51,6 +51,8 @@ class SocialLoginButton extends StatelessWidget {
         return const Icon(Icons.apple, size: 24);
       case SocialType.facebook:
         return const Icon(Icons.facebook, size: 24);
+      case SocialType.github:
+        return const Icon(Icons.code, size: 24);
     }
   }
 
@@ -62,6 +64,8 @@ class SocialLoginButton extends StatelessWidget {
         return 'Continue with Apple';
       case SocialType.facebook:
         return 'Continue with Facebook';
+      case SocialType.github:
+        return 'Continue with GitHub';
     }
   }
 }

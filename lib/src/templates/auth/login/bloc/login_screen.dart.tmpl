@@ -10,6 +10,7 @@ import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_bloc
 import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_event.dart';
 import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_state.dart';
 import 'package:{{packageName}}/features/auth/presentation/login/widgets/login_form.dart';
+import 'package:{{packageName}}/shared/widgets/social_login_button.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -78,6 +79,48 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    {{#hasSocialAuth}}
+                    const SizedBox(height: {{dimensionsClass}}.xl),
+                    Row(
+                      children: [
+                        const Expanded(child: Divider()),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: {{dimensionsClass}}.md),
+                          child: Text('OR', style: {{textStylesClass}}.label.copyWith(color: {{colorsClass}}.textSecondary)),
+                        ),
+                        const Expanded(child: Divider()),
+                      ],
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.xl),
+                    {{#hasGoogleAuth}}
+                    SocialLoginButton(
+                      type: SocialType.google,
+                      onPressed: () => context.read<LoginBloc>().add(const LoginSocialSubmitted('google')),
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.md),
+                    {{/hasGoogleAuth}}
+                    {{#hasFacebookAuth}}
+                    SocialLoginButton(
+                      type: SocialType.facebook,
+                      onPressed: () => context.read<LoginBloc>().add(const LoginSocialSubmitted('facebook')),
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.md),
+                    {{/hasFacebookAuth}}
+                    {{#hasAppleAuth}}
+                    SocialLoginButton(
+                      type: SocialType.apple,
+                      onPressed: () => context.read<LoginBloc>().add(const LoginSocialSubmitted('apple')),
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.md),
+                    {{/hasAppleAuth}}
+                    {{#hasGithubAuth}}
+                    SocialLoginButton(
+                      type: SocialType.github,
+                      onPressed: () => context.read<LoginBloc>().add(const LoginSocialSubmitted('github')),
+                    ),
+                    const SizedBox(height: {{dimensionsClass}}.md),
+                    {{/hasGithubAuth}}
+                    {{/hasSocialAuth}}
                   ],
                 ),
               );

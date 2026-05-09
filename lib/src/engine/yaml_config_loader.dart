@@ -31,6 +31,7 @@ class YamlConfigLoader {
         orElse: () => ProjectStructure.separate,
       ),
       screens: _parseScreens(yaml['screens']),
+      socialProviders: _parseSocialProviders(yaml['social_providers']),
       onboardingPageCount: yaml['onboarding_pages'] ?? 3,
       hasDarkMode: yaml['dark_mode'] ?? true,
       hasL10n: yaml['l10n'] ?? false,
@@ -53,6 +54,17 @@ class YamlConfigLoader {
     if (screens == 'all') return Screen.values;
     if (screens is YamlList) {
       return Screen.values.where((s) => screens.contains(s.key)).toList();
+    }
+    return const [];
+  }
+
+  static List<SocialProvider> _parseSocialProviders(dynamic providers) {
+    if (providers == null) return const [];
+    if (providers == 'all') return SocialProvider.values;
+    if (providers is YamlList) {
+      return SocialProvider.values
+          .where((s) => providers.contains(s.key))
+          .toList();
     }
     return const [];
   }

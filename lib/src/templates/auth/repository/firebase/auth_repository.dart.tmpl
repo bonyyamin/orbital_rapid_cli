@@ -7,6 +7,9 @@ import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dar
 import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
 import 'package:{{packageName}}/core/services/mock_auth_service.dart';
 import 'package:{{packageName}}/firebase_options.dart';
+{{#hasGoogleAuth}}import 'package:google_sign_in/google_sign_in.dart';{{/hasGoogleAuth}}
+{{#hasFacebookAuth}}import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';{{/hasFacebookAuth}}
+{{#hasAppleAuth}}import 'package:sign_in_with_apple/sign_in_with_apple.dart';{{/hasAppleAuth}}
 
 class FirebaseAuthRepository implements AuthRepositoryInterface {
   final FirebaseAuth _auth;
@@ -150,6 +153,75 @@ class FirebaseAuthRepository implements AuthRepositoryInterface {
     final user = _auth.currentUser;
     if (user == null) throw Exception('No authenticated user');
     await user.delete();
+  }
+
+  @override
+  Future<UserModel> loginWithGoogle() async {
+    if (_useMock) return await MockAuthService.login('google@example.com', 'social');
+    
+    final googleSignIn = GoogleSignIn();
+    final googleUser = await googleSignIn.signIn();
+    if (googleUser == null) throw Exception('Google sign in cancelled');
+    
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    
+    final userCredential = await _auth.signInWithCredential(credential);
+    return _mapFirebaseUser(userCredential.user!);
+  }
+
+  @override
+  Future<UserModel> loginWithFacebook() async {
+    if (_useMock) return await MockAuthService.login('facebook@example.com', 'social');
+    
+    final result = await FacebookAuth.instance.login();
+    if (result.status != LoginStatus.success) throw Exception('Facebook sign in failed: ${result.message}');
+    
+    final credential = FacebookAuthProvider.credential(result.accessToken!.tokenString);
+    final userCredential = await _auth.signInWithCredential(credential);
+    return _mapFirebaseUser(userCredential.user!);
+  }
+
+  @override
+  Future<UserModel> loginWithApple() async {
+    if (_useMock) return await MockAuthService.login('apple@example.com', 'social');
+    
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+    
+    final credential = OAuthProvider('apple.com').credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+    
+    final userCredential = await _auth.signInWithCredential(credential);
+    return _mapFirebaseUser(userCredential.user!);
+  }
+
+  @override
+  Future<UserModel> loginWithGithub() async {
+    if (_useMock) return await MockAuthService.login('github@example.com', 'social');
+    
+    // GitHub typically uses OAuth flow
+    final provider = GithubAuthProvider();
+    final userCredential = await _auth.signInWithProvider(provider);
+    return _mapFirebaseUser(userCredential.user!);
+  }
+
+  UserModel _mapFirebaseUser(User user) {
+    return UserModel(
+      id: user.uid,
+      name: user.displayName ?? '',
+      email: user.email ?? '',
+      photoUrl: user.photoURL,
+    );
   }
 }
 

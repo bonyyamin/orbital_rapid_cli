@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
 import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/social_login_usecase.dart';
 import 'package:{{packageName}}/core/constants/app_routes.dart';
 
 class LoginController extends GetxController {
   final LoginUseCase _loginUseCase;
+  final SocialLoginUseCase _socialLoginUseCase;
 
-  LoginController(this._loginUseCase);
+  LoginController(this._loginUseCase, this._socialLoginUseCase);
 
   final RxString email = ''.obs;
   final RxString password = ''.obs;
@@ -20,6 +22,24 @@ class LoginController extends GetxController {
     errorMessage.value = null;
     try {
       await _loginUseCase(email.value, password.value);
+      Get.offAllNamed(AppRoutes.home);
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> loginWithGoogle() => _socialLogin(() => _socialLoginUseCase.google());
+  Future<void> loginWithFacebook() => _socialLogin(() => _socialLoginUseCase.facebook());
+  Future<void> loginWithApple() => _socialLogin(() => _socialLoginUseCase.apple());
+  Future<void> loginWithGithub() => _socialLogin(() => _socialLoginUseCase.github());
+
+  Future<void> _socialLogin(Future<void> Function() loginCall) async {
+    isLoading.value = true;
+    errorMessage.value = null;
+    try {
+      await loginCall();
       Get.offAllNamed(AppRoutes.home);
     } catch (e) {
       errorMessage.value = e.toString();

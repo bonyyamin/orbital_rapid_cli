@@ -15,3 +15,8 @@ class LoginPasswordChanged extends LoginEvent {
 class LoginSubmitted extends LoginEvent {
   const LoginSubmitted();
 }
+
+class LoginSocialSubmitted extends LoginEvent {
+  final String provider;
+  const LoginSocialSubmitted(this.provider);
+}

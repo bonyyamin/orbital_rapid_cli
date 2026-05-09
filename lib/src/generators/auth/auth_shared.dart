@@ -46,6 +46,10 @@ class AuthSharedGenerator {
         templatePath: 'templates/auth/usecases/forgot_password_usecase.dart.tmpl',
         outputPath: 'lib/features/auth/domain/usecases/forgot_password_usecase.dart',
       ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/usecases/social_login_usecase.dart.tmpl',
+        outputPath: 'lib/features/auth/domain/usecases/social_login_usecase.dart',
+      ),
     ];
   }
 }
