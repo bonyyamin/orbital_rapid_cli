@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:{{packageName}}/core/theme/app_theme.dart';
 import 'package:{{packageName}}/core/theme/app_dark_theme.dart';
 import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/core/services/storage_service.dart';
 
-void main() {
-  runApp(const ProviderScope(child: {{projectNamePascal}}App()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final sharedPrefs = await SharedPreferences.getInstance();
+  
+  runApp(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+      ],
+      child: const {{projectNamePascal}}App(),
+    ),
+  );
 }
 
 class {{projectNamePascal}}App extends StatelessWidget {

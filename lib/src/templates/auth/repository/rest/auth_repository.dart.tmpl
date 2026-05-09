@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+{{#isRiverpod}}
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+{{/isRiverpod}}
 import 'package:{{packageName}}/core/network/api_client.dart';
 import 'package:{{packageName}}/core/network/api_endpoints.dart';
 import 'package:{{packageName}}/core/services/storage_service.dart';
@@ -61,3 +64,9 @@ class RestAuthRepository implements AuthRepositoryInterface {
     await _storage.remove('token');
   }
 }
+
+{{#isRiverpod}}
+final authRepositoryProvider = Provider<AuthRepositoryInterface>((ref) {
+  return RestAuthRepository(storage: ref.watch(storageServiceProvider));
+});
+{{/isRiverpod}}

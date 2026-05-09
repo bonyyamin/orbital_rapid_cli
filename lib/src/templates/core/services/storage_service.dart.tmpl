@@ -1,4 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
+{{#isRiverpod}}
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+{{/isRiverpod}}
 
 class StorageService {
   final SharedPreferences _prefs;
@@ -29,3 +32,14 @@ class StorageService {
     await _prefs.clear();
   }
 }
+
+{{#isRiverpod}}
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError('sharedPreferencesProvider not overridden');
+});
+
+final storageServiceProvider = Provider<StorageService>((ref) {
+  final sharedPrefs = ref.watch(sharedPreferencesProvider);
+  return StorageService(sharedPrefs);
+});
+{{/isRiverpod}}

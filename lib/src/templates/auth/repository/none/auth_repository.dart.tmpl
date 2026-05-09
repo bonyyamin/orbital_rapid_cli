@@ -1,5 +1,8 @@
 import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
 import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+{{#isRiverpod}}
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+{{/isRiverpod}}
 
 /// Stub implementation when no backend is selected.
 /// Replace each method body with your custom backend logic.
@@ -37,3 +40,9 @@ class NoAuthRepository implements AuthRepositoryInterface {
     throw UnimplementedError('deleteAccount() not yet implemented');
   }
 }
+
+{{#isRiverpod}}
+final authRepositoryProvider = Provider<AuthRepositoryInterface>((ref) {
+  return NoAuthRepository();
+});
+{{/isRiverpod}}
