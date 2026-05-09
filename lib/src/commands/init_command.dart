@@ -13,17 +13,32 @@ class InitCommand extends Command<void> {
   InitCommand(this.logger) {
     argParser
       ..addOption('name', abbr: 'n', help: 'Project name (snake_case)')
-      ..addOption('package', abbr: 'p', help: 'Package identifier (e.g. com.company.app)')
-      ..addOption('state', allowed: ['riverpod', 'bloc', 'getx'], help: 'State management library')
-      ..addOption('backend', allowed: ['firebase', 'rest', 'supabase', 'none'], help: 'Backend service')
+      ..addOption('package',
+          abbr: 'p', help: 'Package identifier (e.g. com.company.app)')
+      ..addOption('state',
+          allowed: ['riverpod', 'bloc', 'getx'],
+          help: 'State management library')
+      ..addOption('backend',
+          allowed: ['firebase', 'rest', 'supabase', 'none'],
+          help: 'Backend service')
       ..addOption('screens', help: 'Comma-separated screens or "all"')
-      ..addOption('config', abbr: 'c', help: 'Path to orbitalRapid.yaml config file')
+      ..addOption('config',
+          abbr: 'c', help: 'Path to orbitalRapid.yaml config file')
       ..addOption('output', abbr: 'o', help: 'Output directory')
-      ..addOption('onboarding-pages', help: 'Number of onboarding pages', defaultsTo: '3')
+      ..addOption('onboarding-pages',
+          help: 'Number of onboarding pages', defaultsTo: '3')
+      ..addOption('structure',
+          allowed: ['separate', 'inplace'],
+          help:
+              'Project structure: separate (new directory) or inplace (current directory)',
+          defaultsTo: 'separate')
       ..addFlag('dark-mode', help: 'Enable dark mode support', defaultsTo: true)
       ..addFlag('l10n', help: 'Enable localization support', defaultsTo: false)
-      ..addFlag('tests', help: 'Generate unit and widget tests', defaultsTo: true)
-      ..addFlag('dry-run', help: 'Show what files would be generated without writing them', defaultsTo: false);
+      ..addFlag('tests',
+          help: 'Generate unit and widget tests', defaultsTo: true)
+      ..addFlag('dry-run',
+          help: 'Show what files would be generated without writing them',
+          defaultsTo: false);
   }
 
   @override

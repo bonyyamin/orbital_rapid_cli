@@ -15,14 +15,17 @@ class ConfigBuilder {
     required bool hasL10n,
     required bool generateTests,
     required bool dryRun,
+    required ProjectStructure projectStructure,
     String? outputPath,
   }) {
     final snakeName = StringUtils.toSnakeCase(projectName);
+    final resolvedOutputPath = outputPath ??
+        (projectStructure == ProjectStructure.separate ? './$snakeName' : '.');
     return FlowConfig(
       projectName: snakeName,
       projectNamePascal: StringUtils.toPascalCase(snakeName),
       packageName: packageName,
-      outputPath: outputPath ?? './$snakeName',
+      outputPath: resolvedOutputPath,
       stateManagement: stateManagement,
       backend: backend,
       screens: screens,
@@ -31,6 +34,7 @@ class ConfigBuilder {
       hasL10n: hasL10n,
       generateTests: generateTests,
       dryRun: dryRun,
+      projectStructure: projectStructure,
     );
   }
 
@@ -38,6 +42,7 @@ class ConfigBuilder {
     final stateStr = args['state'] as String?;
     final backendStr = args['backend'] as String?;
     final screensStr = args['screens'] as String?;
+    final structureStr = args['structure'] as String? ?? 'separate';
 
     final stateManagement = StateManagement.values.firstWhere(
       (e) => e.key == stateStr,
@@ -47,6 +52,11 @@ class ConfigBuilder {
     final backend = Backend.values.firstWhere(
       (e) => e.key == backendStr,
       orElse: () => Backend.none,
+    );
+
+    final projectStructure = ProjectStructure.values.firstWhere(
+      (e) => e.key == structureStr,
+      orElse: () => ProjectStructure.separate,
     );
 
     List<Screen> screens;
@@ -72,6 +82,7 @@ class ConfigBuilder {
       hasL10n: args['l10n'] as bool? ?? false,
       generateTests: args['tests'] as bool? ?? true,
       dryRun: args['dry-run'] as bool? ?? false,
+      projectStructure: projectStructure,
       outputPath: args['output'] as String?,
     );
   }

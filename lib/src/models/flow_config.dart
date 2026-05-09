@@ -15,6 +15,7 @@ class FlowConfig {
   final bool hasL10n;
   final bool generateTests;
   final bool dryRun;
+  final ProjectStructure projectStructure;
 
   const FlowConfig({
     required this.projectName,
@@ -29,36 +30,39 @@ class FlowConfig {
     required this.hasL10n,
     required this.generateTests,
     required this.dryRun,
+    required this.projectStructure,
   });
 
   bool get isRiverpod => stateManagement == StateManagement.riverpod;
-  bool get isBloc     => stateManagement == StateManagement.bloc;
-  bool get isGetX     => stateManagement == StateManagement.getx;
+  bool get isBloc => stateManagement == StateManagement.bloc;
+  bool get isGetX => stateManagement == StateManagement.getx;
   bool get isFirebase => backend == Backend.firebase;
-  bool get isRest     => backend == Backend.rest;
+  bool get isRest => backend == Backend.rest;
   bool get isSupabase => backend == Backend.supabase;
+  bool get isSeparate => projectStructure == ProjectStructure.separate;
+  bool get isInplace => projectStructure == ProjectStructure.inplace;
 
   Map<String, dynamic> toTemplateVars() => {
-    'projectName':       projectName,
-    'projectNamePascal': projectNamePascal,
-    'packageName':       packageName,
-    'isRiverpod':        isRiverpod,
-    'isBloc':            isBloc,
-    'isGetX':            isGetX,
-    'isFirebase':        isFirebase,
-    'isRest':            isRest,
-    'isSupabase':        isSupabase,
-    'hasDarkMode':       hasDarkMode,
-    'hasL10n':           hasL10n,
-    'colorsClass':       'AppColors',
-    'textStylesClass':   'AppTextStyles',
-    'dimensionsClass':   'AppDimensions',
-    'gradientsClass':    'AppGradients',
-    'fontsClass':        'AppFonts',
-    'stringsClass':      'AppStrings',
-    'assetsClass':       'AppAssets',
-    'routesClass':       'AppRoutes',
-  };
+        'projectName': projectName,
+        'projectNamePascal': projectNamePascal,
+        'packageName': packageName,
+        'isRiverpod': isRiverpod,
+        'isBloc': isBloc,
+        'isGetX': isGetX,
+        'isFirebase': isFirebase,
+        'isRest': isRest,
+        'isSupabase': isSupabase,
+        'hasDarkMode': hasDarkMode,
+        'hasL10n': hasL10n,
+        'colorsClass': 'AppColors',
+        'textStylesClass': 'AppTextStyles',
+        'dimensionsClass': 'AppDimensions',
+        'gradientsClass': 'AppGradients',
+        'fontsClass': 'AppFonts',
+        'stringsClass': 'AppStrings',
+        'assetsClass': 'AppAssets',
+        'routesClass': 'AppRoutes',
+      };
   FlowConfig copyWith({
     String? projectName,
     String? projectNamePascal,
@@ -72,6 +76,7 @@ class FlowConfig {
     bool? hasL10n,
     bool? generateTests,
     bool? dryRun,
+    ProjectStructure? projectStructure,
   }) {
     return FlowConfig(
       projectName: projectName ?? this.projectName,
@@ -86,6 +91,7 @@ class FlowConfig {
       hasL10n: hasL10n ?? this.hasL10n,
       generateTests: generateTests ?? this.generateTests,
       dryRun: dryRun ?? this.dryRun,
+      projectStructure: projectStructure ?? this.projectStructure,
     );
   }
-}
+}

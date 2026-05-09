@@ -33,3 +33,12 @@ enum Screen {
   final String label;
   const Screen(this.key, this.label);
 }
+
+enum ProjectStructure {
+  separate('separate', 'Create in new directory'),
+  inplace('inplace', 'Generate in current directory');
+
+  final String key;
+  final String label;
+  const ProjectStructure(this.key, this.label);
+}

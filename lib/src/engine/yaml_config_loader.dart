@@ -26,6 +26,10 @@ class YamlConfigLoader {
         (e) => e.key == yaml['backend'],
         orElse: () => Backend.none,
       ),
+      projectStructure: ProjectStructure.values.firstWhere(
+        (e) => e.key == yaml['structure'],
+        orElse: () => ProjectStructure.separate,
+      ),
       screens: _parseScreens(yaml['screens']),
       onboardingPageCount: yaml['onboarding_pages'] ?? 3,
       hasDarkMode: yaml['dark_mode'] ?? true,

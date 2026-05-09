@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:orbital_rapid_cli/src/engine/pubspec_injector.dart';
 import 'package:orbital_rapid_cli/src/engine/template_engine.dart';
 import 'package:orbital_rapid_cli/src/generators/account/delete_account_generator.dart';
@@ -32,9 +33,14 @@ class GeneratorOrchestrator {
   });
 
   Future<void> generate() async {
+    // Validate and warn for in-place generation
+    if (config.isInplace) {
+      await _validateInplaceGeneration();
+    }
+
     final engine = TemplateEngine();
     final args = (config: config, engine: engine, logger: logger);
-    
+
     final generators = _resolveGenerators(args);
     final allFiles = <GeneratedFile>[];
     final allDeps = <Dependency>[];
@@ -52,7 +58,8 @@ class GeneratorOrchestrator {
       }
     }
 
-    final writerProgress = logger.progress('Writing files to ${config.outputPath}...');
+    final writerProgress =
+        logger.progress('Writing files to ${config.outputPath}...');
     try {
       await FileWriter(dryRun: config.dryRun, logger: logger)
           .writeAll(allFiles, config.outputPath);
@@ -63,7 +70,8 @@ class GeneratorOrchestrator {
     }
 
     if (!config.dryRun) {
-      final pubspecProgress = logger.progress('Injecting dependencies into pubspec.yaml...');
+      final pubspecProgress =
+          logger.progress('Injecting dependencies into pubspec.yaml...');
       try {
         PubspecInjector.inject(
           projectPath: config.outputPath,
@@ -76,30 +84,77 @@ class GeneratorOrchestrator {
     }
   }
 
-  List<BaseGenerator> _resolveGenerators(({FlowConfig config, TemplateEngine engine, AppLogger logger}) args) {
+  List<BaseGenerator> _resolveGenerators(
+      ({FlowConfig config, TemplateEngine engine, AppLogger logger}) args) {
     return [
-      UtilsGenerator(config: args.config, engine: args.engine, logger: args.logger),
-      ThemeGenerator(config: args.config, engine: args.engine, logger: args.logger),
-      SharedGenerator(config: args.config, engine: args.engine, logger: args.logger),
-      ConstantsGenerator(config: args.config, engine: args.engine, logger: args.logger),
-      ServiceGenerator(config: args.config, engine: args.engine, logger: args.logger),
+      UtilsGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
+      ThemeGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
+      SharedGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
+      ConstantsGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
+      ServiceGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
       if (config.isRest)
-        NetworkGenerator(config: args.config, engine: args.engine, logger: args.logger),
-      MainGenerator(config: args.config, engine: args.engine, logger: args.logger),
-      PubspecGenerator(config: args.config, engine: args.engine, logger: args.logger),
-      
+        NetworkGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
+      MainGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
+      PubspecGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.splash))
-        SplashGenerator(config: args.config, engine: args.engine, logger: args.logger),
+        SplashGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.onboarding))
-        OnboardingGenerator(config: args.config, engine: args.engine, logger: args.logger),
+        OnboardingGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.login))
-        LoginGenerator(config: args.config, engine: args.engine, logger: args.logger),
+        LoginGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.register))
-        RegisterGenerator(config: args.config, engine: args.engine, logger: args.logger),
+        RegisterGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.forgotPassword))
-        ForgotPasswordGenerator(config: args.config, engine: args.engine, logger: args.logger),
+        ForgotPasswordGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.accountDeletion))
-        DeleteAccountGenerator(config: args.config, engine: args.engine, logger: args.logger),
+        DeleteAccountGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
     ];
+  }
+
+  Future<void> _validateInplaceGeneration() async {
+    final currentDir = Directory('.');
+    final files = await currentDir.list().toList();
+
+    // Check for common Flutter files that might conflict
+    final conflictingFiles = files.where((entity) {
+      if (entity is File) {
+        final name = entity.path.split('/').last.toLowerCase();
+        return name == 'pubspec.yaml' ||
+            name == 'main.dart' ||
+            name.startsWith('android/') ||
+            name.startsWith('ios/') ||
+            name.startsWith('lib/');
+      }
+      return false;
+    }).toList();
+
+    if (conflictingFiles.isNotEmpty) {
+      logger.warn(
+          '⚠️  Warning: In-place generation may overwrite existing files!');
+      logger.warn('   Found potential conflicts in current directory:');
+      for (final file in conflictingFiles.take(5)) {
+        logger.warn('   - ${file.path}');
+      }
+      if (conflictingFiles.length > 5) {
+        logger.warn('   ... and ${conflictingFiles.length - 5} more');
+      }
+
+      // Continue anyway since user explicitly chose in-place
+      logger.info('   Continuing with in-place generation...');
+    }
   }
 }

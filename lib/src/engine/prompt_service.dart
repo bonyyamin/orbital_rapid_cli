@@ -65,6 +65,11 @@ class PromptService {
       defaultValue: true,
     ).interact();
 
+    final projectStructureIndex = Select(
+      prompt: 'Project structure',
+      options: ProjectStructure.values.map((e) => e.label).toList(),
+    ).interact();
+
     return ConfigBuilder.fromAnswers(
       projectName: projectName,
       packageName: packageName,
@@ -76,6 +81,7 @@ class PromptService {
       hasL10n: hasL10n,
       generateTests: generateTests,
       dryRun: dryRun,
+      projectStructure: ProjectStructure.values[projectStructureIndex],
     );
   }
 }
