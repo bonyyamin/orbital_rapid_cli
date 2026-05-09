@@ -14,7 +14,7 @@ class ServiceGenerator extends BaseGenerator {
 
   @override
   List<Dependency> get requiredDependencies => const [
-    Dependency('shared_preferences', '^2.3.2'),
+    Dependency('shared_preferences', '^2.5.5'),
   ];
 
   @override

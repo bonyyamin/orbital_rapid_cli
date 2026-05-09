@@ -8,8 +8,8 @@ class BlocAdapter extends BaseStateAdapter {
 
   @override
   List<Dependency> get dependencies => [
-    const Dependency('flutter_bloc', '^8.1.3'),
-    const Dependency('equatable', '^2.0.5'),
+    const Dependency('flutter_bloc', '^9.1.1'),
+    const Dependency('equatable', '^2.0.8'),
   ];
 
   @override

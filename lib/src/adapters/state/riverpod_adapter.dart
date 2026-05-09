@@ -8,8 +8,8 @@ class RiverpodAdapter extends BaseStateAdapter {
 
   @override
   List<Dependency> get dependencies => [
-    const Dependency('flutter_riverpod', '^2.4.9'),
-    const Dependency('riverpod_annotation', '^2.3.3'),
+    const Dependency('flutter_riverpod', '^3.3.1'),
+    const Dependency('riverpod_annotation', '^4.0.2'),
   ];
 
   @override

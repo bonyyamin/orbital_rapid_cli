@@ -8,9 +8,9 @@ class RestAdapter extends BaseBackendAdapter {
 
   @override
   List<Dependency> get dependencies => [
-    const Dependency('dio', '^5.4.3+1'),
-    const Dependency('flutter_secure_storage', '^9.0.0'),
-    const Dependency('pretty_dio_logger', '^1.3.1'),
+    const Dependency('dio', '^5.9.2'),
+    const Dependency('flutter_secure_storage', '^10.1.0'),
+    const Dependency('pretty_dio_logger', '^1.4.0'),
   ];
 
   @override

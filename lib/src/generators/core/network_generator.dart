@@ -14,9 +14,9 @@ class NetworkGenerator extends BaseGenerator {
 
   @override
   List<Dependency> get requiredDependencies => const [
-    Dependency('dio', '^5.4.3+1'),
-    Dependency('pretty_dio_logger', '^1.3.1'),
-    Dependency('get_it', '^7.6.7'),
+    Dependency('dio', '^5.9.2'),
+    Dependency('pretty_dio_logger', '^1.4.0'),
+    Dependency('get_it', '^9.2.1'),
   ];
 
   @override

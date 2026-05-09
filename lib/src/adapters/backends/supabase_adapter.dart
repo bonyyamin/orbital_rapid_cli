@@ -8,7 +8,7 @@ class SupabaseAdapter extends BaseBackendAdapter {
 
   @override
   List<Dependency> get dependencies => [
-    const Dependency('supabase_flutter', '^2.4.0'),
+    const Dependency('supabase_flutter', '^2.12.4'),
   ];
 
   @override

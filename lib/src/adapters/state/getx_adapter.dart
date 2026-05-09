@@ -8,7 +8,7 @@ class GetXAdapter extends BaseStateAdapter {
 
   @override
   List<Dependency> get dependencies => [
-    const Dependency('get', '^4.6.6'),
+    const Dependency('get', '^4.7.3'),
   ];
 
   @override

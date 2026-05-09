@@ -8,10 +8,10 @@ class FirebaseAdapter extends BaseBackendAdapter {
 
   @override
   List<Dependency> get dependencies => [
-    const Dependency('firebase_core', '^2.27.0'),
-    const Dependency('firebase_auth', '^4.19.0'),
-    const Dependency('google_sign_in', '^6.2.1'),
-    const Dependency('cloud_firestore', '^4.17.0'),
+    const Dependency('firebase_core', '^4.7.0'),
+    const Dependency('firebase_auth', '^6.4.0'),
+    const Dependency('google_sign_in', '^7.2.0'),
+    const Dependency('cloud_firestore', '^6.3.0'),
   ];
 
   @override

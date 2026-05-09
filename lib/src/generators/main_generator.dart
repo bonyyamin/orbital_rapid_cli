@@ -17,16 +17,16 @@ class MainGenerator extends BaseGenerator {
   List<Dependency> get requiredDependencies {
     switch (config.stateManagement) {
       case StateManagement.riverpod:
-        return const [Dependency('flutter_riverpod', '^2.4.0')];
+        return const [Dependency('flutter_riverpod', '^3.3.1')];
       case StateManagement.bloc:
         return const [
           Dependency('flutter_bloc', '^8.1.4'),
-          Dependency('bloc', '^8.1.3'),
-          Dependency('get_it', '^7.6.7'),
-          Dependency('injectable', '^2.3.2'),
+          Dependency('bloc', '^9.1.1'),
+          Dependency('get_it', '^9.2.1'),
+          Dependency('injectable', '^3.0.0'),
         ];
       case StateManagement.getx:
-        return const [Dependency('get', '^4.6.6')];
+        return const [Dependency('get', '^4.7.3')];
     }
   }
 
