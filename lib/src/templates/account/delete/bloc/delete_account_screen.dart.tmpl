@@ -10,8 +10,21 @@ import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete
 import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete_account_event.dart';
 import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete_account_state.dart';
 
-class DeleteAccountScreen extends StatelessWidget {
+class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
+
+  @override
+  State<DeleteAccountScreen> createState() => _DeleteAccountScreenState();
+}
+
+class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
+  final TextEditingController _confirmationController = TextEditingController();
+
+  @override
+  void dispose() {
+    _confirmationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +88,9 @@ class DeleteAccountScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: {{dimensionsClass}}.xl),
-                  AppTextInput(
+                  TextInput(
                     label: 'Type DELETE',
-                    onChanged: (value) => context
-                        .read<DeleteAccountBloc>()
-                        .add(DeleteAccountConfirmationChanged(value)),
+                    controller: _confirmationController,
                   ),
                   if (state is DeleteAccountFailure) ...[
                     const SizedBox(height: {{dimensionsClass}}.sm),
@@ -92,10 +103,10 @@ class DeleteAccountScreen extends StatelessWidget {
                   ],
                   const SizedBox(height: {{dimensionsClass}}.xl),
                   PrimaryButton(
-                    text: {{stringsClass}}.accountDelete,
+                    label: {{stringsClass}}.accountDelete,
                     isLoading: state is DeleteAccountLoading,
                     onPressed: () =>
-                        context.read<DeleteAccountBloc>().add(const DeleteAccountSubmitted()),
+                        context.read<DeleteAccountBloc>().add(DeleteAccountConfirmationChanged(_confirmationController.text)),
                   ),
                 ],
               ),

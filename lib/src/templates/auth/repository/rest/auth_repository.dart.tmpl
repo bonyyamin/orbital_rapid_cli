@@ -5,14 +5,14 @@ import 'package:{{packageName}}/core/services/storage_service.dart';
 import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
 import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
 
-class AuthRepository implements AuthRepositoryInterface {
+class RestAuthRepository implements AuthRepositoryInterface {
   final Dio _client;
   final StorageService _storage;
 
   // Auth state stream backed by a broadcast stream
   final _authStateController = Stream<UserModel?>.empty().asBroadcastStream();
 
-  AuthRepository({required StorageService storage})
+  RestAuthRepository({required StorageService storage})
       : _storage = storage,
         _client = ApiClient.instance;
 

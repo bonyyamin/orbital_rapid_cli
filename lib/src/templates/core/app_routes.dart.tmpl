@@ -4,8 +4,7 @@ import 'package:{{packageName}}/features/onboarding/presentation/onboarding_scre
 import 'package:{{packageName}}/features/auth/presentation/login/login_screen.dart';
 import 'package:{{packageName}}/features/auth/presentation/register/register_screen.dart';
 import 'package:{{packageName}}/features/auth/presentation/forgot_password/forgot_password_screen.dart';
-import 'package:{{packageName}}/features/account/presentation/account_screen.dart';
-import 'package:{{packageName}}/features/account/presentation/delete_account_screen.dart';
+import 'package:{{packageName}}/features/account/presentation/delete/delete_account_screen.dart';
 
 class {{routesClass}} {
   {{routesClass}}._();
@@ -16,7 +15,6 @@ class {{routesClass}} {
   static const String register       = '/register';
   static const String forgotPassword = '/forgot-password';
   static const String home           = '/home';
-  static const String account        = '/account';
   static const String deleteAccount  = '/delete-account';
 
   static Map<String, WidgetBuilder> get routes => {
@@ -25,7 +23,6 @@ class {{routesClass}} {
     login:          (context) => const LoginScreen(),
     register:       (context) => const RegisterScreen(),
     forgotPassword: (context) => const ForgotPasswordScreen(),
-    account:        (context) => const AccountScreen(),
     deleteAccount:  (context) => const DeleteAccountScreen(),
   };
 }

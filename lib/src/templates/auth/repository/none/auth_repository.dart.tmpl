@@ -3,7 +3,7 @@ import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
 
 /// Stub implementation when no backend is selected.
 /// Replace each method body with your custom backend logic.
-class AuthRepository implements AuthRepositoryInterface {
+class NoAuthRepository implements AuthRepositoryInterface {
   @override
   Stream<UserModel?> get authStateChanges => const Stream.empty();
 

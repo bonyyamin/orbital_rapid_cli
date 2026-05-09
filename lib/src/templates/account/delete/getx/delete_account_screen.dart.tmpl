@@ -75,9 +75,9 @@ class DeleteAccountScreen extends GetView<DeleteAccountController> {
                   ),
                 ),
                 const SizedBox(height: {{dimensionsClass}}.xl),
-                AppTextInput(
+                TextInput(
                   label: 'Type DELETE',
-                  onChanged: (value) => controller.confirmationText.value = value,
+                  controller: controller.confirmationController,
                 ),
                 Obx(() {
                   final error = controller.errorMessage.value;
@@ -95,7 +95,7 @@ class DeleteAccountScreen extends GetView<DeleteAccountController> {
                 const SizedBox(height: {{dimensionsClass}}.xl),
                 Obx(
                   () => PrimaryButton(
-                    text: {{stringsClass}}.accountDelete,
+                    label: {{stringsClass}}.accountDelete,
                     isLoading: controller.isLoading.value,
                     onPressed: controller.submit,
                   ),

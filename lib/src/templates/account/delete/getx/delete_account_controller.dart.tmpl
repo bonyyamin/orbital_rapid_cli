@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 typedef DeleteAccountAction = Future<void> Function();
@@ -6,13 +7,27 @@ class DeleteAccountController extends GetxController {
   final DeleteAccountAction _deleteAccount;
   DeleteAccountController(this._deleteAccount);
 
-  final RxString confirmationText = ''.obs;
+  final TextEditingController confirmationController = TextEditingController();
   final RxBool isLoading = false.obs;
   final RxBool isSuccess = false.obs;
   final RxnString errorMessage = RxnString();
 
+  @override
+  void onInit() {
+    confirmationController.addListener(() {
+      confirmationText.value = confirmationController.text;
+    });
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    confirmationController.dispose();
+    super.onClose();
+  }
+
   Future<void> submit() async {
-    if (confirmationText.value.trim().toUpperCase() != 'DELETE') {
+    if (confirmationController.text.trim().toUpperCase() != 'DELETE') {
       errorMessage.value = 'Type DELETE to confirm account removal.';
       return;
     }

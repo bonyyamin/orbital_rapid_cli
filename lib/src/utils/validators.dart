@@ -13,8 +13,8 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Required';
     }
-    if (!RegExp(r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*){1,}$').hasMatch(value)) {
-      return 'Must be com.company.app or com.app format';
+    if (!RegExp(r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$').hasMatch(value)) {
+      return 'Must be valid package name (e.g. cli_test or com.company.app)';
     }
     return null;
   }

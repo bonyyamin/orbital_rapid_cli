@@ -2,10 +2,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
 import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
 
-class AuthRepository implements AuthRepositoryInterface {
+class SupabaseAuthRepository implements AuthRepositoryInterface {
   final SupabaseClient _client;
 
-  AuthRepository({SupabaseClient? client})
+  SupabaseAuthRepository({SupabaseClient? client})
       : _client = client ?? Supabase.instance.client;
 
   @override

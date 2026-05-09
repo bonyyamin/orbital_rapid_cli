@@ -59,13 +59,15 @@ class ConfigBuilder {
       screens = const [];
     }
 
+    final name = args['name'] as String? ?? 'my_app';
     return fromAnswers(
-      projectName: args['name'] as String? ?? 'my_app',
-      packageName: args['package'] as String? ?? 'com.example.app',
+      projectName: name,
+      packageName: args['package'] as String? ?? name,
       stateManagement: stateManagement,
       backend: backend,
       screens: screens,
-      onboardingPageCount: int.tryParse(args['onboarding-pages'] as String? ?? '3') ?? 3,
+      onboardingPageCount:
+          int.tryParse(args['onboarding-pages'] as String? ?? '3') ?? 3,
       hasDarkMode: args['dark-mode'] as bool? ?? true,
       hasL10n: args['l10n'] as bool? ?? false,
       generateTests: args['tests'] as bool? ?? true,
@@ -73,4 +75,4 @@ class ConfigBuilder {
       outputPath: args['output'] as String?,
     );
   }
-}
+}

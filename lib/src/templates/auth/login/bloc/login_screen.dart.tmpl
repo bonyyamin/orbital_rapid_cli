@@ -59,7 +59,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: {{dimensionsClass}}.md),
                     PrimaryButton(
-                      text: {{stringsClass}}.loginButton,
+                      label: {{stringsClass}}.loginButton,
                       isLoading: state is LoginLoading,
                       onPressed: () => context.read<LoginBloc>().add(const LoginSubmitted()),
                     ),

@@ -8,11 +8,24 @@ import 'package:{{packageName}}/shared/widgets/primary_button.dart';
 import 'package:{{packageName}}/shared/widgets/text_input.dart';
 import 'package:{{packageName}}/features/account/presentation/delete/riverpod/delete_account_provider.dart';
 
-class DeleteAccountScreen extends ConsumerWidget {
+class DeleteAccountScreen extends ConsumerStatefulWidget {
   const DeleteAccountScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DeleteAccountScreen> createState() => _DeleteAccountScreenState();
+}
+
+class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
+  final TextEditingController _confirmationController = TextEditingController();
+
+  @override
+  void dispose() {
+    _confirmationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(deleteAccountProvider);
     final notifier = ref.read(deleteAccountProvider.notifier);
 
@@ -74,9 +87,9 @@ class DeleteAccountScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: {{dimensionsClass}}.xl),
-              AppTextInput(
+              TextInput(
                 label: 'Type DELETE',
-                onChanged: notifier.confirmationChanged,
+                controller: _confirmationController,
               ),
               if (state.errorMessage != null) ...[
                 const SizedBox(height: {{dimensionsClass}}.sm),
@@ -89,9 +102,12 @@ class DeleteAccountScreen extends ConsumerWidget {
               ],
               const SizedBox(height: {{dimensionsClass}}.xl),
               PrimaryButton(
-                text: {{stringsClass}}.accountDelete,
+                label: {{stringsClass}}.accountDelete,
                 isLoading: state.isLoading,
-                onPressed: notifier.submit,
+                onPressed: () {
+                  notifier.confirmationChanged(_confirmationController.text);
+                  notifier.submit();
+                },
               ),
             ],
           ),

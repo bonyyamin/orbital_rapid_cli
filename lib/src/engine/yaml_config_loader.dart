@@ -14,9 +14,10 @@ class YamlConfigLoader {
     final content = file.readAsStringSync();
     final yaml = loadYaml(content) as YamlMap;
 
+    final name = yaml['name'] ?? 'my_app';
     return ConfigBuilder.fromAnswers(
-      projectName: yaml['name'] ?? 'my_app',
-      packageName: yaml['package'] ?? 'com.example.app',
+      projectName: name,
+      packageName: yaml['package'] ?? name,
       stateManagement: StateManagement.values.firstWhere(
         (e) => e.key == yaml['state'],
         orElse: () => StateManagement.riverpod,
