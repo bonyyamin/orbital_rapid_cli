@@ -1,0 +1,77 @@
+import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+
+// Events
+abstract class AuthEvent {
+  const AuthEvent();
+}
+
+class AuthStatusChanged extends AuthEvent {
+  final UserModel? user;
+  const AuthStatusChanged(this.user);
+}
+
+class LogoutEvent extends AuthEvent {
+  const LogoutEvent();
+}
+
+// States
+abstract class AuthState {
+  const AuthState();
+}
+
+class AuthInitial extends AuthState {
+  const AuthInitial();
+}
+
+class Authenticated extends AuthState {
+  final UserModel user;
+  const Authenticated(this.user);
+}
+
+class Unauthenticated extends AuthState {
+  const Unauthenticated();
+}
+
+// Bloc
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final AuthRepositoryInterface _authRepository;
+  late StreamSubscription<UserModel?> _authSubscription;
+
+  AuthBloc({required AuthRepositoryInterface authRepository})
+      : _authRepository = authRepository,
+        super(const AuthInitial()) {
+    on<AuthStatusChanged>(_onAuthStatusChanged);
+    on<LogoutEvent>(_onLogoutRequested);
+
+    _authSubscription = _authRepository.authStateChanges.listen(
+      (user) => add(AuthStatusChanged(user)),
+    );
+  }
+
+  void _onAuthStatusChanged(
+    AuthStatusChanged event,
+    Emitter<AuthState> emit,
+  ) {
+    if (event.user != null) {
+      emit(Authenticated(event.user!));
+    } else {
+      emit(const Unauthenticated());
+    }
+  }
+
+  Future<void> _onLogoutRequested(
+    LogoutEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    await _authRepository.logout();
+  }
+
+  @override
+  Future<void> close() {
+    _authSubscription.cancel();
+    return super.close();
+  }
+}

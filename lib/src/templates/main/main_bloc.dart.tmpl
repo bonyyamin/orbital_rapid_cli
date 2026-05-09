@@ -1,54 +1,122 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 {{#isFirebaseBackend}}
 import 'package:firebase_core/firebase_core.dart';
-import 'package:{{packageName}}/firebase_options.dart';
 {{/isFirebaseBackend}}
-{{#isRestBackend}}
-import 'package:{{packageName}}/core/config/api_config.dart';
-{{/isRestBackend}}
-{{#isSupabaseBackend}}
-import 'package:{{packageName}}/core/config/supabase_config.dart';
-{{/isSupabaseBackend}}
 import 'package:{{packageName}}/core/theme/app_theme.dart';
 import 'package:{{packageName}}/core/theme/app_dark_theme.dart';
 import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/presentation/bloc/auth_bloc.dart';
+
+{{#hasSplashScreen}}
+import 'package:{{packageName}}/features/splash/presentation/bloc/splash_bloc.dart';
+{{/hasSplashScreen}}
+{{#hasOnboardingScreen}}
+import 'package:{{packageName}}/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+{{/hasOnboardingScreen}}
+{{#hasLoginScreen}}
+import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_bloc.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+{{/hasLoginScreen}}
+{{#hasRegisterScreen}}
+import 'package:{{packageName}}/features/auth/presentation/register/bloc/register_bloc.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/register_usecase.dart';
+{{/hasRegisterScreen}}
+{{#hasForgotPasswordScreen}}
+import 'package:{{packageName}}/features/auth/presentation/forgot_password/bloc/forgot_password_bloc.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/forgot_password_usecase.dart';
+{{/hasForgotPasswordScreen}}
+{{#hasDeleteAccountScreen}}
+import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete_account_bloc.dart';
+{{/hasDeleteAccountScreen}}
+
+{{#isRestBackend}}
+import 'package:{{packageName}}/core/services/storage_service.dart';
+{{/isRestBackend}}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
 {{#isFirebaseBackend}}
   // Initialize Firebase with placeholder configuration
-  // Replace these values with your actual Firebase project credentials
-  // Go to: https://console.firebase.google.com/ to get your project details
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-      apiKey: 'YOUR_FIREBASE_API_KEY',        // Replace with your Firebase API key
-      appId: 'YOUR_FIREBASE_APP_ID',          // Replace with your Firebase App ID
-      messagingSenderId: 'YOUR_FIREBASE_SENDER_ID', // Replace with your Sender ID
-      projectId: 'YOUR_FIREBASE_PROJECT_ID',  // Replace with your Project ID
+      apiKey: 'YOUR_FIREBASE_API_KEY',
+      appId: 'YOUR_FIREBASE_APP_ID',
+      messagingSenderId: 'YOUR_FIREBASE_SENDER_ID',
+      projectId: 'YOUR_FIREBASE_PROJECT_ID',
     ),
   );
   debugPrint('Firebase initialized with placeholder config');
 {{/isFirebaseBackend}}
 {{#isRestBackend}}
   // Initialize REST API configuration
-  // Update ApiConfig with your actual API endpoints and keys
   debugPrint('REST API initialized with placeholder config');
-  debugPrint('Base URL: ${ApiConfig.baseUrl}');
+  final storageService = await StorageService.getInstance();
 {{/isRestBackend}}
 {{#isSupabaseBackend}}
   // Initialize Supabase configuration
-  // Update SupabaseConfig with your actual Supabase project credentials
-  // Go to: https://app.supabase.com/ to get your project details
   debugPrint('Supabase initialized with placeholder config');
-  debugPrint('Supabase URL: ${SupabaseConfig.url}');
 {{/isSupabaseBackend}}
 {{#isNoneBackend}}
   // No backend selected - using local storage only
   debugPrint('Running in no-backend mode (local storage only)');
 {{/isNoneBackend}}
   
-  runApp(const {{projectNamePascal}}App());
+  final authRepository = {{#isFirebaseBackend}}FirebaseAuthRepository();{{/isFirebaseBackend}}
+                         {{#isRestBackend}}RestAuthRepository(storage: storageService);{{/isRestBackend}}
+                         {{#isSupabaseBackend}}SupabaseAuthRepository();{{/isSupabaseBackend}}
+                         {{#isNoneBackend}}NoAuthRepository();{{/isNoneBackend}}
+
+  runApp(
+    MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthRepositoryInterface>(
+          create: (context) => authRepository,
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(authRepository: authRepository),
+          ),
+          {{#hasSplashScreen}}
+          BlocProvider<SplashBloc>(
+            create: (context) => SplashBloc(),
+          ),
+          {{/hasSplashScreen}}
+          {{#hasOnboardingScreen}}
+          BlocProvider<OnboardingBloc>(
+            create: (context) => OnboardingBloc(),
+          ),
+          {{/hasOnboardingScreen}}
+          {{#hasLoginScreen}}
+          BlocProvider<LoginBloc>(
+            create: (context) => LoginBloc(LoginUseCase(authRepository)),
+          ),
+          {{/hasLoginScreen}}
+          {{#hasRegisterScreen}}
+          BlocProvider<RegisterBloc>(
+            create: (context) => RegisterBloc(RegisterUseCase(authRepository)),
+          ),
+          {{/hasRegisterScreen}}
+          {{#hasForgotPasswordScreen}}
+          BlocProvider<ForgotPasswordBloc>(
+            create: (context) => ForgotPasswordBloc(ForgotPasswordUseCase(authRepository)),
+          ),
+          {{/hasForgotPasswordScreen}}
+          {{#hasDeleteAccountScreen}}
+          BlocProvider<DeleteAccountBloc>(
+            create: (context) => DeleteAccountBloc(authRepository.deleteAccount),
+          ),
+          {{/hasDeleteAccountScreen}}
+        ],
+        child: const {{projectNamePascal}}App(),
+      ),
+    ),
+  );
 }
 
 class {{projectNamePascal}}App extends StatelessWidget {

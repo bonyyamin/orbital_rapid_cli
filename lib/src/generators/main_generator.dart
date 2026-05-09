@@ -18,7 +18,7 @@ class MainGenerator extends BaseGenerator {
     final deps = switch (config.stateManagement) {
       StateManagement.riverpod => [Dependency('flutter_riverpod', '^3.3.1')],
       StateManagement.bloc => [
-          Dependency('flutter_bloc', '^8.1.4'),
+          Dependency('flutter_bloc', '^9.1.1'),
           Dependency('bloc', '^9.1.1'),
           Dependency('get_it', '^9.2.1'),
           Dependency('injectable', '^3.0.0'),
@@ -64,6 +64,12 @@ class MainGenerator extends BaseGenerator {
           'isRestBackend': config.backend == Backend.rest,
           'isSupabaseBackend': config.backend == Backend.supabase,
           'isNoneBackend': config.backend == Backend.none,
+          'hasSplashScreen': config.screens.contains(Screen.splash),
+          'hasOnboardingScreen': config.screens.contains(Screen.onboarding),
+          'hasLoginScreen': config.screens.contains(Screen.login),
+          'hasRegisterScreen': config.screens.contains(Screen.register),
+          'hasForgotPasswordScreen': config.screens.contains(Screen.forgotPassword),
+          'hasDeleteAccountScreen': config.screens.contains(Screen.accountDeletion),
         },
       ),
     ];

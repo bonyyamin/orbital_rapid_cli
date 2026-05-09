@@ -19,10 +19,17 @@ class AuthProviderGenerator extends BaseGenerator {
   Future<List<GeneratedFile>> generate() async {
     final files = <GeneratedFile>[];
 
-    if (config.isRiverpod || config.isBloc) {
+    if (config.isRiverpod) {
       files.add(await renderToFile(
         templatePath: 'templates/auth/providers/auth_provider.dart.tmpl',
         outputPath: 'lib/features/auth/providers/auth_provider.dart',
+      ));
+    }
+
+    if (config.isBloc) {
+      files.add(await renderToFile(
+        templatePath: 'templates/auth/bloc/auth_bloc.dart.tmpl',
+        outputPath: 'lib/features/auth/presentation/bloc/auth_bloc.dart',
       ));
     }
 
