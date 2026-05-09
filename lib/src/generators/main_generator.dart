@@ -15,19 +15,36 @@ class MainGenerator extends BaseGenerator {
 
   @override
   List<Dependency> get requiredDependencies {
-    switch (config.stateManagement) {
-      case StateManagement.riverpod:
-        return const [Dependency('flutter_riverpod', '^3.3.1')];
-      case StateManagement.bloc:
-        return const [
+    final deps = switch (config.stateManagement) {
+      StateManagement.riverpod => [Dependency('flutter_riverpod', '^3.3.1')],
+      StateManagement.bloc => [
           Dependency('flutter_bloc', '^8.1.4'),
           Dependency('bloc', '^9.1.1'),
           Dependency('get_it', '^9.2.1'),
           Dependency('injectable', '^3.0.0'),
-        ];
-      case StateManagement.getx:
-        return const [Dependency('get', '^4.7.3')];
+        ],
+      StateManagement.getx => [Dependency('get', '^4.7.3')],
+    };
+
+    // Add backend-specific dependencies
+    switch (config.backend) {
+      case Backend.firebase:
+        deps.addAll([
+          Dependency('firebase_core', '^4.7.0'),
+          Dependency('firebase_auth', '^6.4.0'),
+        ]);
+        break;
+      case Backend.rest:
+        deps.add(Dependency('http', '^1.6.0'));
+        break;
+      case Backend.supabase:
+        deps.add(Dependency('supabase_flutter', '^2.12.4'));
+        break;
+      case Backend.none:
+        break;
     }
+
+    return deps;
   }
 
   @override
@@ -38,11 +55,49 @@ class MainGenerator extends BaseGenerator {
       StateManagement.getx => 'templates/main/main_getx.dart.tmpl',
     };
 
-    return [
+    final files = [
       await renderToFile(
         templatePath: templatePath,
         outputPath: 'lib/main.dart',
+        extraVars: {
+          'isFirebaseBackend': config.backend == Backend.firebase,
+          'isRestBackend': config.backend == Backend.rest,
+          'isSupabaseBackend': config.backend == Backend.supabase,
+          'isNoneBackend': config.backend == Backend.none,
+        },
       ),
     ];
+
+    // Add backend-specific config files
+    switch (config.backend) {
+      case Backend.rest:
+        files.add(await renderToFile(
+          templatePath: 'templates/core/config/api_config.dart.tmpl',
+          outputPath: 'lib/core/config/api_config.dart',
+        ));
+        break;
+      case Backend.supabase:
+        files.add(await renderToFile(
+          templatePath: 'templates/core/config/supabase_config.dart.tmpl',
+          outputPath: 'lib/core/config/supabase_config.dart',
+        ));
+        break;
+      case Backend.firebase:
+        files.add(await renderToFile(
+          templatePath: 'templates/firebase/firebase_options.dart.tmpl',
+          outputPath: 'lib/firebase_options.dart',
+        ));
+        break;
+      case Backend.none:
+        break;
+    }
+
+    // Add mock auth service for all backends
+    files.add(await renderToFile(
+      templatePath: 'templates/core/services/mock_auth_service.dart.tmpl',
+      outputPath: 'lib/core/services/mock_auth_service.dart',
+    ));
+
+    return files;
   }
 }

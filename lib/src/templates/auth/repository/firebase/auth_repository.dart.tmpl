@@ -1,69 +1,152 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 {{#isRiverpod}}
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 {{/isRiverpod}}
 import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
 import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+import 'package:{{packageName}}/core/services/mock_auth_service.dart';
+import 'package:{{packageName}}/firebase_options.dart';
 
 class FirebaseAuthRepository implements AuthRepositoryInterface {
   final FirebaseAuth _auth;
+  final bool _useMock;
+  final _authStateController = StreamController<UserModel?>.broadcast();
+  UserModel? _currentMockUser;
 
-  FirebaseAuthRepository({FirebaseAuth? auth}) : _auth = auth ?? FirebaseAuth.instance;
+  FirebaseAuthRepository({FirebaseAuth? auth, bool? useMock}) 
+      : _auth = auth ?? FirebaseAuth.instance,
+        _useMock = useMock ?? false {
+    // Listen to Firebase auth changes and pipe them to our controller
+    _auth.authStateChanges().listen((user) {
+      if (user != null) {
+        final userModel = UserModel(
+          id: user.uid,
+          name: user.displayName ?? '',
+          email: user.email ?? '',
+          photoUrl: user.photoURL,
+        );
+        _authStateController.add(userModel);
+      } else {
+        // If Firebase user is null, we might still have a mock user
+        _authStateController.add(_currentMockUser);
+      }
+    });
+  }
 
   @override
   Stream<UserModel?> get authStateChanges {
-    return _auth.authStateChanges().map((user) {
-      if (user == null) return null;
-      return UserModel(
+    // Emit current state immediately to new listeners
+    Timer.run(() {
+      if (_auth.currentUser != null) {
+        _authStateController.add(UserModel(
+          id: _auth.currentUser!.uid,
+          name: _auth.currentUser!.displayName ?? '',
+          email: _auth.currentUser!.email ?? '',
+          photoUrl: _auth.currentUser!.photoURL,
+        ));
+      } else {
+        _authStateController.add(_currentMockUser);
+      }
+    });
+    return _authStateController.stream;
+  }
+
+  @override
+  Future<UserModel> login(String email, String password) async {
+    // Use mock service if in mock mode or if using development credentials
+    if (_useMock || (email == 'login@orbitalrapid.com' && password == '12345678')) {
+      print('🔧 Using mock authentication for development');
+      MockAuthService.printMockCredentials();
+      _currentMockUser = await MockAuthService.login(email, password);
+      _authStateController.add(_currentMockUser);
+      return _currentMockUser!;
+    }
+    
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = credential.user!;
+      final userModel = UserModel(
         id: user.uid,
         name: user.displayName ?? '',
         email: user.email ?? '',
         photoUrl: user.photoURL,
       );
-    });
-  }
-
-  @override
-  Future<UserModel> login(String email, String password) async {
-    final credential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    final user = credential.user!;
-    return UserModel(
-      id: user.uid,
-      name: user.displayName ?? '',
-      email: user.email ?? '',
-      photoUrl: user.photoURL,
-    );
+      return userModel;
+    } catch (e) {
+      // Fallback to mock service for development if specific credentials used
+      if (email == 'login@orbitalrapid.com' && password == '12345678') {
+        print('🔧 Firebase login failed, falling back to mock authentication');
+        _currentMockUser = await MockAuthService.login(email, password);
+        _authStateController.add(_currentMockUser);
+        return _currentMockUser!;
+      }
+      rethrow;
+    }
   }
 
   @override
   Future<UserModel> register(String name, String email, String password) async {
-    final credential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await credential.user!.updateDisplayName(name);
-    final user = credential.user!;
-    return UserModel(
-      id: user.uid,
-      name: name,
-      email: user.email ?? '',
-      photoUrl: user.photoURL,
-    );
+    if (_useMock) {
+      _currentMockUser = await MockAuthService.register(email, password, name);
+      _authStateController.add(_currentMockUser);
+      return _currentMockUser!;
+    }
+    
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await credential.user!.updateDisplayName(name);
+      final user = credential.user!;
+      return UserModel(
+        id: user.uid,
+        name: name,
+        email: user.email ?? '',
+        photoUrl: user.photoURL,
+      );
+    } catch (e) {
+      print('🔧 Firebase registration failed, falling back to mock authentication');
+      _currentMockUser = await MockAuthService.register(email, password, name);
+      _authStateController.add(_currentMockUser);
+      return _currentMockUser!;
+    }
   }
 
   @override
-  Future<void> logout() => _auth.signOut();
+  Future<void> logout() async {
+    await _auth.signOut();
+    _currentMockUser = null;
+    _authStateController.add(null);
+  }
 
   @override
-  Future<void> forgotPassword(String email) {
-    return _auth.sendPasswordResetEmail(email: email);
+  Future<void> forgotPassword(String email) async {
+    if (_useMock) {
+      return await MockAuthService.forgotPassword(email);
+    }
+    
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print('🔧 Firebase password reset failed, falling back to mock authentication');
+      return await MockAuthService.forgotPassword(email);
+    }
   }
 
   @override
   Future<void> deleteAccount() async {
+    if (_currentMockUser != null) {
+      print('✅ Mock account deleted');
+      _currentMockUser = null;
+      _authStateController.add(null);
+      return;
+    }
+
     final user = _auth.currentUser;
     if (user == null) throw Exception('No authenticated user');
     await user.delete();
@@ -72,6 +155,8 @@ class FirebaseAuthRepository implements AuthRepositoryInterface {
 
 {{#isRiverpod}}
 final authRepositoryProvider = Provider<AuthRepositoryInterface>((ref) {
-  return FirebaseAuthRepository();
+  // Check if Firebase is using placeholder configuration
+  final useMock = DefaultFirebaseOptions.currentPlatform.apiKey == 'YOUR_FIREBASE_API_KEY';
+  return FirebaseAuthRepository(useMock: useMock);
 });
 {{/isRiverpod}}

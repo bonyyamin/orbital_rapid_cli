@@ -39,6 +39,7 @@ class FlowConfig {
   bool get isFirebase => backend == Backend.firebase;
   bool get isRest => backend == Backend.rest;
   bool get isSupabase => backend == Backend.supabase;
+  bool get isNoneBackend => backend == Backend.none;
   bool get isSeparate => projectStructure == ProjectStructure.separate;
   bool get isInplace => projectStructure == ProjectStructure.inplace;
 
@@ -52,6 +53,8 @@ class FlowConfig {
         'isFirebase': isFirebase,
         'isRest': isRest,
         'isSupabase': isSupabase,
+        'isNoneBackend': isNoneBackend,
+        'isNone': isNoneBackend,
         'hasDarkMode': hasDarkMode,
         'hasL10n': hasL10n,
         'colorsClass': 'AppColors',

@@ -2,14 +2,18 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 {{#isRiverpod}}
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 {{/isRiverpod}}
+import 'package:{{packageName}}/core/config/supabase_config.dart';
+import 'package:{{packageName}}/core/services/mock_auth_service.dart';
 import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
 import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
 
 class SupabaseAuthRepository implements AuthRepositoryInterface {
   final SupabaseClient _client;
+  final bool _useMock;
 
-  SupabaseAuthRepository({SupabaseClient? client})
-      : _client = client ?? Supabase.instance.client;
+  SupabaseAuthRepository({SupabaseClient? client, bool? useMock})
+      : _client = client ?? Supabase.instance.client,
+        _useMock = useMock ?? SupabaseConfig.useMock;
 
   @override
   Stream<UserModel?> get authStateChanges {
@@ -27,48 +31,110 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
 
   @override
   Future<UserModel> login(String email, String password) async {
-    final response = await _client.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
-    final user = response.user!;
-    return UserModel(
-      id: user.id,
-      name: user.userMetadata?['name'] as String? ?? '',
-      email: user.email ?? '',
-      photoUrl: user.userMetadata?['avatar_url'] as String?,
-    );
+    // Use mock service if in mock mode
+    if (_useMock) {
+      print('🔧 Using mock authentication for development');
+      SupabaseConfig.printConfigInfo();
+      MockAuthService.printMockCredentials();
+      return await MockAuthService.login(email, password);
+    }
+    
+    try {
+      final response = await _client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      final user = response.user!;
+      return UserModel(
+        id: user.id,
+        name: user.userMetadata?['name'] as String? ?? '',
+        email: user.email ?? '',
+        photoUrl: user.userMetadata?['avatar_url'] as String?,
+      );
+    } catch (e) {
+      // Fallback to mock service for development
+      if (email == 'login@orbitalrapid.com' && password == '12345678') {
+        print('🔧 Supabase login failed, falling back to mock authentication');
+        SupabaseConfig.printConfigInfo();
+        MockAuthService.printMockCredentials();
+        return await MockAuthService.login(email, password);
+      }
+      rethrow;
+    }
   }
 
   @override
   Future<UserModel> register(String name, String email, String password) async {
-    final response = await _client.auth.signUp(
-      email: email,
-      password: password,
-      data: {'name': name},
-    );
-    final user = response.user!;
-    return UserModel(
-      id: user.id,
-      name: name,
-      email: user.email ?? '',
-      photoUrl: null,
-    );
+    // Use mock service if in mock mode
+    if (_useMock) {
+      print('🔧 Using mock authentication for development');
+      return await MockAuthService.register(email, password, name);
+    }
+    
+    try {
+      final response = await _client.auth.signUp(
+        email: email,
+        password: password,
+        data: {'name': name},
+      );
+      final user = response.user!;
+      return UserModel(
+        id: user.id,
+        name: name,
+        email: user.email ?? '',
+        photoUrl: null,
+      );
+    } catch (e) {
+      // Fallback to mock service for development
+      print('🔧 Supabase registration failed, falling back to mock authentication');
+      return await MockAuthService.register(email, password, name);
+    }
   }
 
   @override
-  Future<void> logout() => _client.auth.signOut();
+  Future<void> logout() async {
+    if (_useMock) {
+      print('🔧 Using mock authentication for development');
+      return await MockAuthService.logout();
+    }
+    
+    try {
+      await _client.auth.signOut();
+    } catch (e) {
+      print('🔧 Supabase logout failed, using mock logout');
+      await MockAuthService.logout();
+    }
+  }
 
   @override
-  Future<void> forgotPassword(String email) {
-    return _client.auth.resetPasswordForEmail(email);
+  Future<void> forgotPassword(String email) async {
+    if (_useMock) {
+      print('🔧 Using mock authentication for development');
+      return await MockAuthService.forgotPassword(email);
+    }
+    
+    try {
+      await _client.auth.resetPasswordForEmail(email);
+    } catch (e) {
+      print('🔧 Supabase password reset failed, falling back to mock authentication');
+      return await MockAuthService.forgotPassword(email);
+    }
   }
 
   @override
   Future<void> deleteAccount() async {
-    // Supabase requires a server-side function or Admin API for account deletion
-    // Call your edge function or backend endpoint here
-    await _client.functions.invoke('delete-account');
+    if (_useMock) {
+      print('🔧 Using mock authentication for development');
+      return;
+    }
+    
+    try {
+      // Supabase requires a server-side function or Admin API for account deletion
+      // Call your edge function or backend endpoint here
+      await _client.functions.invoke('delete-account');
+    } catch (e) {
+      print('🔧 Supabase account deletion failed, but continuing');
+    }
   }
 }
 

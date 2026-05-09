@@ -1,0 +1,245 @@
+# Backend Configuration Guide
+
+Your {{projectNamePascal}} app has been generated with mock authentication and backend services. This allows you to explore all app features immediately without setting up a real backend.
+
+## 🚀 Quick Start (Mock Mode)
+
+The app is running in **mock mode** by default. You can test all authentication flows using these credentials:
+
+### Mock Credentials
+- **Email**: `login@orbitalrapid.com`
+- **Password**: `12345678`
+
+### What Works in Mock Mode
+- ✅ Login/Register/Forgot Password
+- ✅ User Profile Management
+- ✅ All UI Screens and Navigation
+- ✅ Local Data Persistence
+
+---
+
+## 🔧 Backend Configuration
+
+{{#isFirebaseBackend}}
+## Firebase Backend
+
+### 1. Setup Firebase Project
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project or use existing one
+3. Enable Authentication (Email/Password)
+4. Add a Flutter app to your project
+
+### 2. Update Configuration
+Edit `lib/firebase_options.dart` and replace placeholder values:
+
+```dart
+return const FirebaseOptions(
+  apiKey: 'your-actual-api-key',           // Replace this
+  appId: 'your-actual-app-id',             // Replace this
+  messagingSenderId: 'your-sender-id',     // Replace this
+  projectId: 'your-project-id',            // Replace this
+);
+```
+
+### 3. Where to Find Your Firebase Config
+- In Firebase Console → Project Settings → General
+- Scroll down to "Your apps" section
+- Click on your Flutter app
+- Copy the configuration values
+
+### 4. Platform Setup
+**Android:**
+- Download `google-services.json` from Firebase Console
+- Place it in `android/app/google-services.json`
+
+**iOS:**
+- Download `GoogleService-Info.plist` from Firebase Console
+- Place it in `ios/Runner/GoogleService-Info.plist`
+{{/isFirebaseBackend}}
+
+{{#isRestBackend}}
+## REST API Backend
+
+### 1. Update API Configuration
+Edit `lib/core/config/api_config.dart`:
+
+```dart
+class ApiConfig {
+  static const String baseUrl = 'https://your-api.com';  // Replace this
+  static const String? apiKey = 'your-api-key';          // Replace this (if needed)
+}
+```
+
+### 2. Required API Endpoints
+Your API should implement these endpoints:
+
+#### Authentication
+- `POST /auth/login` - `{email, password}` → `{token, user}`
+- `POST /auth/register` - `{name, email, password}` → `{token, user}`
+- `POST /auth/logout` - Logout user
+- `POST /auth/forgot-password` - `{email}` → Success message
+
+#### User Management
+- `GET /user/profile` - Get current user profile
+- `PUT /user/profile` - Update user profile
+- `DELETE /user/account` - Delete user account
+
+### 3. Example API Response Format
+```json
+{
+  "token": "jwt-token-here",
+  "user": {
+    "id": "user-id",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "avatar": "https://example.com/avatar.jpg",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  }
+}
+```
+{{/isRestBackend}}
+
+{{#isSupabaseBackend}}
+## Supabase Backend
+
+### 1. Setup Supabase Project
+1. Go to [Supabase Dashboard](https://app.supabase.com/)
+2. Create a new project
+3. Enable Authentication in your project
+4. Configure Auth providers (Email/Password)
+
+### 2. Update Configuration
+Edit `lib/core/config/supabase_config.dart`:
+
+```dart
+class SupabaseConfig {
+  static const String url = 'https://your-project.supabase.co';  // Replace this
+  static const String anonKey = 'your-anon-key-here';             // Replace this
+}
+```
+
+### 3. Where to Find Your Supabase Config
+- In Supabase Dashboard → Project Settings → API
+- Copy the Project URL and anon/public key
+
+### 4. Database Setup
+Create a `profiles` table in your Supabase database:
+
+```sql
+CREATE TABLE profiles (
+  id UUID REFERENCES auth.users(id) PRIMARY KEY,
+  email TEXT,
+  name TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS (Row Level Security)
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- Create policy for authenticated users
+CREATE POLICY "Users can view own profile" ON profiles
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = id);
+```
+{{/isSupabaseBackend}}
+
+{{#isNoneBackend}}
+## No Backend (Local Storage Only)
+
+Your app is configured to work entirely with local storage using SharedPreferences. No backend setup required!
+
+### Features Available
+- ✅ Local user data persistence
+- ✅ Session management
+- ✅ Profile management (stored locally)
+- ❌ Data synchronization across devices
+- ❌ Real-time updates
+- ❌ Server-side validation
+
+### When to Add a Backend
+Consider adding a backend when you need:
+- Multi-device synchronization
+- Real-time features
+- Server-side business logic
+- Enhanced security
+- User data backup
+{{/isNoneBackend}}
+
+---
+
+## 🔄 Switching from Mock to Production
+
+### 1. Configure Your Backend
+Follow the appropriate backend configuration steps above.
+
+### 2. Test Integration
+- Run your app with real backend credentials
+- Test authentication flows
+- Verify data persistence
+
+### 3. Deploy
+- Update app store/release configurations
+- Ensure production backend is ready
+- Test with production credentials
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Firebase:**
+- "Missing or insufficient permissions" → Check Firebase Security Rules
+- "API key not valid" → Verify Firebase configuration
+- "Network error" → Check internet connection and Firebase project status
+
+**REST API:**
+- "Connection refused" → Check API base URL and server status
+- "401 Unauthorized" → Verify API key and authentication headers
+- "422 Validation Error" → Check API request format
+
+**Supabase:**
+- "Invalid JWT" → Check Supabase anon key configuration
+- "Row level security violation" → Review RLS policies
+- "Database connection failed" → Verify Supabase project status
+
+### Debug Mode
+The app automatically prints helpful debug information including:
+- Mock credentials when using mock mode
+- Configuration status
+- Error fallbacks to mock mode
+
+---
+
+## 📚 Additional Resources
+
+### Firebase Documentation
+- [Firebase Flutter Setup](https://firebase.google.com/docs/flutter/setup)
+- [Firebase Authentication](https://firebase.google.com/docs/auth)
+- [Firebase Security Rules](https://firebase.google.com/docs/security)
+
+### REST API Documentation
+- [REST API Best Practices](https://restfulapi.net/)
+- [JWT Authentication](https://jwt.io/)
+
+### Supabase Documentation
+- [Supabase Flutter Guide](https://supabase.com/docs/guides/with-flutter)
+- [Supabase Auth](https://supabase.com/docs/guides/auth)
+- [Supabase Database](https://supabase.com/docs/guides/database)
+
+---
+
+## 🤝 Support
+
+If you encounter issues:
+1. Check the console output for debug information
+2. Verify your backend configuration
+3. Test with mock credentials first
+4. Review the troubleshooting section above
+
+Happy coding! 🚀

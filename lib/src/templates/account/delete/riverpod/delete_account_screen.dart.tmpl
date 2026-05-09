@@ -7,6 +7,7 @@ import 'package:{{packageName}}/core/utils/app_text_styles.dart';
 import 'package:{{packageName}}/shared/widgets/primary_button.dart';
 import 'package:{{packageName}}/shared/widgets/text_input.dart';
 import 'package:{{packageName}}/features/account/presentation/delete/riverpod/delete_account_provider.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
 
 class DeleteAccountScreen extends ConsumerStatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -28,6 +29,20 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(deleteAccountProvider);
     final notifier = ref.read(deleteAccountProvider.notifier);
+
+    ref.listen(deleteAccountProvider, (previous, next) {
+      if (next.isSuccess) {
+        Future.delayed(const Duration(seconds: 3), () {
+          if (context.mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.login,
+              (route) => false,
+            );
+          }
+        });
+      }
+    });
 
     if (state.isSuccess) {
       return Scaffold(
@@ -56,6 +71,17 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
                     color: {{colorsClass}}.textSecondary,
                   ),
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: {{dimensionsClass}}.xl),
+                PrimaryButton(
+                  label: 'Back to Login',
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRoutes.login,
+                      (route) => false,
+                    );
+                  },
                 ),
               ],
             ),

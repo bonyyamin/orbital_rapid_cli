@@ -1,0 +1,46 @@
+/// Supabase Configuration
+/// 
+/// Replace these placeholder values with your actual Supabase project credentials
+/// 
+/// How to get your Supabase configuration:
+/// 1. Go to https://app.supabase.com/
+/// 2. Create a new project or select an existing one
+/// 3. Go to Project Settings > API
+/// 4. Copy the Project URL and anon/public key
+class SupabaseConfig {
+  /// Your Supabase project URL
+  /// Example: 'https://your-project-id.supabase.co'
+  static const String url = 'YOUR_SUPABASE_URL';
+  
+  /// Your Supabase anonymous/public key
+  /// Example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+  static const String anonKey = 'YOUR_SUPABASE_ANON_KEY';
+  
+  /// Mock configuration for development
+  /// This allows the app to run immediately without a real Supabase project
+  static const String mockUrl = 'https://mock.supabase.co';
+  static const String mockAnonKey = 'mock_supabase_anon_key_for_development';
+  
+  /// Whether to use mock configuration (for development)
+  /// Set to false when you have configured your actual Supabase project
+  static bool get useMock => url == 'YOUR_SUPABASE_URL' || url.isEmpty;
+  
+  /// Get the appropriate URL based on configuration
+  static String get activeUrl => useMock ? mockUrl : url;
+  
+  /// Get the appropriate anon key based on configuration
+  static String get activeAnonKey => useMock ? mockAnonKey : anonKey;
+  
+  /// Debug information
+  static void printConfigInfo() {
+    if (useMock) {
+      print('🔧 Using Supabase mock configuration');
+      print('   Mock URL: $mockUrl');
+      print('   To use real Supabase, update YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY');
+    } else {
+      print('✅ Using real Supabase configuration');
+      print('   URL: $url');
+      print('   Anon Key: ${anonKey.substring(0, 10)}...');
+    }
+  }
+}

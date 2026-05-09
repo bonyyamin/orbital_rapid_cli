@@ -6,6 +6,8 @@ import 'package:orbital_rapid_cli/src/generators/auth/forgot_password_generator.
 import 'package:orbital_rapid_cli/src/generators/auth/login_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/auth/register_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
+import 'package:orbital_rapid_cli/src/generators/home_generator.dart';
+import 'package:orbital_rapid_cli/src/generators/auth_provider_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/core/constants_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/main_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/core/network_generator.dart';
@@ -101,6 +103,10 @@ class GeneratorOrchestrator {
         NetworkGenerator(
             config: args.config, engine: args.engine, logger: args.logger),
       MainGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
+      HomeGenerator(
+          config: args.config, engine: args.engine, logger: args.logger),
+      AuthProviderGenerator(
           config: args.config, engine: args.engine, logger: args.logger),
       PubspecGenerator(
           config: args.config, engine: args.engine, logger: args.logger),

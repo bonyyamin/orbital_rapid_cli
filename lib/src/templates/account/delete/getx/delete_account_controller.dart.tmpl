@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
 
 typedef DeleteAccountAction = Future<void> Function();
 
@@ -11,6 +12,7 @@ class DeleteAccountController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxBool isSuccess = false.obs;
   final RxnString errorMessage = RxnString();
+  final RxString confirmationText = ''.obs;
 
   @override
   void onInit() {
@@ -37,6 +39,9 @@ class DeleteAccountController extends GetxController {
     try {
       await _deleteAccount();
       isSuccess.value = true;
+      Future.delayed(const Duration(seconds: 3), () {
+        Get.offAllNamed(AppRoutes.login);
+      });
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

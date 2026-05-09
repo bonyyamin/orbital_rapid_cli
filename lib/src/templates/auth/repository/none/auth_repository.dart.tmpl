@@ -1,43 +1,60 @@
+import 'dart:async';
 import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
 import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+import 'package:{{packageName}}/core/services/mock_auth_service.dart';
 {{#isRiverpod}}
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 {{/isRiverpod}}
 
-/// Stub implementation when no backend is selected.
-/// Replace each method body with your custom backend logic.
+/// Default implementation when no specific backend is selected.
+/// This implementation uses the MockAuthService by default to allow
+/// immediate testing of the UI.
 class NoAuthRepository implements AuthRepositoryInterface {
-  @override
-  Stream<UserModel?> get authStateChanges => const Stream.empty();
+  final _authStateController = StreamController<UserModel?>.broadcast();
+  UserModel? _currentUser;
 
-  @override
-  Future<UserModel> login(String email, String password) {
-    // TODO: Implement with your backend
-    throw UnimplementedError('login() not yet implemented');
+  NoAuthRepository() {
+    // Emit initial null state
+    _authStateController.add(null);
   }
 
   @override
-  Future<UserModel> register(String name, String email, String password) {
-    // TODO: Implement with your backend
-    throw UnimplementedError('register() not yet implemented');
+  Stream<UserModel?> get authStateChanges {
+    // Re-emit current state for new listeners
+    Timer.run(() => _authStateController.add(_currentUser));
+    return _authStateController.stream;
   }
 
   @override
-  Future<void> logout() {
-    // TODO: Implement with your backend
-    throw UnimplementedError('logout() not yet implemented');
+  Future<UserModel> login(String email, String password) async {
+    _currentUser = await MockAuthService.login(email, password);
+    _authStateController.add(_currentUser);
+    return _currentUser!;
   }
 
   @override
-  Future<void> forgotPassword(String email) {
-    // TODO: Implement with your backend
-    throw UnimplementedError('forgotPassword() not yet implemented');
+  Future<UserModel> register(String name, String email, String password) async {
+    _currentUser = await MockAuthService.register(email, password, name);
+    _authStateController.add(_currentUser);
+    return _currentUser!;
   }
 
   @override
-  Future<void> deleteAccount() {
-    // TODO: Implement with your backend
-    throw UnimplementedError('deleteAccount() not yet implemented');
+  Future<void> logout() async {
+    await MockAuthService.logout();
+    _currentUser = null;
+    _authStateController.add(null);
+  }
+
+  @override
+  Future<void> forgotPassword(String email) async {
+    return await MockAuthService.forgotPassword(email);
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    _currentUser = null;
+    _authStateController.add(null);
   }
 }
 

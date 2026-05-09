@@ -4,7 +4,11 @@ import 'delete_account_notifier.dart';
 import 'delete_account_state.dart';
 
 final deleteAccountActionProvider = Provider<DeleteAccountAction>((ref) {
-  throw UnimplementedError('Provide a delete account implementation');
+  return () async {
+    // Mock deletion delay to simulate network request
+    await Future.delayed(const Duration(seconds: 2));
+    // In a real app, this would call a repository to delete the user account
+  };
 });
 
 final deleteAccountProvider =

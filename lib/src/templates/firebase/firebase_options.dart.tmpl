@@ -1,0 +1,26 @@
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+
+/// Firebase configuration options
+/// 
+/// Replace these placeholder values with your actual Firebase project credentials
+/// 
+/// How to get your Firebase configuration:
+/// 1. Go to https://console.firebase.google.com/
+/// 2. Create a new project or select an existing one
+/// 3. Add a Flutter app to your project
+/// 4. Download the google-services.json (Android) or GoogleService-Info.plist (iOS)
+/// 5. Or go to Project Settings > General > Your apps to see the config values
+class DefaultFirebaseOptions {
+  static FirebaseOptions get currentPlatform {
+    // Return platform-specific options
+    return const FirebaseOptions(
+      apiKey: 'YOUR_FIREBASE_API_KEY',        // Replace with your actual API key
+      appId: 'YOUR_FIREBASE_APP_ID',          // Replace with your actual App ID
+      messagingSenderId: 'YOUR_FIREBASE_SENDER_ID', // Replace with your actual Sender ID
+      projectId: 'YOUR_FIREBASE_PROJECT_ID',  // Replace with your actual Project ID
+      // Additional optional configurations
+      // storageBucket: 'your-project.appspot.com',
+      // databaseURL: 'https://your-project-default-rtdb.firebaseio.com',
+    );
+  }
+}

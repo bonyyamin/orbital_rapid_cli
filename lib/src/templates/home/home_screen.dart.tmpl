@@ -1,0 +1,439 @@
+import 'package:flutter/material.dart';
+{{#isRiverpod}}
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:{{packageName}}/features/auth/providers/auth_provider.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+{{/isRiverpod}}
+{{#isBloc}}
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{packageName}}/features/auth/presentation/bloc/auth_bloc.dart';
+{{/isBloc}}
+{{#isGetX}}
+import 'package:get/get.dart';
+import 'package:{{packageName}}/features/auth/presentation/controllers/auth_controller.dart';
+{{/isGetX}}
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  static const List<String> _titles = [
+    'Home',
+    'Search',
+    'Explore',
+    'Notifications',
+    'Profile',
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_titles[_selectedIndex]),
+        automaticallyImplyLeading: false,
+      ),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: const [
+          HomeContent(),
+          SearchPage(),
+          ExplorePage(),
+          NotificationsPage(),
+          ProfileContent(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search_outlined),
+            activeIcon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore_outlined),
+            activeIcon: Icon(Icons.explore),
+            label: 'Explore',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_outlined),
+            activeIcon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+      ),
+    );
+  }
+}
+
+class HomeContent extends StatelessWidget {
+  const HomeContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    {{#isRiverpod}}
+    return Consumer(
+      builder: (context, ref, child) {
+        final authStateAsync = ref.watch(authStateProvider);
+        
+        return authStateAsync.when(
+          data: (user) {
+            if (user == null) {
+              return const Center(child: Text('No user logged in'));
+            }
+            return HomeContentBody(user: user);
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        );
+      },
+    );
+    {{/isRiverpod}}
+    {{#isBloc}}
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is Authenticated) {
+          return HomeContentBody(user: state.user);
+        } else {
+          return const Center(child: Text('No user logged in'));
+        }
+      },
+    );
+    {{/isBloc}}
+    {{#isGetX}}
+    return GetX<AuthController>(
+      builder: (controller) {
+        final user = controller.user.value;
+        if (user == null) return const Center(child: Text('No user logged in'));
+        return HomeContentBody(user: user);
+      },
+    );
+    {{/isGetX}}
+    {{#isNone}}
+    return const HomeContentBody(user: null);
+    {{/isNone}}
+  }
+}
+
+class HomeContentBody extends StatelessWidget {
+  final dynamic user;
+  const HomeContentBody({super.key, required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue.shade400, Colors.blue.shade600],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Welcome back,', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                Text(
+                  user?.name ?? 'Guest User',
+                  style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text('Recent Activity', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 3,
+            itemBuilder: (context, index) {
+              return Card(
+                margin: const EdgeInsets.only(bottom: 12),
+                child: ListTile(
+                  leading: const CircleAvatar(child: Icon(Icons.bolt)),
+                  title: Text('Activity ${index + 1}'),
+                  subtitle: const Text('2 hours ago'),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SearchPage extends StatelessWidget {
+  const SearchPage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'Search something...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          ),
+          const Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search_off, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text('No recent searches', style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ExplorePage extends StatelessWidget {
+  const ExplorePage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: 4,
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.blue.withOpacity(0.2)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.explore, color: Colors.blue.shade700),
+              const SizedBox(height: 8),
+              Text('Topic ${index + 1}', style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class NotificationsPage extends StatelessWidget {
+  const NotificationsPage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: 5,
+      separatorBuilder: (context, index) => const Divider(),
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: const CircleAvatar(backgroundColor: Colors.orange, child: Icon(Icons.notifications, color: Colors.white)),
+          title: Text('Notification ${index + 1}'),
+          subtitle: const Text('This is a sample notification message.'),
+          onTap: () {},
+        );
+      },
+    );
+  }
+}
+
+class ProfileContent extends StatelessWidget {
+  const ProfileContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    {{#isRiverpod}}
+    return Consumer(
+      builder: (context, ref, child) {
+        final authStateAsync = ref.watch(authStateProvider);
+        return authStateAsync.when(
+          data: (user) => user == null ? const Center(child: Text('No user logged in')) : ProfileContentBody(user: user),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        );
+      },
+    );
+    {{/isRiverpod}}
+    {{#isBloc}}
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is Authenticated) {
+          return ProfileContentBody(user: state.user);
+        } else {
+          return const Center(child: Text('No user logged in'));
+        }
+      },
+    );
+    {{/isBloc}}
+    {{#isGetX}}
+    return GetX<AuthController>(
+      builder: (controller) {
+        final user = controller.user.value;
+        return user == null ? const Center(child: Text('No user logged in')) : ProfileContentBody(user: user);
+      },
+    );
+    {{/isGetX}}
+    {{#isNone}}
+    return const ProfileContentBody(user: null);
+    {{/isNone}}
+  }
+}
+
+class ProfileContentBody extends StatelessWidget {
+  final dynamic user;
+  const ProfileContentBody({super.key, required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          const CircleAvatar(radius: 50, child: Icon(Icons.person, size: 50)),
+          const SizedBox(height: 16),
+          Text(user?.name ?? 'Guest User', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(user?.email ?? 'guest@example.com', style: const TextStyle(color: Colors.grey)),
+          const SizedBox(height: 32),
+          const Divider(),
+          ListTile(leading: const Icon(Icons.settings), title: const Text('Settings'), onTap: () {}),
+          ListTile(leading: const Icon(Icons.help_outline), title: const Text('Help & Support'), onTap: () {}),
+          const Divider(),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => _showLogoutDialog(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Logout', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pushNamed(context, AppRoutes.deleteAccount),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.red,
+                side: const BorderSide(color: Colors.red),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Delete Account', style: TextStyle(fontSize: 16)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (innerContext) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(innerContext), child: const Text('Cancel')),
+          {{#isRiverpod}}
+          Consumer(
+            builder: (context, ref, child) {
+              return TextButton(
+                onPressed: () {
+                  Navigator.pop(innerContext);
+                  ref.read(authRepositoryProvider).logout();
+                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                },
+                child: const Text('Logout', style: TextStyle(color: Colors.red)),
+              );
+            },
+          ),
+          {{/isRiverpod}}
+          {{#isBloc}}
+          TextButton(
+            onPressed: () {
+              Navigator.pop(innerContext);
+              context.read<AuthBloc>().add(LogoutEvent());
+              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+            },
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+          ),
+          {{/isBloc}}
+          {{#isGetX}}
+          TextButton(
+            onPressed: () {
+              Navigator.pop(innerContext);
+              Get.find<AuthController>().logout();
+              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+            },
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+          ),
+          {{/isGetX}}
+          {{#isNone}}
+          TextButton(
+            onPressed: () {
+              Navigator.pop(innerContext);
+              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+            },
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+          ),
+          {{/isNone}}
+        ],
+      ),
+    );
+  }
+}

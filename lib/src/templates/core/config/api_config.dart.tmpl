@@ -1,0 +1,45 @@
+/// REST API Configuration
+/// 
+/// Replace these placeholder values with your actual API endpoints and credentials
+/// 
+/// How to configure:
+/// 1. Replace YOUR_API_BASE_URL with your actual API base URL
+/// 2. Replace YOUR_API_KEY with your actual API key (if required)
+/// 3. Update mock endpoints with your actual API endpoints
+class ApiConfig {
+  /// Base URL for all API requests
+  /// Example: 'https://api.example.com' or 'http://localhost:3000'
+  static const String baseUrl = 'YOUR_API_BASE_URL';
+  
+  /// API key for authentication (if required)
+  /// Example: 'sk-1234567890abcdef' or null if not needed
+  static const String? apiKey = 'YOUR_API_KEY';
+  
+  /// Request timeout in seconds
+  static const Duration timeout = Duration(seconds: 30);
+  
+  /// Mock endpoints for development and testing
+  /// These allow the app to run immediately without a real backend
+  /// Replace with your actual API endpoints when ready
+  static const Map<String, String> mockEndpoints = {
+    // Authentication endpoints
+    'login': 'https://jsonplaceholder.typicode.com/posts',
+    'register': 'https://jsonplaceholder.typicode.com/posts',
+    'logout': 'https://jsonplaceholder.typicode.com/posts/1',
+    
+    // User profile endpoints
+    'profile': 'https://jsonplaceholder.typicode.com/users/1',
+    'updateProfile': 'https://jsonplaceholder.typicode.com/users/1',
+    
+    // Additional endpoints (add as needed)
+    'forgotPassword': 'https://jsonplaceholder.typicode.com/posts',
+    'resetPassword': 'https://jsonplaceholder.typicode.com/posts/1',
+  };
+  
+  /// Headers to include with all requests
+  static Map<String, String> get defaultHeaders => {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    if (apiKey != null && apiKey!.isNotEmpty) 'Authorization': 'Bearer $apiKey',
+  };
+}

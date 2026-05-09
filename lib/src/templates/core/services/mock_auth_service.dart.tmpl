@@ -1,0 +1,126 @@
+import 'package:flutter/foundation.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+
+/// Mock Authentication Service
+/// 
+/// This service provides mock authentication functionality for development and testing
+/// It allows the app to run immediately without a real backend
+/// 
+/// Mock credentials for testing:
+/// Email: login@orbitalrapid.com
+/// Password: 12345678
+class MockAuthService {
+  static const String _mockEmail = 'login@orbitalrapid.com';
+  static const String _mockPassword = '12345678';
+  
+  /// Mock user data for successful authentication
+  static final UserModel _mockUser = UserModel(
+    id: 'mock-user-123',
+    email: _mockEmail,
+    name: 'Mock User',
+    photoUrl: null,
+  );
+  
+  /// Simulate user login
+  /// 
+  /// Returns true if credentials match mock data, false otherwise
+  /// Use these credentials for testing:
+  /// - Email: login@orbitalrapid.com
+  /// - Password: 12345678
+  static Future<UserModel> login(String email, String password) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    if (email.toLowerCase() == _mockEmail.toLowerCase() && password == _mockPassword) {
+      debugPrint('✅ Mock login successful for: $email');
+      return _mockUser;
+    } else {
+      debugPrint('❌ Mock login failed: Invalid credentials');
+      throw Exception('Invalid email or password. Use login@orbitalrapid.com / 12345678');
+    }
+  }
+  
+  /// Simulate user registration
+  /// 
+  /// Returns true if email is valid and password meets minimum requirements
+  /// For mock purposes, any valid email and password (6+ chars) will succeed
+  static Future<UserModel> register(String email, String password, String name) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    // Basic validation
+    if (email.isEmpty || !email.contains('@')) {
+      throw Exception('Please enter a valid email address');
+    }
+    
+    if (password.length < 6) {
+      throw Exception('Password must be at least 6 characters long');
+    }
+    
+    if (name.isEmpty) {
+      throw Exception('Please enter your name');
+    }
+    
+    debugPrint('✅ Mock registration successful for: $email');
+    return UserModel(
+      id: 'mock-user-${DateTime.now().millisecondsSinceEpoch}',
+      email: email,
+      name: name,
+      photoUrl: null,
+    );
+  }
+  
+  /// Simulate user logout
+  static Future<void> logout() async {
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 500));
+    debugPrint('✅ Mock logout successful');
+  }
+  
+  /// Simulate password reset request
+  static Future<void> forgotPassword(String email) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    if (email.isEmpty || !email.contains('@')) {
+      throw Exception('Please enter a valid email address');
+    }
+    
+    debugPrint('✅ Mock password reset email sent to: $email');
+    debugPrint('   (This is a mock - no actual email was sent)');
+  }
+  
+  /// Simulate getting current user profile
+  static Future<UserModel> getCurrentUser() async {
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    debugPrint('✅ Mock current user retrieved');
+    return _mockUser;
+  }
+  
+  /// Simulate updating user profile
+  static Future<UserModel> updateProfile({String? name, String? photoUrl}) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    debugPrint('✅ Mock profile updated');
+    return UserModel(
+      id: _mockUser.id,
+      email: _mockUser.email,
+      name: name ?? _mockUser.name,
+      photoUrl: photoUrl ?? _mockUser.photoUrl,
+    );
+  }
+  
+  /// Check if this is a mock service (for development)
+  static bool get isMock => true;
+  
+  /// Print mock credentials for easy reference
+  static void printMockCredentials() {
+    debugPrint('\n🔧 Mock Authentication Credentials:');
+    debugPrint('   Email: $_mockEmail');
+    debugPrint('   Password: $_mockPassword');
+    debugPrint('   Use these credentials to test the authentication flow\n');
+  }
+}

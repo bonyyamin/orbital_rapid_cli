@@ -1,0 +1,32 @@
+{{#isRiverpod}}
+import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+
+/// Global auth state provider that can be used throughout the app
+/// This provider watches the auth repository's auth state changes
+final authStateProvider = StreamProvider<UserModel?>((ref) {
+  return ref.watch(authRepositoryProvider).authStateChanges;
+});
+
+/// Convenience provider to get the current authenticated user
+final currentUserProvider = Provider<UserModel?>((ref) {
+  return ref.watch(authStateProvider).value;
+});
+
+/// Convenience provider to check if user is authenticated
+final isAuthenticatedProvider = Provider<bool>((ref) {
+  return ref.watch(currentUserProvider) != null;
+});
+{{/isRiverpod}}
+{{#isBloc}}
+// For Bloc, the auth state is managed by AuthBloc
+// Use context.watch<AuthBloc>() to access auth state
+{{/isBloc}}
+{{#isGetX}}
+// For GetX, the auth state is managed by AuthController
+// Use Get.find<AuthController>() to access auth state
+{{/isGetX}}
+{{#isNone}}
+// For no-backend mode, auth state is managed locally
+{{/isNone}}
