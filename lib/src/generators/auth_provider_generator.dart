@@ -17,11 +17,23 @@ class AuthProviderGenerator extends BaseGenerator {
 
   @override
   Future<List<GeneratedFile>> generate() async {
-    return [
-      await renderToFile(
+    final files = <GeneratedFile>[];
+
+    if (config.isRiverpod || config.isBloc) {
+      files.add(await renderToFile(
         templatePath: 'templates/auth/providers/auth_provider.dart.tmpl',
         outputPath: 'lib/features/auth/providers/auth_provider.dart',
-      ),
-    ];
+      ));
+    }
+
+    if (config.isGetX) {
+      files.add(await renderToFile(
+        templatePath: 'templates/auth/getx/auth_controller.dart.tmpl',
+        outputPath:
+            'lib/features/auth/presentation/controllers/auth_controller.dart',
+      ));
+    }
+
+    return files;
   }
 }

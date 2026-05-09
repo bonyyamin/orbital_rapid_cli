@@ -13,6 +13,17 @@ import 'package:{{packageName}}/core/config/supabase_config.dart';
 import 'package:{{packageName}}/core/theme/app_theme.dart';
 import 'package:{{packageName}}/core/theme/app_dark_theme.dart';
 import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/core/services/storage_service.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/register_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:{{packageName}}/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:{{packageName}}/features/auth/presentation/login/getx/login_controller.dart';
+import 'package:{{packageName}}/features/auth/presentation/register/getx/register_controller.dart';
+import 'package:{{packageName}}/features/auth/presentation/forgot_password/getx/forgot_password_controller.dart';
+import 'package:{{packageName}}/features/onboarding/presentation/getx/onboarding_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +59,34 @@ void main() async {
   // No backend selected - using local storage only
   debugPrint('Running in no-backend mode (local storage only)');
 {{/isNoneBackend}}
-  
+
+  // Initialize GetX dependencies
+{{#isNoneBackend}}
+  final authRepo = NoAuthRepository();
+  Get.put(authRepo);
+{{/isNoneBackend}}
+{{#isRestBackend}}
+  final authRepo = RestAuthRepository(storage: StorageService());
+  Get.put(authRepo);
+{{/isRestBackend}}
+{{#isFirebaseBackend}}
+  final authRepo = FirebaseAuthRepository();
+  Get.put(authRepo);
+{{/isFirebaseBackend}}
+{{#isSupabaseBackend}}
+  final authRepo = SupabaseAuthRepository();
+  Get.put(authRepo);
+{{/isSupabaseBackend}}
+  Get.lazyPut(() => AuthController(authRepo));
+  Get.lazyPut(() => OnboardingController());
+  Get.lazyPut(() => LoginUseCase(authRepo));
+  Get.lazyPut(() => RegisterUseCase(authRepo));
+  Get.lazyPut(() => ForgotPasswordUseCase(authRepo));
+  Get.lazyPut(() => LogoutUseCase(authRepo));
+  Get.lazyPut(() => LoginController(Get.find<LoginUseCase>()));
+  Get.lazyPut(() => RegisterController(Get.find<RegisterUseCase>()));
+  Get.lazyPut(() => ForgotPasswordController(Get.find<ForgotPasswordUseCase>()));
+
   runApp(const {{projectNamePascal}}App());
 }
 

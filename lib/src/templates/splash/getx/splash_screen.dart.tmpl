@@ -1,13 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:{{packageName}}/core/utils/app_colors.dart';
 import 'package:{{packageName}}/core/utils/app_gradients.dart';
 import 'package:{{packageName}}/core/utils/app_dimensions.dart';
 import 'package:{{packageName}}/core/constants/app_assets.dart';
-import 'package:{{packageName}}/features/splash/presentation/getx/splash_controller.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
 
-class SplashScreen extends GetView<SplashController> {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _handleNavigation();
+  }
+
+  Future<void> _handleNavigation() async {
+    // Wait for splash animation/display
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    // Navigate to onboarding
+    Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+  }
 
   @override
   Widget build(BuildContext context) {

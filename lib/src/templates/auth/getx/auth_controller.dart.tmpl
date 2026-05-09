@@ -1,0 +1,54 @@
+import 'package:get/get.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+import 'package:{{packageName}}/core/services/mock_auth_service.dart';
+
+class AuthController extends GetxController {
+  final AuthRepositoryInterface _authRepository;
+
+  AuthController(this._authRepository);
+
+  final Rxn<UserModel> user = Rxn<UserModel>();
+  final RxBool isLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _initAuthState();
+  }
+
+  void _initAuthState() {
+    _authRepository.authStateChanges.listen(
+      (currentUser) {
+        user.value = currentUser;
+      },
+      onError: (error) {
+        print('Auth state error: $error');
+      },
+    );
+  }
+
+  /// Initialize with mock data for development/testing
+  /// This simulates a logged-in user without requiring actual authentication
+  Future<void> initializeWithMockData() async {
+    isLoading.value = true;
+    try {
+      final mockUser = await MockAuthService.getCurrentUser();
+      user.value = mockUser;
+      MockAuthService.printMockCredentials();
+    } catch (e) {
+      print('Error initializing mock data: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> logout() async {
+    isLoading.value = true;
+    try {
+      await _authRepository.logout();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
