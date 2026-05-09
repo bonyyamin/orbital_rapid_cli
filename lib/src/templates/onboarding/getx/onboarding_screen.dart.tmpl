@@ -78,7 +78,7 @@ class OnboardingScreen extends GetView<OnboardingController> {
                   ),
                   const SizedBox(height: {{dimensionsClass}}.xl),
                   PrimaryButton(
-                    text: controller.isLastPage.value
+                    label: controller.isLastPage.value
                         ? {{stringsClass}}.onboardingDone
                         : {{stringsClass}}.onboardingNext,
                     onPressed: () => controller.goToNext(() {
