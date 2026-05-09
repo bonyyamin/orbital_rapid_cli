@@ -12,18 +12,31 @@ class FileWriter {
   FileWriter({required this.dryRun, required this.logger});
 
   Future<void> writeAll(List<GeneratedFile> files, String outputPath) async {
-    if (dryRun) { _printDryRun(files, outputPath); return; }
+    if (dryRun) {
+      _printDryRun(files, outputPath);
+      return;
+    }
 
+    final outputDir = Directory(outputPath);
+
+    // Handle in-place generation (directory already exists)
+    if (outputDir.existsSync()) {
+      logger.info('Writing files to existing directory: $outputPath');
+      for (final f in files) {
+        final dest = File(path.join(outputPath, f.relativePath));
+        dest.createSync(recursive: true);
+        dest.writeAsStringSync(f.content);
+      }
+      return;
+    }
+
+    // Handle separate generation (new directory)
     final tempDir = Directory.systemTemp.createTempSync('orbitalRapid_');
     try {
       for (final f in files) {
         final dest = File(path.join(tempDir.path, f.relativePath));
         dest.createSync(recursive: true);
         dest.writeAsStringSync(f.content);
-      }
-      
-      if (Directory(outputPath).existsSync()) {
-        throw OutputExistsException(outputPath);
       }
 
       try {
@@ -50,10 +63,12 @@ class FileWriter {
     destination.createSync(recursive: true);
     source.listSync(recursive: false).forEach((entity) {
       if (entity is Directory) {
-        final newDirectory = Directory(path.join(destination.absolute.path, path.basename(entity.path)));
+        final newDirectory = Directory(
+            path.join(destination.absolute.path, path.basename(entity.path)));
         _copyDirectory(entity, newDirectory);
       } else if (entity is File) {
-        entity.copySync(path.join(destination.absolute.path, path.basename(entity.path)));
+        entity.copySync(
+            path.join(destination.absolute.path, path.basename(entity.path)));
       }
     });
   }
@@ -72,4 +87,4 @@ class OutputExistsException implements Exception {
   OutputExistsException(this.path);
   @override
   String toString() => 'Output directory already exists: $path';
-}
+}
