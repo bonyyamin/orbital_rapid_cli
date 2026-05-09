@@ -138,6 +138,48 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
   }
 
   @override
+  Future<void> verifyEmail(String code) async {
+    if (_useMock) {
+      return await MockAuthService.verifyEmail(code);
+    }
+    
+    try {
+      // In Supabase, if using OTP for email verification
+      // Requires the email. If we only have code, we might assume the user clicked a magic link which handled it.
+      // Alternatively, we could verify OTP if we have the user's email saved in state.
+      // If code is an OTP (like a 6 digit PIN):
+      final user = _client.auth.currentUser;
+      if (user != null && user.email != null) {
+         await _client.auth.verifyOTP(
+           type: OtpType.signup,
+           token: code,
+           email: user.email!,
+         );
+      } else {
+        throw Exception('User email not found for verification. Please login again.');
+      }
+    } catch (e) {
+      throw Exception('Failed to verify email. Please check your code.');
+    }
+  }
+
+  @override
+  Future<void> resendVerification(String email) async {
+    if (_useMock) {
+      return await MockAuthService.resendVerification(email);
+    }
+    
+    try {
+      await _client.auth.resend(
+        type: OtpType.signup,
+        email: email,
+      );
+    } catch (e) {
+      throw Exception('Failed to resend verification email.');
+    }
+  }
+
+  @override
   Future<UserModel> loginWithGoogle() => _socialLogin(OAuthProvider.google);
 
   @override

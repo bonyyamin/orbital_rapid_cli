@@ -89,6 +89,30 @@ class MockAuthService {
     debugPrint('✅ Mock password reset email sent to: $email');
     debugPrint('   (This is a mock - no actual email was sent)');
   }
+
+  /// Simulate email verification
+  static Future<void> verifyEmail(String code) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    if (code.isEmpty) {
+      throw Exception('Invalid verification code');
+    }
+    
+    debugPrint('✅ Mock email verified with code: $code');
+  }
+
+  /// Simulate resending verification email
+  static Future<void> resendVerification(String email) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    if (email.isEmpty || !email.contains('@')) {
+      throw Exception('Please enter a valid email address');
+    }
+    
+    debugPrint('✅ Mock verification email sent to: $email');
+  }
   
   /// Simulate getting current user profile
   static Future<UserModel> getCurrentUser() async {

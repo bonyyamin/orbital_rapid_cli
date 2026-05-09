@@ -50,6 +50,14 @@ class AuthSharedGenerator {
         templatePath: 'templates/auth/usecases/social_login_usecase.dart.tmpl',
         outputPath: 'lib/features/auth/domain/usecases/social_login_usecase.dart',
       ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/usecases/verify_email_usecase.dart.tmpl',
+        outputPath: 'lib/features/auth/domain/usecases/verify_email_usecase.dart',
+      ),
+      await generator.renderToFile(
+        templatePath: 'templates/auth/usecases/resend_verification_usecase.dart.tmpl',
+        outputPath: 'lib/features/auth/domain/usecases/resend_verification_usecase.dart',
+      ),
     ];
   }
 }

@@ -6,6 +6,8 @@ abstract class AuthRepositoryInterface {
   Future<void> logout();
   Future<void> forgotPassword(String email);
   Future<void> deleteAccount();
+  Future<void> verifyEmail(String code);
+  Future<void> resendVerification(String email);
   Stream<UserModel?> get authStateChanges;
 
   // Social Auth

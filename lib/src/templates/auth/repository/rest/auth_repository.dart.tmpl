@@ -154,6 +154,38 @@ class RestAuthRepository implements AuthRepositoryInterface {
   }
 
   @override
+  Future<void> verifyEmail(String code) async {
+    if (_useMock) {
+      return await MockAuthService.verifyEmail(code);
+    }
+    
+    try {
+      await _client.post(
+        ApiEndpoints.verifyEmail,
+        data: {'code': code},
+      );
+    } catch (e) {
+      throw Exception('Failed to verify email. Please check your code.');
+    }
+  }
+
+  @override
+  Future<void> resendVerification(String email) async {
+    if (_useMock) {
+      return await MockAuthService.resendVerification(email);
+    }
+    
+    try {
+      await _client.post(
+        ApiEndpoints.resendVerification,
+        data: {'email': email},
+      );
+    } catch (e) {
+      throw Exception('Failed to resend verification email.');
+    }
+  }
+
+  @override
   Future<UserModel> loginWithGoogle() => _socialLogin('google');
 
   @override

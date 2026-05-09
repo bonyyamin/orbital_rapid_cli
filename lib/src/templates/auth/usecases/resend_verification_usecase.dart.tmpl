@@ -1,0 +1,21 @@
+{{#isRiverpod}}
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+{{/isRiverpod}}
+import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+
+class ResendVerificationUseCase {
+  final AuthRepositoryInterface _repository;
+
+  ResendVerificationUseCase(this._repository);
+
+  Future<void> execute(String email) async {
+    return await _repository.resendVerification(email);
+  }
+}
+
+{{#isRiverpod}}
+final resendVerificationUseCaseProvider = Provider<ResendVerificationUseCase>((ref) {
+  return ResendVerificationUseCase(ref.watch(authRepositoryProvider));
+});
+{{/isRiverpod}}

@@ -106,6 +106,7 @@ class FirebaseAuthRepository implements AuthRepositoryInterface {
       );
       await credential.user!.updateDisplayName(name);
       final user = credential.user!;
+      await user.sendEmailVerification();
       return UserModel(
         id: user.uid,
         name: name,
@@ -156,21 +157,72 @@ class FirebaseAuthRepository implements AuthRepositoryInterface {
   }
 
   @override
+  Future<void> verifyEmail(String code) async {
+    if (_useMock) {
+      return await MockAuthService.verifyEmail(code);
+    }
+    
+    // For Firebase, 'code' might be an OOB code from a deep link, 
+    // or we can just reload the user if we expect them to click a link elsewhere.
+    if (code.isNotEmpty) {
+      try {
+        await _auth.applyActionCode(code);
+      } catch (e) {
+        throw Exception('Invalid or expired action code');
+      }
+    }
+    
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.reload();
+      if (!user.emailVerified) {
+        throw Exception('Email is not verified yet. Please check your inbox.');
+      }
+    }
+  }
+
+  @override
+  Future<void> resendVerification(String email) async {
+    if (_useMock) {
+      return await MockAuthService.resendVerification(email);
+    }
+    
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.sendEmailVerification();
+    } else {
+      throw Exception('No user is currently signed in to send verification.');
+    }
+  }
+
+  @override
   Future<UserModel> loginWithGoogle() async {
     if (_useMock) return await MockAuthService.login('google@example.com', 'social');
-    
-    final googleSignIn = GoogleSignIn();
-    final googleUser = await googleSignIn.signIn();
-    if (googleUser == null) throw Exception('Google sign in cancelled');
-    
-    final googleAuth = await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    
-    final userCredential = await _auth.signInWithCredential(credential);
-    return _mapFirebaseUser(userCredential.user!);
+
+    // Initialize the GoogleSignIn singleton (no-op if already initialized).
+    try {
+      await GoogleSignIn.instance.initialize();
+    } catch (_) {
+      // Ignore init errors and proceed to authenticate; platform may not need explicit init.
+    }
+
+    try {
+      // Interactive authentication using the new API.
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final googleAuth = googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      return _mapFirebaseUser(userCredential.user!);
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        throw Exception('Google sign in cancelled');
+      }
+      throw Exception('Google sign in failed: ${e.description}');
+    }
   }
 
   @override
@@ -225,10 +277,8 @@ class FirebaseAuthRepository implements AuthRepositoryInterface {
   }
 }
 
-{{#isRiverpod}}
 final authRepositoryProvider = Provider<AuthRepositoryInterface>((ref) {
   // Check if Firebase is using placeholder configuration
   final useMock = DefaultFirebaseOptions.currentPlatform.apiKey == 'YOUR_FIREBASE_API_KEY';
   return FirebaseAuthRepository(useMock: useMock);
 });
-{{/isRiverpod}}
