@@ -1,0 +1,30 @@
+# Changelog
+
+All notable changes to Orbital Rapid CLI will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.0.0] — 2026-05-07
+
+### Added
+- `orbitalrapid init` — full interactive project scaffolding
+- `orbitalrapid add <screen>` — add individual screens to existing projects
+- `orbitalrapid upgrade` — self-upgrade command
+- `orbitalrapid --version` — version display
+- State management: Riverpod, BLoC, GetX
+- Backend: Firebase Auth, REST API (Dio), Supabase, None
+- Screens: Splash, Onboarding, Login, Register, Forgot Password, Account Deletion
+- Design system generation: AppColors, AppFonts, AppTextStyles, AppDimensions, AppStrings, AppGradients
+- Dark mode support (`--dark-mode` flag)
+- Localization scaffolding (`--l10n` flag)
+- Test file generation (`--tests` flag)
+- `orbitalrapid.yaml` config file support
+- `--dry-run` preview mode
+- Atomic file writing (all-or-nothing, no partial generation)
+- `pubspec.yaml` auto-injection
+- GitHub Actions CI/CD pipeline
+- MIT License
+- Full documentation and contributing guide

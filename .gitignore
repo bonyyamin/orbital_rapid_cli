@@ -3,9 +3,6 @@
 .dart_tool/
 
 # Ignore specific documentation files
-README.md
+
 ARCHITECTURE.md
-CHANGELOG.md
-CONTRIBUTING.md
 DEVELOPMENT_LADDER.md
-DOCUMENTATION.md

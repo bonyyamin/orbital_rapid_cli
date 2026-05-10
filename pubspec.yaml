@@ -1,6 +1,6 @@
 name: orbital_rapid_cli
 description: Generate Flutter splash/onboarding/auth flows with Riverpod, BLoC, or GetX
-version: 0.1.0
+version: 1.0.0
 homepage: https://github.com/bonyyamin/orbital_rapid_cli
 repository: https://github.com/bonyyamin/orbital_rapid_cli
 issue_tracker: https://github.com/bonyyamin/orbital_rapid_cli/issues
