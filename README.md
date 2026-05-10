@@ -84,11 +84,27 @@ Requires Dart SDK `>=3.0.0`.
 dart pub global activate orbital_rapid_cli
 ```
 
-Ensure your Dart pub global bin is in your PATH:
+Ensure your Dart pub global bin is in your PATH. Depending on your OS:
 
+### Linux / macOS
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
 export PATH="$PATH":"$HOME/.pub-cache/bin"
+```
+
+### Windows
+**PowerShell:**
+```powershell
+# Add to current session
+$env:Path += ";$env:LOCALAPPDATA\Pub\Cache\bin"
+
+# Add permanently
+[System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:LOCALAPPDATA\Pub\Cache\bin", "User")
+```
+
+**Command Prompt (CMD):**
+```cmd
+setx PATH "%PATH%;%LOCALAPPDATA%\Pub\Cache\bin"
 ```
 
 Verify installation:
