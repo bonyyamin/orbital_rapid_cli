@@ -54,12 +54,12 @@ class YamlConfigLoader {
   }
 
   static List<Screen> _parseScreens(dynamic screens) {
-    if (screens == null) return const [];
+    if (screens == null) return Screen.values;
     if (screens == 'all') return Screen.values;
     if (screens is YamlList) {
       return Screen.values.where((s) => screens.contains(s.key)).toList();
     }
-    return const [];
+    return Screen.values;
   }
 
   static List<SocialProvider> _parseSocialProviders(dynamic providers) {

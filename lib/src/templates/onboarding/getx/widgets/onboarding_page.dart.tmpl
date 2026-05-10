@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:{{packageName}}/core/utils/app_text_styles.dart';
-import 'package:{{packageName}}/core/utils/app_dimensions.dart';
-import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{projectName}}/core/utils/app_text_styles.dart';
+import 'package:{{projectName}}/core/utils/app_dimensions.dart';
+import 'package:{{projectName}}/core/utils/app_colors.dart';
 
 class OnboardingPage extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String image;
+  final IconData icon;
 
   const OnboardingPage({
     super.key,
     required this.title,
     required this.subtitle,
-    required this.image,
+    required this.icon,
   });
 
   @override
@@ -24,9 +24,10 @@ class OnboardingPage extends StatelessWidget {
         children: [
           Expanded(
             flex: 3,
-            child: Image.asset(
-              image,
-              fit: BoxFit.contain,
+            child: Icon(
+              icon,
+              size: 150,
+              color: {{colorsClass}}.primary,
             ),
           ),
           const SizedBox(height: {{dimensionsClass}}.xxl),

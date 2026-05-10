@@ -2,10 +2,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 {{#isRiverpod}}
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 {{/isRiverpod}}
-import 'package:{{packageName}}/core/config/supabase_config.dart';
-import 'package:{{packageName}}/core/services/mock_auth_service.dart';
-import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
-import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+import 'package:{{projectName}}/core/config/supabase_config.dart';
+import 'package:{{projectName}}/core/services/mock_auth_service.dart';
+import 'package:{{projectName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{projectName}}/features/auth/data/models/user_model.dart';
 
 class SupabaseAuthRepository implements AuthRepositoryInterface {
   final SupabaseClient _client;
@@ -209,7 +209,7 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
 
     final success = await _client.auth.signInWithOAuth(
       provider,
-      redirectTo: '{{packageName}}://login-callback/',
+      redirectTo: '{{projectName}}://login-callback/',
     );
 
     if (!success) throw Exception('${provider.name} sign in failed');

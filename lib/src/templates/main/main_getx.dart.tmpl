@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 {{#isFirebaseBackend}}
 import 'package:firebase_core/firebase_core.dart';
-import 'package:{{packageName}}/firebase_options.dart';
+import 'package:{{projectName}}/firebase_options.dart';
 {{/isFirebaseBackend}}
 {{#isRestBackend}}
-import 'package:{{packageName}}/core/config/api_config.dart';
+import 'package:{{projectName}}/core/config/api_config.dart';
 {{/isRestBackend}}
 {{#isSupabaseBackend}}
-import 'package:{{packageName}}/core/config/supabase_config.dart';
+import 'package:{{projectName}}/core/config/supabase_config.dart';
 {{/isSupabaseBackend}}
-import 'package:{{packageName}}/core/theme/app_theme.dart';
-import 'package:{{packageName}}/core/theme/app_dark_theme.dart';
-import 'package:{{packageName}}/core/constants/app_routes.dart';
-import 'package:{{packageName}}/core/services/storage_service.dart';
-import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/social_login_usecase.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/register_usecase.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/forgot_password_usecase.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/logout_usecase.dart';
-import 'package:{{packageName}}/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:{{packageName}}/features/auth/presentation/login/getx/login_controller.dart';
-import 'package:{{packageName}}/features/auth/presentation/register/getx/register_controller.dart';
-import 'package:{{packageName}}/features/auth/presentation/forgot_password/getx/forgot_password_controller.dart';
-import 'package:{{packageName}}/features/onboarding/presentation/getx/onboarding_controller.dart';
+import 'package:{{projectName}}/core/theme/app_theme.dart';
+import 'package:{{projectName}}/core/theme/app_dark_theme.dart';
+import 'package:{{projectName}}/core/constants/app_routes.dart';
+import 'package:{{projectName}}/core/services/storage_service.dart';
+import 'package:{{projectName}}/features/auth/data/auth_repository.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/social_login_usecase.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/register_usecase.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:{{projectName}}/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:{{projectName}}/features/auth/presentation/login/getx/login_controller.dart';
+import 'package:{{projectName}}/features/auth/presentation/register/getx/register_controller.dart';
+import 'package:{{projectName}}/features/auth/presentation/forgot_password/getx/forgot_password_controller.dart';
+import 'package:{{projectName}}/features/onboarding/presentation/getx/onboarding_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -9,12 +9,21 @@ class Validators {
     return null;
   }
 
-  static String? packageName(String? value) {
+  static String? packageName(String? value, {bool isFinal = false}) {
     if (value == null || value.isEmpty) {
       return 'Required';
     }
-    if (!RegExp(r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$').hasMatch(value)) {
-      return 'Must be valid package name (e.g. cli_test or com.company.app)';
+
+    // Interactive: Allows typing one segment at a time and a trailing dot.
+    // Final: Requires at least two segments and no trailing dot (e.g. com.example).
+    // Extremely lenient interactive regex to avoid blocking input
+    // Only enforces lowercase and basic characters, allowing dots anywhere during typing.
+    final pattern = isFinal
+        ? r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$'
+        : r'^[a-z0-9._]*$';
+
+    if (!RegExp(pattern).hasMatch(value)) {
+      return 'Please use lowercase letters, numbers, dots, and underscores';
     }
     return null;
   }

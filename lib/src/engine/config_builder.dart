@@ -82,7 +82,7 @@ class ConfigBuilder {
       final keys = screensStr.split(',').map((s) => s.trim());
       screens = Screen.values.where((s) => keys.contains(s.key)).toList();
     } else {
-      screens = const [];
+      screens = Screen.values;
     }
 
     List<SocialProvider> socialProviders;

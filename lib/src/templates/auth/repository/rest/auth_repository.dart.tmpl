@@ -4,13 +4,13 @@ import 'package:dio/dio.dart';
 {{#isRiverpod}}
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 {{/isRiverpod}}
-import 'package:{{packageName}}/core/config/api_config.dart';
-import 'package:{{packageName}}/core/network/api_client.dart';
-import 'package:{{packageName}}/core/network/api_endpoints.dart';
-import 'package:{{packageName}}/core/services/storage_service.dart';
-import 'package:{{packageName}}/core/services/mock_auth_service.dart';
-import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
-import 'package:{{packageName}}/features/auth/data/models/user_model.dart';
+import 'package:{{projectName}}/core/config/api_config.dart';
+import 'package:{{projectName}}/core/network/api_client.dart';
+import 'package:{{projectName}}/core/network/api_endpoints.dart';
+import 'package:{{projectName}}/core/services/storage_service.dart';
+import 'package:{{projectName}}/core/services/mock_auth_service.dart';
+import 'package:{{projectName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{projectName}}/features/auth/data/models/user_model.dart';
 
 class RestAuthRepository implements AuthRepositoryInterface {
   final Dio _client;

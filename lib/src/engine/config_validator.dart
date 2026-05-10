@@ -8,9 +8,10 @@ class ConfigValidator {
       throw ArgumentError('Invalid project name: $projectNameError');
     }
 
-    final packageNameError = Validators.packageName(config.packageName);
+    final packageNameError = Validators.packageName(config.packageName, isFinal: true);
     if (packageNameError != null) {
-      throw ArgumentError('Invalid package identifier: $packageNameError');
+      throw ArgumentError('Invalid package identifier: $packageNameError. '
+          'Hint: Use reverse domain notation like com.example.app');
     }
 
     if (config.onboardingPageCount < 1) {

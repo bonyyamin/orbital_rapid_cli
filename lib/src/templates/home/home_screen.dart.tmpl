@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 {{#isRiverpod}}
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:{{packageName}}/features/auth/providers/auth_provider.dart';
-import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+import 'package:{{projectName}}/features/auth/providers/auth_provider.dart';
+import 'package:{{projectName}}/features/auth/data/auth_repository.dart';
 {{/isRiverpod}}
 {{#isBloc}}
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:{{packageName}}/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:{{projectName}}/features/auth/presentation/bloc/auth_bloc.dart';
 {{/isBloc}}
 {{#isGetX}}
 import 'package:get/get.dart';
-import 'package:{{packageName}}/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:{{projectName}}/features/auth/presentation/controllers/auth_controller.dart';
 {{/isGetX}}
-import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{projectName}}/core/constants/app_routes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -150,50 +150,18 @@ class HomeContentBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+    return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue.shade400, Colors.blue.shade600],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Welcome back,', style: TextStyle(color: Colors.white70, fontSize: 16)),
-                Text(
-                  user?.name ?? 'Guest User',
-                  style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
+          const Text(
+            'Welcome to Home',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 24),
-          const Text('Recent Activity', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.bolt)),
-                  title: Text('Activity ${index + 1}'),
-                  subtitle: const Text('2 hours ago'),
-                ),
-              );
-            },
+          const SizedBox(height: 8),
+          Text(
+            'Hello ${user?.name ?? "Guest"}, this is your home dashboard.',
+            style: const TextStyle(color: Colors.grey),
           ),
         ],
       ),
@@ -205,28 +173,18 @@ class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return const Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Search something...',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            ),
+          Text(
+            'Search',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          const Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search_off, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('No recent searches', style: TextStyle(color: Colors.grey)),
-                ],
-              ),
-            ),
+          SizedBox(height: 8),
+          Text(
+            'Find what you are looking for here.',
+            style: TextStyle(color: Colors.grey),
           ),
         ],
       ),
@@ -238,31 +196,21 @@ class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Explore',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Discover new things and trending topics.',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
       ),
-      itemCount: 4,
-      itemBuilder: (context, index) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.blue.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.explore, color: Colors.blue.shade700),
-              const SizedBox(height: 8),
-              Text('Topic ${index + 1}', style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-        );
-      },
     );
   }
 }
@@ -271,18 +219,21 @@ class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: 5,
-      separatorBuilder: (context, index) => const Divider(),
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const CircleAvatar(backgroundColor: Colors.orange, child: Icon(Icons.notifications, color: Colors.white)),
-          title: Text('Notification ${index + 1}'),
-          subtitle: const Text('This is a sample notification message.'),
-          onTap: () {},
-        );
-      },
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Notifications',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Stay updated with your latest alerts.',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 }

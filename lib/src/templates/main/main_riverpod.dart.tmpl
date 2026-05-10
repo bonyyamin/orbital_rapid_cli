@@ -3,18 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 {{#isFirebaseBackend}}
 import 'package:firebase_core/firebase_core.dart';
-import 'package:{{packageName}}/firebase_options.dart';
+import 'package:{{projectName}}/firebase_options.dart';
 {{/isFirebaseBackend}}
 {{#isRestBackend}}
-import 'package:{{packageName}}/core/config/api_config.dart';
+import 'package:{{projectName}}/core/config/api_config.dart';
 {{/isRestBackend}}
 {{#isSupabaseBackend}}
-import 'package:{{packageName}}/core/config/supabase_config.dart';
+import 'package:{{projectName}}/core/config/supabase_config.dart';
 {{/isSupabaseBackend}}
-import 'package:{{packageName}}/core/theme/app_theme.dart';
-import 'package:{{packageName}}/core/theme/app_dark_theme.dart';
-import 'package:{{packageName}}/core/constants/app_routes.dart';
-import 'package:{{packageName}}/core/services/storage_service.dart';
+import 'package:{{projectName}}/core/theme/app_theme.dart';
+import 'package:{{projectName}}/core/theme/app_dark_theme.dart';
+import 'package:{{projectName}}/core/constants/app_routes.dart';
+import 'package:{{projectName}}/core/services/storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

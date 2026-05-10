@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{projectName}}/core/utils/app_colors.dart';
 
 class {{gradientsClass}} {
   {{gradientsClass}}._();
@@ -8,11 +8,5 @@ class {{gradientsClass}} {
     colors: [{{colorsClass}}.primary, {{colorsClass}}.primaryDark],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient splash = LinearGradient(
-    colors: [{{colorsClass}}.primary, {{colorsClass}}.secondary],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
   );
 }

@@ -3,38 +3,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 {{#isFirebaseBackend}}
 import 'package:firebase_core/firebase_core.dart';
 {{/isFirebaseBackend}}
-import 'package:{{packageName}}/core/theme/app_theme.dart';
-import 'package:{{packageName}}/core/theme/app_dark_theme.dart';
-import 'package:{{packageName}}/core/constants/app_routes.dart';
-import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
-import 'package:{{packageName}}/features/auth/data/auth_repository_interface.dart';
-import 'package:{{packageName}}/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:{{projectName}}/core/theme/app_theme.dart';
+import 'package:{{projectName}}/core/theme/app_dark_theme.dart';
+import 'package:{{projectName}}/core/constants/app_routes.dart';
+import 'package:{{projectName}}/features/auth/data/auth_repository.dart';
+import 'package:{{projectName}}/features/auth/data/auth_repository_interface.dart';
+import 'package:{{projectName}}/features/auth/presentation/bloc/auth_bloc.dart';
 
 {{#hasSplashScreen}}
-import 'package:{{packageName}}/features/splash/presentation/bloc/splash_bloc.dart';
+import 'package:{{projectName}}/features/splash/presentation/bloc/splash_bloc.dart';
 {{/hasSplashScreen}}
 {{#hasOnboardingScreen}}
-import 'package:{{packageName}}/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:{{projectName}}/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 {{/hasOnboardingScreen}}
 {{#hasLoginScreen}}
-import 'package:{{packageName}}/features/auth/presentation/login/bloc/login_bloc.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/login_usecase.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/social_login_usecase.dart';
+import 'package:{{projectName}}/features/auth/presentation/login/bloc/login_bloc.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/login_usecase.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/social_login_usecase.dart';
 {{/hasLoginScreen}}
 {{#hasRegisterScreen}}
-import 'package:{{packageName}}/features/auth/presentation/register/bloc/register_bloc.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/register_usecase.dart';
+import 'package:{{projectName}}/features/auth/presentation/register/bloc/register_bloc.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/register_usecase.dart';
 {{/hasRegisterScreen}}
 {{#hasForgotPasswordScreen}}
-import 'package:{{packageName}}/features/auth/presentation/forgot_password/bloc/forgot_password_bloc.dart';
-import 'package:{{packageName}}/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:{{projectName}}/features/auth/presentation/forgot_password/bloc/forgot_password_bloc.dart';
+import 'package:{{projectName}}/features/auth/domain/usecases/forgot_password_usecase.dart';
 {{/hasForgotPasswordScreen}}
 {{#hasDeleteAccountScreen}}
-import 'package:{{packageName}}/features/account/presentation/delete/bloc/delete_account_bloc.dart';
+import 'package:{{projectName}}/features/account/presentation/delete/bloc/delete_account_bloc.dart';
 {{/hasDeleteAccountScreen}}
 
 {{#isRestBackend}}
-import 'package:{{packageName}}/core/services/storage_service.dart';
+import 'package:{{projectName}}/core/services/storage_service.dart';
 {{/isRestBackend}}
 
 void main() async {

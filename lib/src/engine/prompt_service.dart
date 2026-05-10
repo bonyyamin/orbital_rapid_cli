@@ -20,11 +20,12 @@ class PromptService {
       validator: (v) => Validators.projectName(v) == null,
     ).interact();
 
-    final packageName = Input(
-      prompt: 'Package identifier (e.g. com.company.app)',
-      defaultValue: projectName,
-      validator: (v) => Validators.packageName(v) == null,
+    final packageNameInput = Input(
+      prompt: 'Package identifier (e.g., com.example.app)',
+      validator: (v) => true,
     ).interact();
+
+    final packageName = packageNameInput.trim().isEmpty ? projectName : packageNameInput.trim();
 
     final stateIndex = Select(
       prompt: 'State management',
@@ -46,16 +47,14 @@ class PromptService {
         prompt: 'Email Verification Method',
         options: EmailVerificationMethod.values.map((e) => e.label).toList(),
       ).interact();
-      emailVerificationMethod = EmailVerificationMethod.values[emailVerifyIndex];
+      emailVerificationMethod =
+          EmailVerificationMethod.values[emailVerifyIndex];
     } else {
-      emailVerificationMethod = EmailVerificationMethod.link; // Default for 'none'
+      emailVerificationMethod =
+          EmailVerificationMethod.link; // Default for 'none'
     }
 
-    final screenIndices = MultiSelect(
-      prompt: 'Screens to generate',
-      options: Screen.values.map((e) => e.label).toList(),
-      defaults: List.filled(Screen.values.length, true),
-    ).interact();
+    final screenIndices = List.generate(Screen.values.length, (i) => i);
 
     final socialProviderIndices = MultiSelect(
       prompt: 'Social authentication providers (Press <space> to select)',

@@ -10,7 +10,6 @@ class FirebaseAdapter extends BaseBackendAdapter {
   List<Dependency> get dependencies => [
     const Dependency('firebase_core', '^4.7.0'),
     const Dependency('firebase_auth', '^6.4.0'),
-    const Dependency('google_sign_in', '^7.2.0'),
     const Dependency('cloud_firestore', '^6.3.0'),
   ];
 
@@ -28,7 +27,5 @@ class FirebaseAdapter extends BaseBackendAdapter {
   @override
   Map<String, dynamic> get templateVars => {
     'authRepoClass': 'FirebaseAuthRepository',
-    'hasGoogleSignIn': true,
-    'hasAppleSignIn': true,
   };
 }

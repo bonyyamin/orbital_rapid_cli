@@ -110,7 +110,8 @@ class FlowConfig {
       outputPath: outputPath ?? this.outputPath,
       stateManagement: stateManagement ?? this.stateManagement,
       backend: backend ?? this.backend,
-      emailVerificationMethod: emailVerificationMethod ?? this.emailVerificationMethod,
+      emailVerificationMethod:
+          emailVerificationMethod ?? this.emailVerificationMethod,
       screens: screens ?? this.screens,
       socialProviders: socialProviders ?? this.socialProviders,
       onboardingPageCount: onboardingPageCount ?? this.onboardingPageCount,

@@ -22,7 +22,9 @@ class InitCommand extends Command<void> {
           allowed: ['firebase', 'rest', 'supabase', 'none'],
           help: 'Backend service')
       ..addOption('screens', help: 'Comma-separated screens or "all"')
-      ..addOption('social-providers', help: 'Comma-separated social providers (google,facebook,apple,github) or "all"')
+      ..addOption('social-providers',
+          help:
+              'Comma-separated social providers (google,facebook,apple,github) or "all"')
       ..addOption('config',
           abbr: 'c', help: 'Path to orbitalRapid.yaml config file')
       ..addOption('output', abbr: 'o', help: 'Output directory')
@@ -37,6 +39,10 @@ class InitCommand extends Command<void> {
       ..addFlag('l10n', help: 'Enable localization support', defaultsTo: false)
       ..addFlag('tests',
           help: 'Generate unit and widget tests', defaultsTo: true)
+      ..addOption('email-verify',
+          allowed: ['link', 'otp'],
+          help: 'Email verification method',
+          defaultsTo: 'link')
       ..addFlag('dry-run',
           help: 'Show what files would be generated without writing them',
           defaultsTo: false);
@@ -69,7 +75,7 @@ class InitCommand extends Command<void> {
   }
 
   bool _hasAllRequiredFlags() {
-    return argResults!['name'] != null && argResults!['package'] != null;
+    return argResults!['name'] != null;
   }
 
   void _printSuccess(FlowConfig config) {

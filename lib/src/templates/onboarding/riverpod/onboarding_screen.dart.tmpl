@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:{{packageName}}/core/utils/app_colors.dart';
-import 'package:{{packageName}}/core/utils/app_text_styles.dart';
-import 'package:{{packageName}}/core/utils/app_dimensions.dart';
-import 'package:{{packageName}}/core/utils/app_strings.dart';
-import 'package:{{packageName}}/core/constants/app_routes.dart';
-import 'package:{{packageName}}/core/constants/app_assets.dart';
-import 'package:{{packageName}}/shared/widgets/primary_button.dart';
-import 'package:{{packageName}}/features/onboarding/presentation/riverpod/onboarding_provider.dart';
-import 'package:{{packageName}}/features/onboarding/presentation/widgets/onboarding_page.dart';
-import 'package:{{packageName}}/features/onboarding/presentation/widgets/page_indicator.dart';
+import 'package:{{projectName}}/core/utils/app_colors.dart';
+import 'package:{{projectName}}/core/utils/app_text_styles.dart';
+import 'package:{{projectName}}/core/utils/app_dimensions.dart';
+import 'package:{{projectName}}/core/utils/app_strings.dart';
+import 'package:{{projectName}}/core/constants/app_routes.dart';
+import 'package:{{projectName}}/shared/widgets/primary_button.dart';
+import 'package:{{projectName}}/features/onboarding/presentation/riverpod/onboarding_provider.dart';
+import 'package:{{projectName}}/features/onboarding/presentation/widgets/onboarding_page.dart';
+import 'package:{{projectName}}/features/onboarding/presentation/widgets/page_indicator.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -33,21 +32,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final notifier = ref.read(onboardingProvider.notifier);
 
     // Placeholder data - in a real app this might come from a localized source or data layer
-    final List<Map<String, String>> pages = [
+    final List<Map<String, dynamic>> pages = [
       {
         'title': 'Welcome to {{projectNamePascal}}',
         'subtitle': 'The fastest way to build your next Flutter app.',
-        'image': {{assetsClass}}.onboarding1,
+        'icon': Icons.rocket_launch_rounded,
       },
       {
         'title': 'Clean Architecture',
         'subtitle': 'Maintainable, scalable, and testable code out of the box.',
-        'image': {{assetsClass}}.onboarding2,
+        'icon': Icons.architecture_rounded,
       },
       {
         'title': 'Design System',
         'subtitle': 'Token-based system for easy branding and customization.',
-        'image': {{assetsClass}}.onboarding3,
+        'icon': Icons.palette_rounded,
       },
     ];
 
@@ -76,7 +75,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   return OnboardingPage(
                     title: page['title']!,
                     subtitle: page['subtitle']!,
-                    image: page['image']!,
+                    icon: page['icon']!,
                   );
                 },
               ),

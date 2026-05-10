@@ -81,8 +81,10 @@ class MainGenerator extends BaseGenerator {
           'hasOnboardingScreen': config.screens.contains(Screen.onboarding),
           'hasLoginScreen': config.screens.contains(Screen.login),
           'hasRegisterScreen': config.screens.contains(Screen.register),
-          'hasForgotPasswordScreen': config.screens.contains(Screen.forgotPassword),
-          'hasDeleteAccountScreen': config.screens.contains(Screen.accountDeletion),
+          'hasForgotPasswordScreen':
+              config.screens.contains(Screen.forgotPassword),
+          'hasDeleteAccountScreen':
+              config.screens.contains(Screen.accountDeletion),
         },
       ),
     ];
