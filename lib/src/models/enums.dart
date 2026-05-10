@@ -21,11 +21,21 @@ enum Backend {
   const Backend(this.key, this.label);
 }
 
+enum EmailVerificationMethod {
+  link('link', 'Link Verification'),
+  otp('otp', 'Email OTP');
+
+  final String key;
+  final String label;
+  const EmailVerificationMethod(this.key, this.label);
+}
+
 enum Screen {
   splash('splash', 'Splash Screen'),
   onboarding('onboarding', 'Onboarding Flow'),
   login('login', 'Login'),
   register('register', 'Register'),
+  verifyEmail('verify_email', 'Verify Email'),
   forgotPassword('forgot_password', 'Forgot Password'),
   accountDeletion('account_deletion', 'Account Deletion');
 

@@ -1,0 +1,36 @@
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/resend_verification_usecase.dart';
+import 'verify_email_state.dart';
+
+class VerifyEmailNotifier extends StateNotifier<VerifyEmailState> {
+  final VerifyEmailUseCase _verifyEmailUseCase;
+  final ResendVerificationUseCase _resendVerificationUseCase;
+
+  VerifyEmailNotifier(this._verifyEmailUseCase, this._resendVerificationUseCase)
+      : super(VerifyEmailState());
+
+  void codeChanged(String code) {
+    state = state.copyWith(code: code, errorMessage: null);
+  }
+
+  Future<void> verify() async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      await _verifyEmailUseCase.execute(state.code);
+      state = state.copyWith(isLoading: false, isSuccess: true);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<void> resendVerification(String email) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      await _resendVerificationUseCase.execute(email);
+      state = state.copyWith(isLoading: false, errorMessage: 'Verification email resent');
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
+  }
+}

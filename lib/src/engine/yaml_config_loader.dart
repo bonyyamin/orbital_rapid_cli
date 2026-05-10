@@ -26,6 +26,10 @@ class YamlConfigLoader {
         (e) => e.key == yaml['backend'],
         orElse: () => Backend.none,
       ),
+      emailVerificationMethod: EmailVerificationMethod.values.firstWhere(
+        (e) => e.key == yaml['email_verification'],
+        orElse: () => EmailVerificationMethod.link,
+      ),
       projectStructure: ProjectStructure.values.firstWhere(
         (e) => e.key == yaml['structure'],
         orElse: () => ProjectStructure.separate,

@@ -2,9 +2,14 @@ sealed class RegisterEvent {
   const RegisterEvent();
 }
 
-class RegisterNameChanged extends RegisterEvent {
-  final String name;
-  const RegisterNameChanged(this.name);
+class RegisterFirstNameChanged extends RegisterEvent {
+  final String firstName;
+  const RegisterFirstNameChanged(this.firstName);
+}
+
+class RegisterLastNameChanged extends RegisterEvent {
+  final String lastName;
+  const RegisterLastNameChanged(this.lastName);
 }
 
 class RegisterEmailChanged extends RegisterEvent {

@@ -1,0 +1,40 @@
+import 'package:get/get.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/resend_verification_usecase.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+
+class VerifyEmailController extends GetxController {
+  final VerifyEmailUseCase _verifyEmailUseCase;
+  final ResendVerificationUseCase _resendVerificationUseCase;
+
+  VerifyEmailController(this._verifyEmailUseCase, this._resendVerificationUseCase);
+
+  final isLoading = false.obs;
+  final code = ''.obs;
+
+  void setCode(String val) => code.value = val;
+
+  Future<void> verify() async {
+    isLoading.value = true;
+    try {
+      await _verifyEmailUseCase.execute(code.value);
+      Get.offAllNamed({{routesClass}}.home);
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> resendVerification(String email) async {
+    isLoading.value = true;
+    try {
+      await _resendVerificationUseCase.execute(email);
+      Get.snackbar('Success', 'Verification email resent');
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}

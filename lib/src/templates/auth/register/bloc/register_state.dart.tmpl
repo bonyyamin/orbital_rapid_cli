@@ -1,20 +1,46 @@
-sealed class RegisterState {
-  const RegisterState();
-}
+enum RegisterStatus { initial, loading, success, failure }
 
-class RegisterInitial extends RegisterState {
-  const RegisterInitial();
-}
+class RegisterState {
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String password;
+  final String confirmPassword;
+  final RegisterStatus status;
+  final String? errorMessage;
 
-class RegisterLoading extends RegisterState {
-  const RegisterLoading();
-}
+  const RegisterState({
+    this.firstName = '',
+    this.lastName = '',
+    this.email = '',
+    this.password = '',
+    this.confirmPassword = '',
+    this.status = RegisterStatus.initial,
+    this.errorMessage,
+  });
 
-class RegisterSuccess extends RegisterState {
-  const RegisterSuccess();
-}
+  bool get passwordsMatch => password == confirmPassword;
+  bool get canSubmit =>
+      firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty && 
+      password.isNotEmpty && passwordsMatch;
 
-class RegisterFailure extends RegisterState {
-  final String message;
-  const RegisterFailure(this.message);
+  RegisterState copyWith({
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? password,
+    String? confirmPassword,
+    RegisterStatus? status,
+    String? errorMessage,
+  }) {
+    return RegisterState(
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      confirmPassword: confirmPassword ?? this.confirmPassword,
+      status: status ?? this.status,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 }

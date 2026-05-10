@@ -1,0 +1,12 @@
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/resend_verification_usecase.dart';
+import 'verify_email_notifier.dart';
+import 'verify_email_state.dart';
+
+final verifyEmailProvider = StateNotifierProvider.autoDispose<VerifyEmailNotifier, VerifyEmailState>((ref) {
+  return VerifyEmailNotifier(
+    ref.watch(verifyEmailUseCaseProvider),
+    ref.watch(resendVerificationUseCaseProvider),
+  );
+});

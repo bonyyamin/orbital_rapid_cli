@@ -9,6 +9,7 @@ class FlowConfig {
   final String outputPath;
   final StateManagement stateManagement;
   final Backend backend;
+  final EmailVerificationMethod emailVerificationMethod;
   final List<Screen> screens;
   final List<SocialProvider> socialProviders;
   final int onboardingPageCount;
@@ -25,6 +26,7 @@ class FlowConfig {
     required this.outputPath,
     required this.stateManagement,
     required this.backend,
+    required this.emailVerificationMethod,
     required this.screens,
     required this.socialProviders,
     required this.onboardingPageCount,
@@ -51,6 +53,8 @@ class FlowConfig {
   bool get hasGithubAuth => socialProviders.contains(SocialProvider.github);
   bool get hasSocialAuth => socialProviders.isNotEmpty;
 
+  bool get shouldVerifyEmail => !isNoneBackend;
+
   Map<String, dynamic> toTemplateVars() => {
         'projectName': projectName,
         'projectNamePascal': projectNamePascal,
@@ -63,6 +67,9 @@ class FlowConfig {
         'isSupabase': isSupabase,
         'isNoneBackend': isNoneBackend,
         'isNone': isNoneBackend,
+        'isEmailLink': emailVerificationMethod == EmailVerificationMethod.link,
+        'isEmailOtp': emailVerificationMethod == EmailVerificationMethod.otp,
+        'shouldVerifyEmail': shouldVerifyEmail,
         'hasDarkMode': hasDarkMode,
         'hasL10n': hasL10n,
         'hasGoogleAuth': hasGoogleAuth,
@@ -86,6 +93,7 @@ class FlowConfig {
     String? outputPath,
     StateManagement? stateManagement,
     Backend? backend,
+    EmailVerificationMethod? emailVerificationMethod,
     List<Screen>? screens,
     List<SocialProvider>? socialProviders,
     int? onboardingPageCount,
@@ -102,6 +110,7 @@ class FlowConfig {
       outputPath: outputPath ?? this.outputPath,
       stateManagement: stateManagement ?? this.stateManagement,
       backend: backend ?? this.backend,
+      emailVerificationMethod: emailVerificationMethod ?? this.emailVerificationMethod,
       screens: screens ?? this.screens,
       socialProviders: socialProviders ?? this.socialProviders,
       onboardingPageCount: onboardingPageCount ?? this.onboardingPageCount,

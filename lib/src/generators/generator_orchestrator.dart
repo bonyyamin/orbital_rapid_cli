@@ -5,6 +5,7 @@ import 'package:orbital_rapid_cli/src/generators/account/delete_account_generato
 import 'package:orbital_rapid_cli/src/generators/auth/forgot_password_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/auth/login_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/auth/register_generator.dart';
+import 'package:orbital_rapid_cli/src/generators/auth/verify_email_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/home_generator.dart';
 import 'package:orbital_rapid_cli/src/generators/auth_provider_generator.dart';
@@ -121,6 +122,9 @@ class GeneratorOrchestrator {
             config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.register))
         RegisterGenerator(
+            config: args.config, engine: args.engine, logger: args.logger),
+      if (config.screens.contains(Screen.verifyEmail))
+        VerifyEmailGenerator(
             config: args.config, engine: args.engine, logger: args.logger),
       if (config.screens.contains(Screen.forgotPassword))
         ForgotPasswordGenerator(

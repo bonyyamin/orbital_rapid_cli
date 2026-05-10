@@ -64,7 +64,8 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<UserModel> register(String name, String email, String password) async {
+  Future<UserModel> register(String firstName, String lastName, String email, String password) async {
+    final name = '$firstName $lastName';
     // Use mock service if in mock mode
     if (_useMock) {
       print('🔧 Using mock authentication for development');
@@ -75,7 +76,11 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
       final response = await _client.auth.signUp(
         email: email,
         password: password,
-        data: {'name': name},
+        data: {
+          'name': name,
+          'first_name': firstName,
+          'last_name': lastName,
+        },
       );
       final user = response.user!;
       return UserModel(
@@ -144,10 +149,7 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
     }
     
     try {
-      // In Supabase, if using OTP for email verification
-      // Requires the email. If we only have code, we might assume the user clicked a magic link which handled it.
-      // Alternatively, we could verify OTP if we have the user's email saved in state.
-      // If code is an OTP (like a 6 digit PIN):
+{{#isEmailOtp}}
       final user = _client.auth.currentUser;
       if (user != null && user.email != null) {
          await _client.auth.verifyOTP(
@@ -158,6 +160,15 @@ class SupabaseAuthRepository implements AuthRepositoryInterface {
       } else {
         throw Exception('User email not found for verification. Please login again.');
       }
+{{/isEmailOtp}}
+{{#isEmailLink}}
+      // For link verification, the user clicks the link in their email.
+      // We just need to check if the user session has been updated.
+      final response = await _client.auth.refreshSession();
+      if (response.user == null || response.user!.emailConfirmedAt == null) {
+         throw Exception('Email is not verified yet. Please check your inbox.');
+      }
+{{/isEmailLink}}
     } catch (e) {
       throw Exception('Failed to verify email. Please check your code.');
     }

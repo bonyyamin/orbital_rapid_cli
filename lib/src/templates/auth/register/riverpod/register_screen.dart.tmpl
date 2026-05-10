@@ -18,7 +18,14 @@ class RegisterScreen extends ConsumerWidget {
     final notifier = ref.read(registerProvider.notifier);
 
     ref.listen(registerProvider, (_, next) {
-      if (next.isSuccess) Navigator.pushReplacementNamed(context, {{routesClass}}.home);
+      if (next.isSuccess) {
+        {{#shouldVerifyEmail}}
+        Navigator.pushReplacementNamed(context, {{routesClass}}.verifyEmail);
+        {{/shouldVerifyEmail}}
+        {{^shouldVerifyEmail}}
+        Navigator.pushReplacementNamed(context, {{routesClass}}.home);
+        {{/shouldVerifyEmail}}
+      }
       if (next.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(next.errorMessage!), backgroundColor: {{colorsClass}}.error),
@@ -39,19 +46,35 @@ class RegisterScreen extends ConsumerWidget {
             Text({{stringsClass}}.registerSubtitle,
                 style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary)),
             const SizedBox(height: {{dimensionsClass}}.xxl),
-            TextInput(label: {{stringsClass}}.registerName, onChanged: notifier.nameChanged),
+            Row(children: [
+              Expanded(child: TextInput(label: {{stringsClass}}.registerFirstName, onChanged: notifier.firstNameChanged)),
+              const SizedBox(width: {{dimensionsClass}}.md),
+              Expanded(child: TextInput(label: {{stringsClass}}.registerLastName, onChanged: notifier.lastNameChanged)),
+            ]),
             const SizedBox(height: {{dimensionsClass}}.md),
-            TextInput(label: {{stringsClass}}.registerEmail,
-                keyboardType: TextInputType.emailAddress, onChanged: notifier.emailChanged),
+            TextInput(
+              label: {{stringsClass}}.registerEmail,
+              keyboardType: TextInputType.emailAddress,
+              onChanged: notifier.emailChanged,
+              errorText: state.email.isNotEmpty && !state.email.contains('@') ? {{stringsClass}}.valEmailInvalid : null,
+            ),
             const SizedBox(height: {{dimensionsClass}}.md),
-            TextInput(label: {{stringsClass}}.registerPassword,
-                isPassword: true, onChanged: notifier.passwordChanged),
+            TextInput(
+              label: {{stringsClass}}.registerPassword,
+              isPassword: true,
+              onChanged: notifier.passwordChanged,
+              errorText: state.password.isNotEmpty && state.password.length < 6 ? {{stringsClass}}.valPasswordTooShort : null,
+            ),
             const SizedBox(height: {{dimensionsClass}}.md),
-            TextInput(label: {{stringsClass}}.registerConfirm,
-                isPassword: true, onChanged: notifier.confirmPasswordChanged),
+            TextInput(
+              label: {{stringsClass}}.registerConfirm,
+              isPassword: true,
+              onChanged: notifier.confirmPasswordChanged,
+              errorText: state.confirmPassword.isNotEmpty && !state.passwordsMatch ? {{stringsClass}}.valPasswordsMatch : null,
+            ),
             const SizedBox(height: {{dimensionsClass}}.xl),
             PrimaryButton(label: {{stringsClass}}.registerButton,
-                isLoading: state.isLoading, onPressed: notifier.submit),
+                isLoading: state.isLoading, onPressed: state.canSubmit ? notifier.submit : null),
             const SizedBox(height: {{dimensionsClass}}.xl),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text({{stringsClass}}.registerHaveAccount, style: {{textStylesClass}}.bodyMedium),

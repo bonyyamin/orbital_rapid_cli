@@ -6,7 +6,8 @@ class RegisterController extends GetxController {
   final RegisterUseCase _registerUseCase;
   RegisterController(this._registerUseCase);
 
-  final RxString name = ''.obs;
+  final RxString firstName = ''.obs;
+  final RxString lastName = ''.obs;
   final RxString email = ''.obs;
   final RxString password = ''.obs;
   final RxString confirmPassword = ''.obs;
@@ -15,7 +16,7 @@ class RegisterController extends GetxController {
 
   bool get passwordsMatch => password.value == confirmPassword.value;
   bool get canSubmit =>
-      name.value.isNotEmpty && email.value.isNotEmpty &&
+      firstName.value.isNotEmpty && lastName.value.isNotEmpty && email.value.isNotEmpty &&
       password.value.isNotEmpty && passwordsMatch;
 
   Future<void> submit() async {
@@ -23,8 +24,13 @@ class RegisterController extends GetxController {
     isLoading.value = true;
     errorMessage.value = null;
     try {
-      await _registerUseCase(name.value, email.value, password.value);
-      Get.offAllNamed(AppRoutes.home);
+      await _registerUseCase(firstName.value, lastName.value, email.value, password.value);
+      {{#shouldVerifyEmail}}
+      Get.offAllNamed({{routesClass}}.verifyEmail);
+      {{/shouldVerifyEmail}}
+      {{^shouldVerifyEmail}}
+      Get.offAllNamed({{routesClass}}.home);
+      {{/shouldVerifyEmail}}
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

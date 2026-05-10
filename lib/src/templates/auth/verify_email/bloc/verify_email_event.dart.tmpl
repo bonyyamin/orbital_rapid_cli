@@ -1,0 +1,13 @@
+abstract class VerifyEmailEvent {}
+
+class VerifyEmailCodeChanged extends VerifyEmailEvent {
+  final String code;
+  VerifyEmailCodeChanged(this.code);
+}
+
+class VerifyEmailSubmitted extends VerifyEmailEvent {}
+
+class VerifyEmailResendRequested extends VerifyEmailEvent {
+  final String email;
+  VerifyEmailResendRequested(this.email);
+}

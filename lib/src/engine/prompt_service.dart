@@ -36,6 +36,21 @@ class PromptService {
       options: Backend.values.map((e) => e.label).toList(),
     ).interact();
 
+    final backend = Backend.values[backendIndex];
+
+    EmailVerificationMethod? emailVerificationMethod;
+    if (backend == Backend.firebase) {
+      emailVerificationMethod = EmailVerificationMethod.link;
+    } else if (backend == Backend.supabase || backend == Backend.rest) {
+      final emailVerifyIndex = Select(
+        prompt: 'Email Verification Method',
+        options: EmailVerificationMethod.values.map((e) => e.label).toList(),
+      ).interact();
+      emailVerificationMethod = EmailVerificationMethod.values[emailVerifyIndex];
+    } else {
+      emailVerificationMethod = EmailVerificationMethod.link; // Default for 'none'
+    }
+
     final screenIndices = MultiSelect(
       prompt: 'Screens to generate',
       options: Screen.values.map((e) => e.label).toList(),
@@ -80,7 +95,8 @@ class PromptService {
       projectName: projectName,
       packageName: packageName,
       stateManagement: StateManagement.values[stateIndex],
-      backend: Backend.values[backendIndex],
+      backend: backend,
+      emailVerificationMethod: emailVerificationMethod,
       screens: screenIndices.map((i) => Screen.values[i]).toList(),
       socialProviders:
           socialProviderIndices.map((i) => SocialProvider.values[i]).toList(),

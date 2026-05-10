@@ -9,6 +9,7 @@ class ConfigBuilder {
     required String packageName,
     required StateManagement stateManagement,
     required Backend backend,
+    required EmailVerificationMethod emailVerificationMethod,
     required List<Screen> screens,
     required List<SocialProvider> socialProviders,
     required int onboardingPageCount,
@@ -29,6 +30,7 @@ class ConfigBuilder {
       outputPath: resolvedOutputPath,
       stateManagement: stateManagement,
       backend: backend,
+      emailVerificationMethod: emailVerificationMethod,
       screens: screens,
       socialProviders: socialProviders,
       onboardingPageCount: onboardingPageCount,
@@ -56,6 +58,17 @@ class ConfigBuilder {
       (e) => e.key == backendStr,
       orElse: () => Backend.none,
     );
+
+    final emailVerifyStr = args['email-verify'] as String?;
+    EmailVerificationMethod emailVerificationMethod;
+    if (backend == Backend.firebase) {
+      emailVerificationMethod = EmailVerificationMethod.link;
+    } else {
+      emailVerificationMethod = EmailVerificationMethod.values.firstWhere(
+        (e) => e.key == emailVerifyStr,
+        orElse: () => EmailVerificationMethod.link,
+      );
+    }
 
     final projectStructure = ProjectStructure.values.firstWhere(
       (e) => e.key == structureStr,
@@ -89,6 +102,7 @@ class ConfigBuilder {
       packageName: args['package'] as String? ?? name,
       stateManagement: stateManagement,
       backend: backend,
+      emailVerificationMethod: emailVerificationMethod,
       screens: screens,
       socialProviders: socialProviders,
       onboardingPageCount:

@@ -1,5 +1,6 @@
 class RegisterState {
-  final String name;
+  final String firstName;
+  final String lastName;
   final String email;
   final String password;
   final String confirmPassword;
@@ -8,7 +9,8 @@ class RegisterState {
   final bool isSuccess;
 
   const RegisterState({
-    this.name = '',
+    this.firstName = '',
+    this.lastName = '',
     this.email = '',
     this.password = '',
     this.confirmPassword = '',
@@ -19,10 +21,11 @@ class RegisterState {
 
   bool get passwordsMatch => password == confirmPassword;
   bool get canSubmit =>
-      name.isNotEmpty && email.isNotEmpty && password.isNotEmpty && passwordsMatch;
+      firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty && password.isNotEmpty && passwordsMatch;
 
   RegisterState copyWith({
-    String? name,
+    String? firstName,
+    String? lastName,
     String? email,
     String? password,
     String? confirmPassword,
@@ -32,7 +35,8 @@ class RegisterState {
     bool? isSuccess,
   }) {
     return RegisterState(
-      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
       email: email ?? this.email,
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,

@@ -33,7 +33,8 @@ class NoAuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<UserModel> register(String name, String email, String password) async {
+  Future<UserModel> register(String firstName, String lastName, String email, String password) async {
+    final name = '$firstName $lastName';
     _currentUser = await MockAuthService.register(email, password, name);
     _authStateController.add(_currentUser);
     return _currentUser!;

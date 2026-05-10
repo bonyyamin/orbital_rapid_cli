@@ -1,0 +1,29 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class VerifyEmailState {
+  final bool isLoading;
+  final bool isSuccess;
+  final String? errorMessage;
+  final String code;
+
+  VerifyEmailState({
+    this.isLoading = false,
+    this.isSuccess = false,
+    this.errorMessage,
+    this.code = '',
+  });
+
+  VerifyEmailState copyWith({
+    bool? isLoading,
+    bool? isSuccess,
+    String? errorMessage,
+    String? code,
+  }) {
+    return VerifyEmailState(
+      isLoading: isLoading ?? this.isLoading,
+      isSuccess: isSuccess ?? this.isSuccess,
+      errorMessage: errorMessage, // null by default unless specified
+      code: code ?? this.code,
+    );
+  }
+}

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 {{#isRiverpod}}
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +21,7 @@ class RestAuthRepository implements AuthRepositoryInterface {
 
   RestAuthRepository({required StorageService storage, Dio? client})
       : _storage = storage,
-        _client = client ?? ApiClient.instance,
+        _client = client ?? ApiClient().dio,
         _useMock = ApiConfig.baseUrl == 'YOUR_API_BASE_URL';
 
   @override
@@ -31,7 +32,7 @@ class RestAuthRepository implements AuthRepositoryInterface {
   }
 
   Future<void> _initAuth() async {
-    final token = await _storage.getString('token');
+    final token = _storage.getString('token');
     if (token != null) {
       if (token.startsWith('mock-token-')) {
         _currentUser = await MockAuthService.getCurrentUser();
@@ -54,7 +55,7 @@ class RestAuthRepository implements AuthRepositoryInterface {
   @override
   Future<UserModel> login(String email, String password) async {
     if (_useMock || (email == 'login@orbitalrapid.com' && password == '12345678')) {
-      print('🔧 Using mock authentication for development');
+      debugPrint('🔧 Using mock authentication for development');
       MockAuthService.printMockCredentials();
       _currentUser = await MockAuthService.login(email, password);
       await _storage.setString('token', 'mock-token-${_currentUser!.id}');
@@ -74,7 +75,7 @@ class RestAuthRepository implements AuthRepositoryInterface {
       return _currentUser!;
     } catch (e) {
       if (email == 'login@orbitalrapid.com' && password == '12345678') {
-        print('🔧 API login failed, falling back to mock authentication');
+        debugPrint('🔧 API login failed, falling back to mock authentication');
         _currentUser = await MockAuthService.login(email, password);
         await _storage.setString('token', 'mock-token-${_currentUser!.id}');
         _authStateController.add(_currentUser);
@@ -85,7 +86,8 @@ class RestAuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<UserModel> register(String name, String email, String password) async {
+  Future<UserModel> register(String firstName, String lastName, String email, String password) async {
+    final name = '$firstName $lastName';
     if (_useMock) {
       _currentUser = await MockAuthService.register(email, password, name);
       await _storage.setString('token', 'mock-token-${_currentUser!.id}');
@@ -96,7 +98,13 @@ class RestAuthRepository implements AuthRepositoryInterface {
     try {
       final response = await _client.post(
         ApiEndpoints.register,
-        data: {'name': name, 'email': email, 'password': password},
+        data: {
+          'first_name': firstName,
+          'last_name': lastName,
+          'name': name,
+          'email': email,
+          'password': password,
+        },
       );
       final data = response.data as Map<String, dynamic>;
       await _storage.setString('token', data['token'] as String);
@@ -160,10 +168,21 @@ class RestAuthRepository implements AuthRepositoryInterface {
     }
     
     try {
+{{#isEmailOtp}}
       await _client.post(
         ApiEndpoints.verifyEmail,
         data: {'code': code},
       );
+{{/isEmailOtp}}
+{{#isEmailLink}}
+      // For link verification, we might just poll the server for the user's updated status
+      final response = await _client.get(
+        ApiEndpoints.verifyEmail,
+      );
+      if (response.data['email_verified'] != true) {
+         throw Exception('Email is not verified yet. Please check your inbox.');
+      }
+{{/isEmailLink}}
     } catch (e) {
       throw Exception('Failed to verify email. Please check your code.');
     }
@@ -218,7 +237,7 @@ class RestAuthRepository implements AuthRepositoryInterface {
       _authStateController.add(_currentUser);
       return _currentUser!;
     } catch (e) {
-      print('🔧 API social login failed, falling back to mock');
+      debugPrint('🔧 API social login failed, falling back to mock');
       _currentUser = await MockAuthService.login('$provider@example.com', 'social');
       await _storage.setString('token', 'mock-token-${_currentUser!.id}');
       _authStateController.add(_currentUser);

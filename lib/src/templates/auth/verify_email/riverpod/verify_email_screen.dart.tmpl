@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:{{packageName}}/core/utils/app_colors.dart';
+import 'package:{{packageName}}/core/utils/app_text_styles.dart';
+import 'package:{{packageName}}/core/utils/app_dimensions.dart';
+import 'package:{{packageName}}/core/constants/app_routes.dart';
+import 'package:{{packageName}}/shared/widgets/primary_button.dart';
+import 'package:{{packageName}}/shared/widgets/text_input.dart';
+import 'package:{{packageName}}/features/auth/presentation/verify_email/riverpod/verify_email_provider.dart';
+
+class VerifyEmailScreen extends ConsumerWidget {
+  const VerifyEmailScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(verifyEmailProvider);
+    final notifier = ref.read(verifyEmailProvider.notifier);
+
+    ref.listen(verifyEmailProvider, (_, next) {
+      if (next.isSuccess) Navigator.pushReplacementNamed(context, {{routesClass}}.home);
+      if (next.errorMessage != null && next.errorMessage!.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.errorMessage!), backgroundColor: {{colorsClass}}.primary),
+        );
+      }
+    });
+
+    return Scaffold(
+      backgroundColor: {{colorsClass}}.background,
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0,
+          leading: const BackButton(color: {{colorsClass}}.textPrimary)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all({{dimensionsClass}}.lg),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Verify Email', style: {{textStylesClass}}.heading1),
+            const SizedBox(height: {{dimensionsClass}}.xs),
+{{#isEmailOtp}}
+            Text('Enter the verification code sent to your email',
+                style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary)),
+            const SizedBox(height: {{dimensionsClass}}.xxl),
+            TextInput(
+              label: 'Verification Code', 
+              onChanged: notifier.codeChanged,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: {{dimensionsClass}}.xl),
+{{/isEmailOtp}}
+{{#isEmailLink}}
+            Text('Check your email for a verification link and click Verify once done',
+                style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary)),
+            const SizedBox(height: {{dimensionsClass}}.xxl),
+{{/isEmailLink}}
+            PrimaryButton(
+              label: 'Verify',
+              isLoading: state.isLoading, 
+              onPressed: notifier.verify,
+            ),
+            const SizedBox(height: {{dimensionsClass}}.xl),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+{{#isEmailOtp}}
+              Text("Didn't receive a code? ", style: {{textStylesClass}}.bodyMedium),
+{{/isEmailOtp}}
+{{#isEmailLink}}
+              Text("Didn't receive a link? ", style: {{textStylesClass}}.bodyMedium),
+{{/isEmailLink}}
+              GestureDetector(
+                onTap: () => notifier.resendVerification('current_user@example.com'), // You should pass actual email
+                child: Text('Resend',
+                    style: {{textStylesClass}}.bodyMedium.copyWith(
+                        color: {{colorsClass}}.primary, fontWeight: FontWeight.w600)),
+              ),
+            ]),
+          ]),
+        ),
+      ),
+    );
+  }
+}

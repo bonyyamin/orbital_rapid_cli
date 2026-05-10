@@ -18,10 +18,17 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
-        if (state is RegisterSuccess) Navigator.pushReplacementNamed(context, {{routesClass}}.home);
-        if (state is RegisterFailure) {
+        if (state.status == RegisterStatus.success) {
+          {{#shouldVerifyEmail}}
+          Navigator.pushReplacementNamed(context, {{routesClass}}.verifyEmail);
+          {{/shouldVerifyEmail}}
+          {{^shouldVerifyEmail}}
+          Navigator.pushReplacementNamed(context, {{routesClass}}.home);
+          {{/shouldVerifyEmail}}
+        }
+        if (state.status == RegisterStatus.failure && state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: {{colorsClass}}.error),
+            SnackBar(content: Text(state.errorMessage!), backgroundColor: {{colorsClass}}.error),
           );
         }
       },
@@ -39,22 +46,38 @@ class RegisterScreen extends StatelessWidget {
                 Text({{stringsClass}}.registerSubtitle,
                     style: {{textStylesClass}}.bodyMedium.copyWith(color: {{colorsClass}}.textSecondary)),
                 const SizedBox(height: {{dimensionsClass}}.xxl),
-                TextInput(label: {{stringsClass}}.registerName,
-                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterNameChanged(v))),
+                Row(children: [
+                  Expanded(child: TextInput(label: {{stringsClass}}.registerFirstName,
+                      onChanged: (v) => context.read<RegisterBloc>().add(RegisterFirstNameChanged(v)))),
+                  const SizedBox(width: {{dimensionsClass}}.md),
+                  Expanded(child: TextInput(label: {{stringsClass}}.registerLastName,
+                      onChanged: (v) => context.read<RegisterBloc>().add(RegisterLastNameChanged(v)))),
+                ]),
                 const SizedBox(height: {{dimensionsClass}}.md),
-                TextInput(label: {{stringsClass}}.registerEmail,
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterEmailChanged(v))),
+                TextInput(
+                  label: {{stringsClass}}.registerEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (v) => context.read<RegisterBloc>().add(RegisterEmailChanged(v)),
+                  errorText: state.email.isNotEmpty && !state.email.contains('@') ? {{stringsClass}}.valEmailInvalid : null,
+                ),
                 const SizedBox(height: {{dimensionsClass}}.md),
-                TextInput(label: {{stringsClass}}.registerPassword, isPassword: true,
-                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterPasswordChanged(v))),
+                TextInput(
+                  label: {{stringsClass}}.registerPassword,
+                  isPassword: true,
+                  onChanged: (v) => context.read<RegisterBloc>().add(RegisterPasswordChanged(v)),
+                  errorText: state.password.isNotEmpty && state.password.length < 6 ? {{stringsClass}}.valPasswordTooShort : null,
+                ),
                 const SizedBox(height: {{dimensionsClass}}.md),
-                TextInput(label: {{stringsClass}}.registerConfirm, isPassword: true,
-                    onChanged: (v) => context.read<RegisterBloc>().add(RegisterConfirmPasswordChanged(v))),
+                TextInput(
+                  label: {{stringsClass}}.registerConfirm,
+                  isPassword: true,
+                  onChanged: (v) => context.read<RegisterBloc>().add(RegisterConfirmPasswordChanged(v)),
+                  errorText: state.confirmPassword.isNotEmpty && !state.passwordsMatch ? {{stringsClass}}.valPasswordsMatch : null,
+                ),
                 const SizedBox(height: {{dimensionsClass}}.xl),
                 PrimaryButton(label: {{stringsClass}}.registerButton,
-                    isLoading: state is RegisterLoading,
-                    onPressed: () => context.read<RegisterBloc>().add(const RegisterSubmitted())),
+                    isLoading: state.status == RegisterStatus.loading,
+                    onPressed: state.canSubmit ? () => context.read<RegisterBloc>().add(const RegisterSubmitted()) : null),
                 const SizedBox(height: {{dimensionsClass}}.xl),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Text({{stringsClass}}.registerHaveAccount, style: {{textStylesClass}}.bodyMedium),

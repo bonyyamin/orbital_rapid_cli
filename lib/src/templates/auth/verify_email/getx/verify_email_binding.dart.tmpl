@@ -1,0 +1,16 @@
+import 'package:get/get.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/resend_verification_usecase.dart';
+import 'package:{{packageName}}/features/auth/data/auth_repository.dart';
+import 'verify_email_controller.dart';
+
+class VerifyEmailBinding extends Bindings {
+  @override
+  void dependencies() {
+    // If authRepository is already injected globally, use Get.find()
+    // Otherwise ensure it is provided. We assume it is available via Get.find<AuthRepositoryInterface>()
+    Get.lazyPut(() => VerifyEmailUseCase(Get.find()));
+    Get.lazyPut(() => ResendVerificationUseCase(Get.find()));
+    Get.lazyPut(() => VerifyEmailController(Get.find(), Get.find()));
+  }
+}

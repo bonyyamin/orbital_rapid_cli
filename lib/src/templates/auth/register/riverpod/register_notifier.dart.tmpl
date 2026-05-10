@@ -7,7 +7,8 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
 
   RegisterNotifier(this._registerUseCase) : super(const RegisterState());
 
-  void nameChanged(String v) => state = state.copyWith(name: v, clearError: true);
+  void firstNameChanged(String v) => state = state.copyWith(firstName: v, clearError: true);
+  void lastNameChanged(String v) => state = state.copyWith(lastName: v, clearError: true);
   void emailChanged(String v) => state = state.copyWith(email: v, clearError: true);
   void passwordChanged(String v) => state = state.copyWith(password: v, clearError: true);
   void confirmPasswordChanged(String v) => state = state.copyWith(confirmPassword: v, clearError: true);
@@ -16,7 +17,7 @@ class RegisterNotifier extends StateNotifier<RegisterState> {
     if (!state.canSubmit) return;
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      await _registerUseCase(state.name, state.email, state.password);
+      await _registerUseCase(state.firstName, state.lastName, state.email, state.password);
       state = state.copyWith(isLoading: false, isSuccess: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());

@@ -1,0 +1,37 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/verify_email_usecase.dart';
+import 'package:{{packageName}}/features/auth/domain/usecases/resend_verification_usecase.dart';
+import 'verify_email_event.dart';
+import 'verify_email_state.dart';
+
+class VerifyEmailBloc extends Bloc<VerifyEmailEvent, VerifyEmailState> {
+  final VerifyEmailUseCase _verifyEmailUseCase;
+  final ResendVerificationUseCase _resendVerificationUseCase;
+
+  VerifyEmailBloc(this._verifyEmailUseCase, this._resendVerificationUseCase)
+      : super(VerifyEmailState()) {
+    on<VerifyEmailCodeChanged>((event, emit) {
+      emit(state.copyWith(code: event.code, errorMessage: null));
+    });
+
+    on<VerifyEmailSubmitted>((event, emit) async {
+      emit(state.copyWith(isLoading: true, errorMessage: null));
+      try {
+        await _verifyEmailUseCase.execute(state.code);
+        emit(state.copyWith(isLoading: false, isSuccess: true));
+      } catch (e) {
+        emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+      }
+    });
+
+    on<VerifyEmailResendRequested>((event, emit) async {
+      emit(state.copyWith(isLoading: true, errorMessage: null));
+      try {
+        await _resendVerificationUseCase.execute(event.email);
+        emit(state.copyWith(isLoading: false, errorMessage: 'Verification email resent'));
+      } catch (e) {
+        emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+      }
+    });
+  }
+}
