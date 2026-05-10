@@ -1,6 +1,8 @@
 import 'package:args/command_runner.dart';
 import 'package:orbital_rapid_cli/src/utils/logger.dart';
 
+import 'package:orbital_rapid_cli/src/version.dart';
+
 class VersionCommand extends Command<void> {
   final AppLogger logger;
 
@@ -14,7 +16,6 @@ class VersionCommand extends Command<void> {
 
   @override
   void run() {
-    // This could be pulled from pubspec.yaml in a real scenario
-    logger.info('Orbital Rapid CLI v0.1.0');
+    logger.info('Orbital Rapid CLI v$packageVersion');
   }
 }

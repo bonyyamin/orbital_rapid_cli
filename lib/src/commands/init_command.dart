@@ -56,6 +56,7 @@ class InitCommand extends Command<void> {
 
   @override
   Future<void> run() async {
+    _printWelcome();
     FlowConfig config;
 
     if (argResults!['config'] != null) {
@@ -76,6 +77,21 @@ class InitCommand extends Command<void> {
 
   bool _hasAllRequiredFlags() {
     return argResults!['name'] != null;
+  }
+
+  void _printWelcome() {
+    logger.info('''
+   ____       _     _ _        _   ____                _     _ 
+  / __ \\     | |   (_) |      | | |  _ \\              (_)   | |
+ | |  | |_ __| |__  _| |_ __ _| | | |_) |__ _ _ __  _ _  __| |
+ | |  | | '__| '_ \\| | __/ _` | | |  _ < / _` | '_ \\| | |/ _` |
+ | |__| | |  | |_) | | || (_| | | | |_) | (_| | |_) | | | (_| |
+  \\____/|_|  |_.__/|_|\\__\\__,_|_| |____/ \\__,_| .__/|_|_|\\__,_|
+                                              | |              
+                                              |_|              
+    ''');
+    logger.info('🚀 Welcome to Orbital Rapid CLI');
+    logger.info('Scaffolding production-ready Flutter apps in seconds\n');
   }
 
   void _printSuccess(FlowConfig config) {
