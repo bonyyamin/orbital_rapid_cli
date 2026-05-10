@@ -4,6 +4,13 @@ version: 1.0.1
 homepage: https://github.com/bonyyamin/orbital_rapid_cli
 repository: https://github.com/bonyyamin/orbital_rapid_cli
 issue_tracker: https://github.com/bonyyamin/orbital_rapid_cli/issues
+topics:
+  - flutter
+  - cli
+  - code-generator
+  - riverpod
+  - bloc
+  - getx
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
