@@ -3,7 +3,14 @@ import 'dart:isolate';
 import 'package:mustache_template/mustache.dart';
 import 'package:path/path.dart' as path;
 
+/// A service responsible for loading and rendering Mustache templates.
+///
+/// It handles resolving template files within the package structure and
+/// injecting variables into them.
 class TemplateEngine {
+  /// Renders a template located at [templatePath] using the provided [vars].
+  ///
+  /// The [templatePath] should be relative to `lib/src/`.
   Future<String> render(String templatePath, Map<String, dynamic> vars) async {
     final source = await _loadTemplate(templatePath);
     final template = Template(source, lenient: true);
@@ -51,9 +58,14 @@ class TemplateEngine {
   }
 }
 
+/// Exception thrown when a requested template file cannot be found.
 class TemplateNotFoundException implements Exception {
+  /// The path where the template was expected to be found.
   final String path;
+
+  /// Creates a [TemplateNotFoundException] for the given [path].
   TemplateNotFoundException(this.path);
+
   @override
   String toString() => 'Template not found: $path';
-}
+}

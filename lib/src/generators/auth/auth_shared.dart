@@ -3,9 +3,15 @@ import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
 import '../base_generator.dart';
 
+/// A helper class for generating shared authentication components that only
+/// need to be generated once, regardless of how many auth screens are selected.
 class AuthSharedGenerator {
   static bool _generated = false;
 
+  /// Generates shared auth components (repositories, models, use cases).
+  ///
+  /// This ensures that if both Login and Register are generated, the
+  /// shared data/domain layers are only produced once.
   static Future<List<GeneratedFile>> generateOnce(BaseGenerator generator) async {
     if (_generated) return [];
     _generated = true;
@@ -61,3 +67,4 @@ class AuthSharedGenerator {
     ];
   }
 }
+

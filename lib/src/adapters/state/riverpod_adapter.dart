@@ -2,7 +2,11 @@ import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'base_state_adapter.dart';
 
+/// An adapter for the Riverpod state management solution.
+///
+/// It provides dependencies for `flutter_riverpod` and `riverpod_annotation`.
 class RiverpodAdapter extends BaseStateAdapter {
+
   @override
   StateManagement get type => StateManagement.riverpod;
 

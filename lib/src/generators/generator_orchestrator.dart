@@ -26,15 +26,30 @@ import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 import 'package:orbital_rapid_cli/src/utils/file_writer.dart';
 import 'package:orbital_rapid_cli/src/utils/logger.dart';
 
+/// The primary class responsible for orchestrating the entire project generation flow.
+///
+/// It resolves the necessary generators based on the configuration, collects
+/// the generated files and dependencies, and manages the final writing process.
 class GeneratorOrchestrator {
+  /// The project configuration.
   final FlowConfig config;
+
+  /// The logger used for reporting generation progress.
   final AppLogger logger;
 
+  /// Creates a [GeneratorOrchestrator] instance.
   GeneratorOrchestrator({
     required this.config,
     required this.logger,
   });
 
+  /// Runs the generation process.
+  ///
+  /// This includes:
+  /// 1. Resolving which generators to run.
+  /// 2. Executing each generator to produce in-memory files.
+  /// 3. Writing those files to the disk using [FileWriter].
+  /// 4. Injecting required dependencies into `pubspec.yaml`.
   Future<void> generate() async {
     // Validate and warn for in-place generation
     if (config.isInplace) {
@@ -86,6 +101,7 @@ class GeneratorOrchestrator {
       }
     }
   }
+
 
   List<BaseGenerator> _resolveGenerators(
       ({FlowConfig config, TemplateEngine engine, AppLogger logger}) args) {

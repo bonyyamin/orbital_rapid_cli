@@ -2,12 +2,16 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
+/// Generates the network layer (Dio client, interceptors, endpoints)
+/// for projects using a REST API backend.
 class NetworkGenerator extends BaseGenerator {
+  /// Creates a [NetworkGenerator] instance.
   NetworkGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Network';

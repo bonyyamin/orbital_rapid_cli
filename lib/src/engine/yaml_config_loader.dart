@@ -4,7 +4,11 @@ import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'package:orbital_rapid_cli/src/models/flow_config.dart';
 import 'package:yaml/yaml.dart';
 
+/// A utility class for loading project configuration from a YAML file.
 class YamlConfigLoader {
+  /// Loads a [FlowConfig] from the specified [filePath].
+  ///
+  /// Throws a [FileSystemException] if the file does not exist.
   static FlowConfig load(String filePath) {
     final file = File(filePath);
     if (!file.existsSync()) {
@@ -45,6 +49,10 @@ class YamlConfigLoader {
     );
   }
 
+  /// Attempts to load a [FlowConfig] from the specified [filePath].
+  ///
+  /// Returns `null` if the file does not exist or if there is an error
+  /// during parsing.
   static FlowConfig? tryLoad(String filePath) {
     try {
       return load(filePath);
@@ -73,3 +81,4 @@ class YamlConfigLoader {
     return const [];
   }
 }
+

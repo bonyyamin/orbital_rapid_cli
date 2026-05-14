@@ -6,11 +6,21 @@ import 'package:orbital_rapid_cli/src/models/flow_config.dart';
 import 'package:orbital_rapid_cli/src/utils/logger.dart';
 import 'package:orbital_rapid_cli/src/utils/validators.dart';
 
+/// A service responsible for interacting with the user via terminal prompts.
+///
+/// It uses the `interact` package to collect project configuration parameters
+/// such as project name, state management choice, and backend service.
 class PromptService {
+  /// The logger used for outputting feedback.
   final AppLogger logger;
 
+  /// Creates a [PromptService] instance.
   PromptService({required this.logger});
 
+  /// Starts an interactive terminal session to collect all necessary
+  /// configuration for project generation.
+  ///
+  /// Returns a [FlowConfig] containing the user's choices.
   Future<FlowConfig> collectConfig({bool dryRun = false}) async {
     logger.printBanner();
 
@@ -108,3 +118,4 @@ class PromptService {
     );
   }
 }
+

@@ -2,12 +2,16 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
+/// Generates the design system utility files, including colors, fonts,
+/// dimensions, and localized strings.
 class UtilsGenerator extends BaseGenerator {
+  /// Creates a [UtilsGenerator] instance.
   UtilsGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Design System';

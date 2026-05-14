@@ -3,9 +3,12 @@ import 'package:orbital_rapid_cli/src/utils/logger.dart';
 
 import 'package:orbital_rapid_cli/src/version.dart';
 
+/// The command responsible for displaying the current CLI version.
 class VersionCommand extends Command<void> {
+  /// The logger used for outputting feedback.
   final AppLogger logger;
 
+  /// Creates a [VersionCommand] instance.
   VersionCommand(this.logger);
 
   @override
@@ -19,3 +22,4 @@ class VersionCommand extends Command<void> {
     logger.info('Orbital Rapid CLI v$packageVersion');
   }
 }
+

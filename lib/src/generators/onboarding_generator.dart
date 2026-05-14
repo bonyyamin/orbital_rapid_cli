@@ -2,12 +2,16 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
+/// Generates the onboarding flow, including screens, widgets, and
+/// associated state management logic.
 class OnboardingGenerator extends BaseGenerator {
+  /// Creates an [OnboardingGenerator] instance.
   OnboardingGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Onboarding';

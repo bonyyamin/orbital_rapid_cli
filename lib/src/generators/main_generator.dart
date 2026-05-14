@@ -3,12 +3,16 @@ import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 import 'package:orbital_rapid_cli/src/models/enums.dart';
 
+/// Generates the entry point of the Flutter application (`lib/main.dart`)
+/// and core backend configuration files.
 class MainGenerator extends BaseGenerator {
+  /// Creates a [MainGenerator] instance.
   MainGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Main';

@@ -2,12 +2,16 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
+/// Generates core application services such as local storage,
+/// navigation, and authentication.
 class ServiceGenerator extends BaseGenerator {
+  /// Creates a [ServiceGenerator] instance.
   ServiceGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Services';

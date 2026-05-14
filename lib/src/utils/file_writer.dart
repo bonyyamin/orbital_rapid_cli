@@ -5,12 +5,22 @@ import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 import 'package:orbital_rapid_cli/src/utils/logger.dart';
 import 'package:path/path.dart' as path;
 
+/// A utility class responsible for writing [GeneratedFile] objects to the physical disk.
 class FileWriter {
+  /// If true, files will not be written, but the actions will be logged.
   final bool dryRun;
+
+  /// The logger used for reporting write progress and errors.
   final AppLogger logger;
 
+  /// Creates a [FileWriter] instance.
   FileWriter({required this.dryRun, required this.logger});
 
+  /// Writes all provided [files] to the specified [outputPath].
+  ///
+  /// In non-dry-run mode, it attempts to write files atomically by first
+  /// writing to a temporary directory and then renaming/moving it to
+  /// the final destination.
   Future<void> writeAll(List<GeneratedFile> files, String outputPath) async {
     if (dryRun) {
       _printDryRun(files, outputPath);
@@ -82,9 +92,15 @@ class FileWriter {
   }
 }
 
+/// Exception thrown when the target output directory already exists.
 class OutputExistsException implements Exception {
+  /// The path that already exists.
   final String path;
+
+  /// Creates an [OutputExistsException] for the given [path].
   OutputExistsException(this.path);
+
   @override
   String toString() => 'Output directory already exists: $path';
 }
+

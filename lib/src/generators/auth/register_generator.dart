@@ -4,12 +4,15 @@ import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
 import 'auth_shared.dart';
 
+/// Generates the user registration flow, including screens and state management.
 class RegisterGenerator extends BaseGenerator {
+  /// Creates a [RegisterGenerator] instance.
   RegisterGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Register';

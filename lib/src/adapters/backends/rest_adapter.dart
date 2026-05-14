@@ -2,7 +2,12 @@ import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'base_backend_adapter.dart';
 
+/// An adapter for a custom REST API backend.
+///
+/// It provides dependencies for `dio`, `flutter_secure_storage`, and
+/// `pretty_dio_logger`, and includes the necessary network layer templates.
 class RestAdapter extends BaseBackendAdapter {
+
   @override
   Backend get type => Backend.rest;
 

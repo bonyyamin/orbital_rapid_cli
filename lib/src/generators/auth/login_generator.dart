@@ -9,12 +9,16 @@ import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
 import 'auth_shared.dart';
 
+/// Generates the login flow, including screens, forms, social login buttons,
+/// and associated state management.
 class LoginGenerator extends BaseGenerator {
+  /// Creates a [LoginGenerator] instance.
   LoginGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Login';

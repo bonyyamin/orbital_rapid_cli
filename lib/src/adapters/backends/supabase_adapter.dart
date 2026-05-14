@@ -2,7 +2,11 @@ import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'base_backend_adapter.dart';
 
+/// An adapter for the Supabase backend.
+///
+/// It provides the `supabase_flutter` dependency and necessary repository templates.
 class SupabaseAdapter extends BaseBackendAdapter {
+
   @override
   Backend get type => Backend.supabase;
 

@@ -1,4 +1,10 @@
+/// A utility class containing static methods for validating various input strings
+/// used within the CLI, such as project names and package names.
 class Validators {
+  /// Validates that the [value] is a valid Flutter/Dart project name.
+  ///
+  /// A valid project name must be snake_case, starting with a letter
+  /// and containing only lowercase letters, numbers, and underscores.
   static String? projectName(String? value) {
     if (value == null || value.isEmpty) {
       return 'Required';
@@ -9,6 +15,11 @@ class Validators {
     return null;
   }
 
+  /// Validates that the [value] is a valid package name (e.g., com.example.app).
+  ///
+  /// If [isFinal] is true, it enforces a strict package name structure
+  /// requiring at least two segments. Otherwise, it allows partial
+  /// input during interactive typing.
   static String? packageName(String? value, {bool isFinal = false}) {
     if (value == null || value.isEmpty) {
       return 'Required';
@@ -28,6 +39,9 @@ class Validators {
     return null;
   }
 
+  /// Validates the output directory path.
+  ///
+  /// Returns null if the path is valid or empty (which defaults to the current directory).
   static String? outputPath(String? value) {
     if (value == null || value.isEmpty) {
       return null; // Output path can be empty (defaults to current dir)
@@ -35,3 +49,4 @@ class Validators {
     return null;
   }
 }
+

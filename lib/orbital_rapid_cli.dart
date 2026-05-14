@@ -2,7 +2,7 @@
 /// 
 /// A powerful Flutter project scaffolding tool that generates
 /// standardized architectures and features.
-library orbital_rapid_cli;
+library;
 
 export 'src/version.dart';
 

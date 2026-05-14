@@ -4,12 +4,15 @@ import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
 import 'auth_shared.dart';
 
+/// Generates the forgot password flow, including screens and state management.
 class ForgotPasswordGenerator extends BaseGenerator {
+  /// Creates a [ForgotPasswordGenerator] instance.
   ForgotPasswordGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Forgot Password';

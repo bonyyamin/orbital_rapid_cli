@@ -3,7 +3,9 @@ import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'package:orbital_rapid_cli/src/models/flow_config.dart';
 import 'package:orbital_rapid_cli/src/utils/string_utils.dart';
 
+/// A utility class for constructing [FlowConfig] objects from various input sources.
 class ConfigBuilder {
+  /// Constructs a [FlowConfig] from a set of direct answers (typically from interactive prompts).
   static FlowConfig fromAnswers({
     required String projectName,
     required String packageName,
@@ -42,6 +44,7 @@ class ConfigBuilder {
     );
   }
 
+  /// Constructs a [FlowConfig] from raw command-line arguments.
   static FlowConfig fromArgs(ArgResults args) {
     final stateStr = args['state'] as String?;
     final backendStr = args['backend'] as String?;
@@ -116,3 +119,4 @@ class ConfigBuilder {
     );
   }
 }
+

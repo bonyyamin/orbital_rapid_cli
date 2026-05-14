@@ -2,12 +2,16 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
+/// Generates the state management logic (Providers, BLoCs, or Controllers)
+/// for the authentication feature.
 class AuthProviderGenerator extends BaseGenerator {
+  /// Creates an [AuthProviderGenerator] instance.
   AuthProviderGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Auth Provider';

@@ -7,9 +7,15 @@ import 'package:orbital_rapid_cli/src/engine/yaml_config_loader.dart';
 import 'package:orbital_rapid_cli/src/models/flow_config.dart';
 import 'package:orbital_rapid_cli/src/utils/logger.dart';
 
+/// The command responsible for initializing and scaffolding a new Flutter project.
+///
+/// This command collects configuration from command-line arguments, a YAML file,
+/// or interactive prompts, and then orchestrates the generation process.
 class InitCommand extends Command<void> {
+  /// The logger used for outputting progress and feedback.
   final AppLogger logger;
 
+  /// Creates an [InitCommand] and defines its expected arguments and flags.
   InitCommand(this.logger) {
     argParser
       ..addOption('name', abbr: 'n', help: 'Project name (snake_case)')
@@ -74,6 +80,7 @@ class InitCommand extends Command<void> {
 
     _printSuccess(config);
   }
+
 
   bool _hasAllRequiredFlags() {
     return argResults!['name'] != null;

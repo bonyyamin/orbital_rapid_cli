@@ -6,9 +6,15 @@ import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'package:orbital_rapid_cli/src/utils/logger.dart';
 import 'package:collection/collection.dart';
 
+/// The command responsible for adding new screens to an existing project.
+///
+/// This command looks for an `orbitalRapid.yaml` file in the current directory
+/// to understand the project's configuration before generating the new screen.
 class AddCommand extends Command<void> {
+  /// The logger used for outputting progress and feedback.
   final AppLogger logger;
 
+  /// Creates an [AddCommand] and defines its expected arguments and flags.
   AddCommand(this.logger) {
     argParser.addFlag('dry-run', help: 'Show what files would be generated', defaultsTo: false);
   }
@@ -47,3 +53,4 @@ class AddCommand extends Command<void> {
     logger.success('\n✅ Screen "$screenName" added successfully!');
   }
 }
+

@@ -2,12 +2,15 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
+/// Generates application-wide constant files such as assets, routes, and enums.
 class ConstantsGenerator extends BaseGenerator {
+  /// Creates a [ConstantsGenerator] instance.
   ConstantsGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Constants';

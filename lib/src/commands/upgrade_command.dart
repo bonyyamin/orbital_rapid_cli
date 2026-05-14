@@ -2,9 +2,14 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:orbital_rapid_cli/src/utils/logger.dart';
 
+/// The command responsible for self-upgrading the CLI.
+///
+/// It uses `dart pub global activate` to fetch the latest version from pub.dev.
 class UpgradeCommand extends Command<void> {
+  /// The logger used for outputting progress and feedback.
   final AppLogger logger;
 
+  /// Creates an [UpgradeCommand] instance.
   UpgradeCommand(this.logger);
 
   @override
@@ -30,3 +35,4 @@ class UpgradeCommand extends Command<void> {
     }
   }
 }
+

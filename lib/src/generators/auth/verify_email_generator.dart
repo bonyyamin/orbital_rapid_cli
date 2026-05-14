@@ -4,12 +4,15 @@ import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
 import 'auth_shared.dart';
 
+/// Generates the email verification flow, including screens and state management.
 class VerifyEmailGenerator extends BaseGenerator {
+  /// Creates a [VerifyEmailGenerator] instance.
   VerifyEmailGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Verify Email';

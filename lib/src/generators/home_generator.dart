@@ -2,12 +2,15 @@ import 'package:orbital_rapid_cli/src/generators/base_generator.dart';
 import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/generated_file.dart';
 
+/// Generates the home screen and its associated presentation logic.
 class HomeGenerator extends BaseGenerator {
+  /// Creates a [HomeGenerator] instance.
   HomeGenerator({
     required super.config,
     required super.engine,
     required super.logger,
   });
+
 
   @override
   String get name => 'Home';

@@ -2,7 +2,11 @@ import 'package:orbital_rapid_cli/src/models/dependency.dart';
 import 'package:orbital_rapid_cli/src/models/enums.dart';
 import 'base_backend_adapter.dart';
 
+/// A placeholder adapter used when no backend is selected.
+///
+/// It generates a local-only implementation that can be replaced later.
 class NoneAdapter extends BaseBackendAdapter {
+
   @override
   Backend get type => Backend.none;
 
